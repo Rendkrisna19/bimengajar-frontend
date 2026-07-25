@@ -74,6 +74,8 @@ export default function PojokKoinPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pinLat, setPinLat] = useState<number | null>(null);
   const [pinLng, setPinLng] = useState<number | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [pinMapCenter, setPinMapCenter] = useState<[number, number]>([2.9604, 99.0687]);
 
   // Use browser GPS for searcher
   const handleUseMyLocation = () => {
@@ -126,7 +128,41 @@ export default function PojokKoinPage() {
   const handlePinSet = (lat: number, lng: number) => {
     setPinLat(lat);
     setPinLng(lng);
+    setPinMapCenter([lat, lng]);
     setForm(prev => ({ ...prev, latitude: lat.toFixed(6), longitude: lng.toFixed(6) }));
+  };
+
+  // Auto-detect GPS for registration form
+  const handleAutoLocateForForm = () => {
+    if (!navigator.geolocation) {
+      Swal.fire('Info', 'Browser Anda tidak mendukung GPS.', 'info');
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setPinLat(lat);
+        setPinLng(lng);
+        setPinMapCenter([lat, lng]);
+        setForm(prev => ({ ...prev, latitude: lat.toFixed(6), longitude: lng.toFixed(6) }));
+        setIsLocating(false);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Lokasi berhasil dideteksi!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      },
+      () => {
+        setIsLocating(false);
+        Swal.fire('Gagal', 'Tidak dapat mengakses GPS. Pastikan izin lokasi diaktifkan di browser Anda.', 'error');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -391,11 +427,30 @@ export default function PojokKoinPage() {
                     <textarea required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Jl. Contoh No. 1, Pematangsiantar" rows={2} className={inputCls} />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-gray-600 mb-1 block">
-                      Pin Lokasi pada Peta *
-                      {pinLat && <span className="text-green-600 ml-2">✓ {pinLat.toFixed(5)}, {pinLng?.toFixed(5)}</span>}
+                    <label className="text-xs font-bold text-gray-600 mb-2 block">
+                      Titik Lokasi *
+                      {pinLat && <span className="text-green-600 ml-2">✓ Lokasi terdeteksi</span>}
                     </label>
-                    <p className="text-xs text-gray-400 mb-2">Klik pada peta di sebelah kanan untuk menentukan titik lokasi Anda.</p>
+                    <button
+                      type="button"
+                      onClick={handleAutoLocateForForm}
+                      disabled={isLocating}
+                      className="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition-all disabled:opacity-70 mb-2"
+                    >
+                      {isLocating
+                        ? <><i className="fa-solid fa-spinner fa-spin"></i> Mendeteksi lokasi...</>
+                        : <><i className="fa-solid fa-location-crosshairs"></i> Gunakan Lokasi Saya Otomatis</>}
+                    </button>
+                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                      <i className="fa-solid fa-circle-info text-primary"></i>
+                      Atau klik langsung pada peta di sebelah kanan untuk menentukan titik secara manual.
+                    </p>
+                    {pinLat && (
+                      <div className="mt-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700 font-medium flex items-center gap-2">
+                        <i className="fa-solid fa-circle-check"></i>
+                        Koordinat: {pinLat.toFixed(5)}, {pinLng?.toFixed(5)}
+                      </div>
+                    )}
                   </div>
                 </fieldset>
 
@@ -443,13 +498,18 @@ export default function PojokKoinPage() {
             {/* Peta untuk pin lokasi */}
             <div className="sticky top-24">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden" style={{ height: '600px' }}>
-                <div className="bg-primary text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
-                  <i className="fa-solid fa-map-pin"></i>
-                  Klik pada peta untuk menentukan lokasi Anda
+                <div className="bg-primary text-white text-xs font-bold px-4 py-3 flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <i className="fa-solid fa-map-pin"></i>
+                    Peta Lokasi
+                  </span>
+                  <span className="text-blue-200 font-normal">
+                    {pinLat ? '📍 Lokasi ditandai' : 'Klik peta atau gunakan GPS'}
+                  </span>
                 </div>
-                <div style={{ height: 'calc(100% - 32px)' }}>
+                <div style={{ height: 'calc(100% - 40px)' }}>
                   <MapView
-                    center={[2.9604, 99.0687]}
+                    center={pinMapCenter}
                     providers={[]}
                     searchMarker={null}
                     radius={0}
