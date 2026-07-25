@@ -1,0 +1,178 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import ParticleBackground from '@/components/ui/ParticleBackground';
+import { useRouter } from 'next/navigation';
+
+import Swal from 'sweetalert2';
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setFieldErrors({});
+
+    try {
+      const res = await fetch('http://localhost:8000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem('token', data.token);
+        Swal.fire({
+          title: 'Login Berhasil!',
+          text: 'Selamat datang kembali di Dashboard Admin BI Siantar.',
+          icon: 'success',
+          confirmButtonColor: '#003366',
+          background: '#ffffff',
+        }).then(() => {
+          router.push('/admin');
+        });
+      } else if (res.status === 422) {
+        // Laravel Validation Error — parse field-level errors
+        const errors = data.errors || {};
+        const newErrors: { email?: string; password?: string } = {};
+
+        if (errors.email) {
+          newErrors.email = errors.email[0];
+        }
+        if (errors.password) {
+          newErrors.password = errors.password[0];
+        }
+        // "auth.failed" biasanya muncul di field email tapi artinya credentials salah
+        if (!errors.email && !errors.password) {
+          // Gunakan heuristic: jika server bilang "These credentials do not match"
+          // tandai password sebagai salah karena email ditemukan tapi password salah
+          newErrors.password = 'Password yang Anda masukkan salah.';
+        }
+
+        setFieldErrors(newErrors);
+      } else {
+        Swal.fire('Gagal', data.message || 'Email atau password salah.', 'error');
+      }
+    } catch (err) {
+      Swal.fire('Gagal', 'Tidak dapat terhubung ke server. Pastikan backend berjalan.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const inputBase = 'w-full bg-gray-50 text-gray-800 text-sm rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all placeholder:text-gray-400 shadow-sm border';
+  const inputNormal = `${inputBase} border-gray-200 focus:border-primary focus:bg-white`;
+  const inputError = `${inputBase} border-red-400 bg-red-50 focus:border-red-500 focus:bg-red-50 text-red-700`;
+
+  return (
+    <main className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+      <ParticleBackground />
+
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] hidden md:block">
+         <div className="absolute top-[20%] left-0 w-[20%] h-px bg-gradient-to-r from-primary to-transparent transform -rotate-12"></div>
+         <div className="absolute top-[20%] right-0 w-[20%] h-px bg-gradient-to-l from-primary to-transparent transform rotate-12"></div>
+         <div className="absolute bottom-[20%] left-0 w-[20%] h-px bg-gradient-to-r from-accent-warning to-transparent transform rotate-12"></div>
+         <div className="absolute bottom-[20%] right-0 w-[20%] h-px bg-gradient-to-l from-accent-warning to-transparent transform -rotate-12"></div>
+      </div>
+
+      <Link href="/" className="absolute top-8 left-8 text-gray-500 hover:text-primary transition-colors flex items-center gap-2 font-medium z-20">
+        <i className="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+      </Link>
+
+      <div className="w-full max-w-[420px] bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,51,102,0.1)] relative z-10">
+        <div className="flex flex-col items-center mb-8">
+          <div className="mb-6">
+            <Image
+              src="/images/logo.png"
+              alt="Logo BI Mengajar"
+              width={160}
+              height={50}
+              className="h-10 w-auto object-contain"
+              priority
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Login Administrator</h1>
+          <p className="text-sm text-gray-500 mt-2 text-center">
+            Silakan masuk untuk mengelola portal edukasi BI Siantar.
+          </p>
+        </div>
+
+        <form onSubmit={handleLogin} className="flex flex-col gap-5">
+          {/* Email Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-gray-700 px-1">Alamat Email</label>
+            <div className="relative group">
+              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                <i className="fa-regular fa-envelope"></i>
+              </div>
+              <input
+                type="email"
+                placeholder="Masukkan email admin..."
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
+                }}
+                required
+                className={fieldErrors.email ? inputError : inputNormal}
+              />
+            </div>
+            {fieldErrors.email && (
+              <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                {fieldErrors.email}
+              </p>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-gray-700 px-1">Password</label>
+            <div className="relative group">
+              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                <i className="fa-solid fa-lock"></i>
+              </div>
+              <input
+                type="password"
+                placeholder="Masukkan password..."
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
+                }}
+                required
+                className={fieldErrors.password ? inputError : inputNormal}
+              />
+            </div>
+            {fieldErrors.password && (
+              <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                {fieldErrors.password}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
+          >
+            {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Log In ke Dashboard'}
+          </button>
+        </form>
+      </div>
+    </main>
+  );
+}

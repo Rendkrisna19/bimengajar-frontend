@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  
+  /* Primary Colors */
+  --color-primary: #003366;
+  
+  /* Background / Base Colors */
+  --color-base-white: #ffffff;
+  --color-base-gray: #f3f4f6; /* Soft light gray */
+  
+  /* Accent Colors */
+  --color-accent-warning: #eab308; /* Yellow */
+  --color-accent-cta: #f97316; /* Orange */
+  --color-accent-highlight: #a855f7; /* Purple */
+
+  --animate-marquee: marquee 30s linear infinite;
+  
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-base-gray);
+    color: #171717; /* Default dark text */
+  }
+}
