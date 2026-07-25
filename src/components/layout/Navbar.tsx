@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Navbar() {
   const navbarRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const [lang, setLang] = useState('ID');
+  const { lang, setLang } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [user, setUser] = useState<{name: string, role: string} | null>(null);
