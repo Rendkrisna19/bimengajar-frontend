@@ -59,7 +59,7 @@ export default function LeafletMap() {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/locations');
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/locations`);
         if (res.data && res.data.data) {
           setLocations(res.data.data);
         }

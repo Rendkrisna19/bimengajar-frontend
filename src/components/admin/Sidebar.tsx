@@ -22,7 +22,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
         { name: "Materi Edukasi", icon: "fa-solid fa-book-open", href: "/admin/edukasi" },
         { name: "Artikel Berita", icon: "fa-regular fa-newspaper", href: "/admin/berita" },
         { name: "Peta Edukasi", icon: "fa-solid fa-map-location-dot", href: "/admin/peta-edukasi" },
-        { name: "Titik Temu", icon: "fa-solid fa-coins", href: "/admin/titik-temu" },
+        { name: "Pojok Koin", icon: "fa-solid fa-coins", href: "/admin/pojok-koin" },
       ]
     },
     {

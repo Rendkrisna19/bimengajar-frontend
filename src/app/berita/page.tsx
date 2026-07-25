@@ -29,7 +29,7 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/articles?all=true');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles?all=true`);
         const data = await res.json();
         if (data.status === 'success') {
           setArticles(data.data);

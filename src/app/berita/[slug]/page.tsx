@@ -30,14 +30,14 @@ export default function ArticleDetailPage() {
 
     const fetchArticleDetail = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/articles/${slug}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles/${slug}`);
         const data = await res.json();
         if (data.status === 'success') {
           setArticle(data.data);
         }
         
         // Fetch other articles for sidebar
-        const otherRes = await fetch('http://localhost:8000/api/articles');
+        const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles`);
         const otherData = await otherRes.json();
         if (otherData.status === 'success') {
           // Filter out current article and take top 4

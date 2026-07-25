@@ -9,7 +9,7 @@ const LocationPickerMap = dynamic(() => import('@/components/admin/LocationPicke
   loading: () => <div className="w-full h-[300px] bg-gray-100 flex items-center justify-center">Loading Map...</div>
 });
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 interface EdukasiLocation {
   id: number;
