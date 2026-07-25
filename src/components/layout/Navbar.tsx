@@ -70,7 +70,7 @@ export default function Navbar() {
         { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' }
       ]
     },
-    { name: 'Titik Temu', icon: 'fa-solid fa-coins', href: '/titik-temu' },
+    { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },
     { name: 'Kalender', icon: 'fa-regular fa-calendar-check', href: '/kalender' },
     { name: 'Kunjungan', icon: 'fa-solid fa-building-circle-arrow-right', href: '/kunjungan' },
     { name: 'Berita', icon: 'fa-regular fa-newspaper', href: '/berita' },
