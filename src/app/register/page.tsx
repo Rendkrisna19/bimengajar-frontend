@@ -5,73 +5,56 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import { useRouter } from 'next/navigation';
-
 import Swal from 'sweetalert2';
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setFieldErrors({});
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, password, password_confirmation: passwordConfirmation })
       });
 
       const data = await res.json();
 
-      if (res.ok && data.token) {
-        localStorage.setItem('token', data.token);
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-
-        const role = data.user?.role || 'user';
-        const dest = role === 'admin' ? '/admin' : '/dashboard';
-        const msg = role === 'admin' ? 'Selamat datang di Dashboard Admin.' : `Selamat datang, ${data.user?.name || 'Pengguna'}!`;
-
+      if (res.ok) {
         Swal.fire({
-          title: 'Login Berhasil!',
-          text: msg,
+          title: 'Registrasi Berhasil!',
+          text: 'Akun Anda telah dibuat. Silakan login untuk melanjutkan pengajuan kegiatan.',
           icon: 'success',
           confirmButtonColor: '#003366',
           background: '#ffffff',
         }).then(() => {
-          router.push(dest);
+          router.push('/login');
         });
       } else if (res.status === 422) {
-        // Laravel Validation Error — parse field-level errors
+        // Validation Error
         const errors = data.errors || {};
-        const newErrors: { email?: string; password?: string } = {};
+        const newErrors: { name?: string; email?: string; password?: string } = {};
 
-        if (errors.email) {
-          newErrors.email = errors.email[0];
-        }
-        if (errors.password) {
-          newErrors.password = errors.password[0];
-        }
-        // "auth.failed" biasanya muncul di field email tapi artinya credentials salah
-        if (!errors.email && !errors.password) {
-          // Gunakan heuristic: jika server bilang "These credentials do not match"
-          // tandai password sebagai salah karena email ditemukan tapi password salah
-          newErrors.password = 'Password yang Anda masukkan salah.';
-        }
+        if (errors.name) newErrors.name = errors.name[0];
+        if (errors.email) newErrors.email = errors.email[0];
+        if (errors.password) newErrors.password = errors.password[0];
 
         setFieldErrors(newErrors);
       } else {
-        Swal.fire('Gagal', data.message || 'Email atau password salah.', 'error');
+        Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat pendaftaran.', 'error');
       }
     } catch (err) {
       Swal.fire('Gagal', 'Tidak dapat terhubung ke server. Pastikan backend berjalan.', 'error');
@@ -99,7 +82,7 @@ export default function LoginPage() {
         <i className="fa-solid fa-arrow-left"></i> Kembali ke Beranda
       </Link>
 
-      <div className="w-full max-w-[420px] bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,51,102,0.1)] relative z-10">
+      <div className="w-full max-w-[420px] bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,51,102,0.1)] relative z-10 my-8">
         <div className="flex flex-col items-center mb-8">
           <div className="mb-6">
             <Image
@@ -111,13 +94,40 @@ export default function LoginPage() {
               priority
             />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Masuk ke Akun Anda</h1>
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Daftar Akun Baru</h1>
           <p className="text-sm text-gray-500 mt-2 text-center">
-            Silakan login untuk mengakses layanan BI Mengajar.
+            Silakan buat akun untuk mengajukan kegiatan edukasi di BI Mengajar.
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-5">
+        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          {/* Name Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-gray-700 px-1">Nama Lengkap</label>
+            <div className="relative group">
+              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.name ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                <i className="fa-regular fa-user"></i>
+              </div>
+              <input
+                type="text"
+                placeholder="Masukkan nama lengkap..."
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: undefined }));
+                }}
+                required
+                className={fieldErrors.name ? inputError : inputNormal}
+              />
+            </div>
+            {fieldErrors.name && (
+              <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                {fieldErrors.name}
+              </p>
+            )}
+          </div>
+
           {/* Email Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-bold text-gray-700 px-1">Alamat Email</label>
@@ -127,7 +137,7 @@ export default function LoginPage() {
               </div>
               <input
                 type="email"
-                placeholder="Masukkan email admin..."
+                placeholder="Masukkan email valid..."
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -154,13 +164,14 @@ export default function LoginPage() {
               </div>
               <input
                 type="password"
-                placeholder="Masukkan password..."
+                placeholder="Buat password (min. 8 karakter)..."
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
                 }}
                 required
+                minLength={8}
                 className={fieldErrors.password ? inputError : inputNormal}
               />
             </div>
@@ -172,20 +183,39 @@ export default function LoginPage() {
             )}
           </div>
 
+          {/* Password Confirmation Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-gray-700 px-1">Konfirmasi Password</label>
+            <div className="relative group">
+              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors text-gray-400 group-focus-within:text-primary`}>
+                <i className="fa-solid fa-lock"></i>
+              </div>
+              <input
+                type="password"
+                placeholder="Ulangi password..."
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                required
+                minLength={8}
+                className={inputNormal}
+              />
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
           >
-            {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Masuk ke Dashboard'}
+            {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Daftar Sekarang'}
           </button>
         </form>
 
         <div className="mt-8 text-center border-t border-gray-100 pt-6">
           <p className="text-sm text-gray-600">
-            Belum punya akun?{' '}
-            <Link href="/register" className="text-primary font-bold hover:underline transition-all">
-              Daftar di sini
+            Sudah punya akun?{' '}
+            <Link href="/login" className="text-primary font-bold hover:underline transition-all">
+              Login di sini
             </Link>
           </p>
         </div>
