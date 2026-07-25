@@ -4,16 +4,18 @@ import FeaturesSection from "@/components/sections/FeaturesSection";
 import StatsSection from "@/components/sections/StatsSection";
 import MapSection from "@/components/sections/MapSection";
 import NewsSection from "@/components/sections/NewsSection";
+import FloatingAction from "@/components/ui/FloatingAction";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 relative">
       <Navbar />
       <HeroSection />
       <FeaturesSection />
       <StatsSection />
       <MapSection />
       <NewsSection />
+      <FloatingAction />
     </main>
   );
 }

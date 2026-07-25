@@ -12,6 +12,16 @@ export default function Navbar() {
   const { lang, setLang } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [user, setUser] = useState<{name: string, role: string} | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {}
+    }
+  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -51,7 +61,15 @@ export default function Navbar() {
 
   const menuItems = [
     { name: 'Beranda', icon: 'fa-solid fa-house', href: '/' },
-    { name: 'Edukasi', icon: 'fa-solid fa-book-open', href: '/edukasi', dropdown: true },
+    { 
+      name: 'Edukasi', 
+      icon: 'fa-solid fa-book-open', 
+      href: '/edukasi', 
+      dropdown: true,
+      subItems: [
+        { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' }
+      ]
+    },
     { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },
     { name: 'Kalender', icon: 'fa-regular fa-calendar-check', href: '/kalender' },
     { name: 'Kunjungan', icon: 'fa-solid fa-building-circle-arrow-right', href: '/kunjungan' },
@@ -120,18 +138,82 @@ export default function Navbar() {
                   )}
                 </Link>
                 <div className="absolute bottom-0 left-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-300 ease-out rounded-full"></div>
+                
+                {/* Dropdown Menu */}
+                {item.dropdown && item.subItems && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
+                    {item.subItems.map((sub, sIdx) => (
+                      <Link 
+                        key={sIdx} 
+                        href={sub.href}
+                        className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
+                      >
+                        {sub.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </nav>
 
-        {/* KANAN - Log In (Right Pill) */}
-        <Link 
-          href="/login" 
-          className="flex-shrink-0 px-6 py-2.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 whitespace-nowrap"
-        >
-          <i className="fa-solid fa-user-lock text-primary"></i> Log In
-        </Link>
+        {/* KANAN - Log In / Profile (Right Pill) */}
+        {user ? (
+          <div className="relative group shrink-0">
+            <Link 
+              href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+              className="flex-shrink-0 px-5 py-1.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-3 whitespace-nowrap cursor-pointer"
+            >
+              <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs">
+                {user.name.substring(0, 2).toUpperCase()}
+              </div>
+              {user.name.split(' ')[0]}
+            </Link>
+            
+            {/* Dropdown Profile */}
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
+              <div className="px-4 py-2 border-b border-gray-100 mb-1">
+                <p className="text-xs text-gray-500">Masuk sebagai</p>
+                <p className="text-sm font-bold text-gray-800 truncate">{user.name}</p>
+              </div>
+              
+              <Link 
+                href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+                className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
+              >
+                <i className="fa-solid fa-house w-4 text-center"></i> Dashboard
+              </Link>
+              
+              {user.role !== 'admin' && (
+                <Link 
+                  href="/dashboard/riwayat" 
+                  className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
+                >
+                  <i className="fa-solid fa-file-invoice w-4 text-center"></i> Riwayat Pengajuan
+                </Link>
+              )}
+              
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/login';
+                }}
+                className="w-full text-left px-4 py-2 text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 border-t border-gray-100 mt-1 pt-2"
+              >
+                <i className="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Link 
+            href="/login" 
+            className="flex-shrink-0 px-6 py-2.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 whitespace-nowrap"
+          >
+            <i className="fa-solid fa-user-lock text-primary"></i> Log In
+          </Link>
+        )}
       </div>
 
       {/* ================================== */}
@@ -188,34 +270,94 @@ export default function Navbar() {
       {isMobileOpen && (
         <div 
           ref={mobileMenuRef}
-          className="xl:hidden absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-6 flex flex-col gap-6 z-40"
+          className="xl:hidden absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-5 flex flex-col gap-4 z-[100] max-h-[80vh] overflow-y-auto"
         >
           <div className="flex flex-col gap-4">
             {menuItems.map((item, idx) => (
-              <Link 
-                key={idx}
-                href={item.href} 
-                onClick={() => setIsMobileOpen(false)}
-                className="flex items-center justify-between text-gray-700 font-semibold hover:text-primary transition-colors text-base border-b border-gray-100 pb-3"
-              >
-                <span className="flex items-center gap-3">
-                  <i className={`${item.icon} text-primary/70 w-5 text-center`}></i>
-                  {item.name}
-                </span>
-                {item.dropdown && (
-                  <i className="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+              <div key={idx} className="flex flex-col">
+                <Link 
+                  href={item.href} 
+                  onClick={() => setIsMobileOpen(false)}
+                  className="flex items-center justify-between text-gray-700 font-semibold hover:text-primary transition-colors text-base border-b border-gray-100 pb-3"
+                >
+                  <span className="flex items-center gap-3">
+                    <i className={`${item.icon} text-primary/70 w-5 text-center`}></i>
+                    {item.name}
+                  </span>
+                  {item.dropdown && (
+                    <i className="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                  )}
+                </Link>
+                {/* Mobile Dropdown */}
+                {item.dropdown && item.subItems && (
+                  <div className="flex flex-col mt-2 ml-8 gap-2 border-l-2 border-gray-100 pl-4">
+                    {item.subItems.map((sub, sIdx) => (
+                      <Link 
+                        key={sIdx} 
+                        href={sub.href}
+                        onClick={() => setIsMobileOpen(false)}
+                        className="text-sm font-medium text-gray-600 hover:text-primary py-1"
+                      >
+                        {sub.name}
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
 
-          <Link 
-            href="/login" 
-            onClick={() => setIsMobileOpen(false)}
-            className="w-full py-3.5 bg-primary text-white text-center font-bold rounded-xl shadow-md hover:bg-blue-900 transition-colors flex items-center justify-center gap-2"
-          >
-            <i className="fa-solid fa-user-lock"></i> Log In ke Dashboard
-          </Link>
+          {user ? (
+            <div className="flex flex-col gap-2 border-t border-gray-100 pt-4 mt-1">
+              <div className="flex items-center gap-3 mb-3 px-2">
+                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+                  {user.name.substring(0, 2).toUpperCase()}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Masuk sebagai</span>
+                  <span className="text-sm font-bold text-gray-800 line-clamp-1">{user.name}</span>
+                </div>
+              </div>
+              <div className={`grid ${user.role === 'admin' ? 'grid-cols-1' : 'grid-cols-2'} gap-2`}>
+                <Link 
+                  href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+                  onClick={() => setIsMobileOpen(false)}
+                  className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
+                >
+                  <i className="fa-solid fa-house text-[16px]"></i>
+                  <span className="text-[11px]">Dashboard</span>
+                </Link>
+                {user.role !== 'admin' && (
+                  <Link 
+                    href="/dashboard/riwayat" 
+                    onClick={() => setIsMobileOpen(false)}
+                    className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
+                  >
+                    <i className="fa-solid fa-file-invoice text-[16px]"></i>
+                    <span className="text-[11px]">Riwayat</span>
+                  </Link>
+                )}
+              </div>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/login';
+                }}
+                className="w-full py-2.5 mt-1 bg-red-50 text-red-600 text-center font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
+              </button>
+            </div>
+          ) : (
+            <Link 
+              href="/login" 
+              onClick={() => setIsMobileOpen(false)}
+              className="w-full py-3.5 bg-primary text-white text-center font-bold rounded-xl shadow-md hover:bg-blue-900 transition-colors flex items-center justify-center gap-2"
+            >
+              <i className="fa-solid fa-user-lock"></i> Log In ke Dashboard
+            </Link>
+          )}
         </div>
       )}
 
