@@ -254,12 +254,14 @@ export default function AdminPojokKoinPage() {
               </div>
               <div className="rounded-xl overflow-hidden" style={{ height: '280px' }}>
                 <MapView
+                  mapId={`admin-modal-map-${selectedProvider.id}`}
                   center={[selectedProvider.latitude, selectedProvider.longitude]}
                   providers={[selectedProvider]}
                   searchMarker={null}
                   radius={0}
-                  mode="search"
+                  mode="pin"
                   onPinSet={() => {}}
+                  pinPosition={[selectedProvider.latitude, selectedProvider.longitude]}
                 />
               </div>
             </div>
