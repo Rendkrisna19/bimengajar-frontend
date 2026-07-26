@@ -29,7 +29,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       category: "Layanan",
       items: [
         { name: "Jadwal Kalender", icon: "fa-regular fa-calendar-check", href: "/admin/kalender" },
-        { name: "Pengajuan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
+        { name: "Pengajuan Edukasi", icon: "fa-solid fa-file-signature", href: "/admin/pengajuan-edukasi" },
+        { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
       ]
     }
   ];

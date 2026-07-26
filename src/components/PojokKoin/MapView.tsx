@@ -27,7 +27,7 @@ interface MapViewProps {
 
 export default function MapView({ center, providers, searchMarker, radius, mode, onPinSet, pinPosition, mapId }: MapViewProps) {
   const reactId = useId();
-  const uniqueMapId = mapId || `map-${reactId.replace(/:/g, '')}`;
+  const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const leafletRef = useRef<any>(null);
   const circleRef = useRef<any>(null);
@@ -39,7 +39,12 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
     if (typeof window === 'undefined') return;
     if (mapRef.current) return; // already initialized
 
+    let isMounted = true;
+
     import('leaflet').then(L => {
+      if (!isMounted) return;
+      if (mapRef.current) return;
+
       leafletRef.current = L;
 
       // Fix default icon
@@ -50,7 +55,14 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
 
-      const map = L.map(uniqueMapId, {
+      const container = mapContainerRef.current;
+      if (!container) return;
+
+      if ((container as any)._leaflet_id) {
+        (container as any)._leaflet_id = null;
+      }
+
+      const map = L.map(container, {
         center,
         zoom: 13,
         scrollWheelZoom: true,
@@ -80,6 +92,7 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
     }
 
     return () => {
+      isMounted = false;
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -177,5 +190,5 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
     }
   }, [pinPosition]);
 
-  return <div id={uniqueMapId} style={{ width: '100%', height: '100%' }} />;
+  return <div ref={mapContainerRef} style={{ width: '100%', height: '100%', minHeight: '300px' }} />;
 }
