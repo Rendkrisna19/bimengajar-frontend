@@ -1,136 +1,163 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HeroSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const [imgError, setImgError] = useState(false);
-  
+  const { t, lang } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const slideInterval = useRef<NodeJS.Timeout | null>(null);
+
+  // Fallback text if translations aren't available for the new keys yet
+  const slides = [
+    {
+      id: 0,
+      title: lang === 'ID' ? 'Edukasi untuk\nIndonesia yang Maju' : 'Education for\nan Advanced Indonesia',
+      subtitle: lang === 'ID' 
+        ? 'Belajar, berkolaborasi, dan berkontribusi bersama Bank Indonesia untuk masyarakat yang Cinta, Bangga, dan Paham Rupiah.'
+        : 'Learn, collaborate, and contribute with Bank Indonesia for a society that Loves, is Proud of, and Understands the Rupiah.',
+      image: '/images/banner/hero1.png',
+    },
+    {
+      id: 1,
+      title: lang === 'ID' ? 'Kenali & Pahami\nRupiah Kita' : 'Know & Understand\nOur Rupiah',
+      subtitle: lang === 'ID'
+        ? 'Tingkatkan literasi keuangan dan kenali ciri keaslian Rupiah demi menjaga kedaulatan ekonomi bangsa.'
+        : 'Improve financial literacy and recognize the authenticity features of the Rupiah to maintain the nation\'s economic sovereignty.',
+      image: '/images/banner/hero2.png',
+    },
+    {
+      id: 2,
+      title: lang === 'ID' ? 'Layanan Penukaran\nUang Logam' : 'Coin Exchange\nServices',
+      subtitle: lang === 'ID'
+        ? 'Gunakan platform Pojok Koin untuk menukarkan uang logam dengan mudah dan bantu sirkulasi koin di masyarakat.'
+        : 'Use the Coin Corner platform to easily exchange coins and help coin circulation in the community.',
+      image: '/images/banner/hero3.png',
+    },
+  ];
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+
+  const startAutoPlay = () => {
+    stopAutoPlay();
+    slideInterval.current = setInterval(nextSlide, 5000);
+  };
+
+  const stopAutoPlay = () => {
+    if (slideInterval.current) {
+      clearInterval(slideInterval.current);
+    }
+  };
+
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      
-      // Animate background overlay
-      tl.to(overlayRef.current, { opacity: 0.65, duration: 1.5 })
-      // Entrance animations for Left Column
-      .fromTo('.hero-badge', 
-        { x: -30, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.8 },
-        '-=1'
-      )
-      .fromTo('.hero-title',
-        { x: -40, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.8 },
-        '-=0.6'
-      )
-      .fromTo('.hero-subtitle',
-        { x: -30, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.8 },
-        '-=0.6'
-      )
-      .fromTo('.hero-actions',
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        '-=0.6'
-      )
-      // Entrance animation for Right Column (Coin)
-      .fromTo('.floating-coin-container',
-        { scale: 0.5, opacity: 0, rotation: -15 },
-        { scale: 1, opacity: 1, rotation: 0, duration: 1, ease: 'back.out(1.5)' },
-        '-=1'
-      );
+    startAutoPlay();
+    return () => stopAutoPlay();
+  }, [currentSlide]);
 
-      // Continuous Floating Animation for the Coin using GSAP
-      gsap.to('.floating-coin', {
-        y: -25,
-        rotation: 5,
-        duration: 2.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        delay: 1 // Start after entrance animation
-      });
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDragging(true);
+    stopAutoPlay();
+    setStartX('touches' in e ? e.touches[0].clientX : e.clientX);
+  };
 
-    }, containerRef);
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const diff = startX - currentX;
     
-    return () => ctx.revert();
-  }, []);
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    startAutoPlay();
+  };
 
   return (
-    <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-20 bg-gray-900">
-      
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0 w-full h-full">
-        <Image 
-          src="/images/banner/hero2.png" 
-          alt="Banner BI Mengajar"
-          fill
-          priority
-          className="object-cover object-center opacity-40"
-        />
+    <section 
+      className="relative min-h-[90vh] lg:min-h-screen bg-primary flex items-start overflow-hidden pt-32 md:pt-40 lg:pt-48 cursor-grab active:cursor-grabbing select-none"
+      onMouseDown={handleDragStart}
+      onMouseMove={handleDragMove}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={handleDragEnd}
+      onTouchStart={handleDragStart}
+      onTouchMove={handleDragMove}
+      onTouchEnd={handleDragEnd}
+    >
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-300 rounded-full blur-[100px]"></div>
       </div>
 
-      {/* Dark Overlay (Semi-transparent) */}
-      <div 
-        ref={overlayRef}
-        className="absolute inset-0 bg-gradient-to-r from-primary/95 to-primary/70 z-10"
-      ></div>
-
-      <div className="max-w-7xl mx-auto px-6 w-full relative z-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 w-full relative z-10 flex flex-col justify-start h-full pb-20">
         
-        {/* LEFT COLUMN: Text Content */}
-        <div className="flex flex-col items-start text-left pt-10 lg:pt-0">
-          
-          <h1 className="hero-title text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 drop-shadow-lg uppercase">
-            BI Mengajar <br/>
-            <span className="bg-blue-600 text-white px-3 py-1 inline-block mt-2">Siantar</span>
-          </h1>
-          
-          <p className="hero-subtitle text-lg md:text-xl text-gray-100 mb-10 max-w-lg leading-relaxed drop-shadow-md font-medium">
-            Platform edukasi kebanksentralan terpadu. Akses materi, ajukan kunjungan, dan manfaatkan layanan titik temu penukaran uang logam dengan mudah.
-          </p>
-          
-          <div className="hero-actions flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-primary to-blue-400 text-white font-bold rounded-full hover:to-blue-300 transition-all shadow-[0_10px_20px_rgba(0,51,102,0.3)] hover:shadow-[0_15px_25px_rgba(0,51,102,0.4)] hover:-translate-y-1 flex items-center justify-center gap-3 text-lg">
-              Mulai Belajar <i className="fa-solid fa-chevron-right text-sm font-bold"></i>
-            </button>
-          </div>
-        </div>
+        <div className="relative w-full overflow-hidden w-full flex items-start min-h-[500px]">
+          <div 
+            className="flex transition-transform duration-700 ease-in-out w-full"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slides.map((slide) => (
+              <div key={slide.id} className="min-w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div className="flex flex-col items-start text-left max-w-xl mx-auto lg:mx-0 px-4">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6 whitespace-pre-line drop-shadow-md">
+                    {slide.title}
+                  </h1>
+                  <p className="text-base md:text-lg text-blue-100 mb-10 leading-relaxed font-medium">
+                    {slide.subtitle}
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                    <Link href="/pengajuan" className="w-full sm:w-auto px-8 py-3.5 bg-white text-primary font-bold rounded-lg hover:bg-blue-50 transition-all text-center shadow-lg">
+                      {lang === 'ID' ? 'Ajukan Edukasi' : 'Request Education'}
+                    </Link>
+                    <Link href="/materi" className="w-full sm:w-auto px-8 py-3.5 bg-transparent border-2 border-white/50 text-white font-semibold rounded-lg hover:bg-white/10 transition-all text-center">
+                      {lang === 'ID' ? 'Jelajahi Materi' : 'Explore Materials'}
+                    </Link>
+                  </div>
+                </div>
 
-        {/* RIGHT COLUMN: Floating Image */}
-        <div className="floating-coin-container hidden lg:flex items-center justify-center relative w-full h-[600px]">
-          {/* Efek Cahaya di belakang gambar (Putih) */}
-          <div className="absolute w-[400px] h-[400px] bg-white/20 rounded-full blur-[100px] -z-10"></div>
-          
-          <div className="floating-coin relative w-full max-w-[550px] aspect-square">
-            {!imgError ? (
-              <Image 
-                src="/images/coin.png" 
-                alt="Uang Logam 3D"
-                fill
-                className="object-contain drop-shadow-2xl"
-                priority
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              // Fallback UI jika gambar coin.png belum ada
-              <div className="w-full h-full flex flex-col items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-2xl">
-                <i className="fa-solid fa-coins text-8xl text-accent-warning mb-4 drop-shadow-lg"></i>
-                <span className="text-white text-sm opacity-80">(Silakan upload /images/coin.png)</span>
+                <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] flex items-center justify-center pointer-events-none">
+                  <Image
+                    src={slide.image}
+                    alt="Banner Illustration"
+                    fill
+                    className="object-contain"
+                    priority={slide.id === 0}
+                    draggable={false}
+                  />
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
-      </div>
+        <div className="absolute bottom-10 left-6 lg:left-10 flex items-center gap-3 z-20">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlide(idx);
+              }}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                currentSlide === idx ? 'w-8 bg-white' : 'w-2.5 bg-white/30 hover:bg-white/50'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
 
-      {/* Scroll Down Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-        <span className="text-white/70 text-xs font-semibold tracking-widest uppercase">Scroll</span>
-        <i className="fa-solid fa-arrow-down text-white/70"></i>
       </div>
     </section>
   );

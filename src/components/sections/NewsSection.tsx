@@ -40,10 +40,10 @@ export default function NewsSection() {
 
   return (
     <section className="bg-[#f2f6fa] py-16 overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 mb-8 relative flex items-center justify-center">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-primary">Berita Terbaru</h2>
-        <Link href="/berita" className="absolute right-4 md:right-8 text-gray-500 hover:text-primary font-medium text-sm transition-colors">
-          Lihat Semua &gt;
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 flex items-center justify-between">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Artikel Terbaru</h2>
+        <Link href="/berita" className="border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-primary font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
+          Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
         </Link>
       </div>
 
@@ -62,43 +62,41 @@ export default function NewsSection() {
               <Link 
                 key={`${article.id}-${idx}`}
                 href={`/berita/${article.slug}`}
-                className="relative block w-[320px] h-[400px] md:w-[350px] md:h-[420px] rounded-2xl overflow-hidden group shadow-md hover:shadow-2xl transition-all duration-300"
+                className="w-[320px] md:w-[380px] bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
-                {/* Background Image */}
-                <Image 
-                  src={(article.image && article.image.length > 0) ? article.image[0] : 'https://via.placeholder.com/400x300?text=No+Image'} 
-                  alt={article.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                
-                {/* Dark overlay for better contrast if needed (optional) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                {/* Content Box */}
-                <div className="absolute bottom-3 left-3 right-3 bg-white rounded-xl p-5 pt-6 transition-transform duration-300 group-hover:-translate-y-2">
-                  {/* Category Pill (Overlapping) */}
-                  <div className="absolute -top-4 left-5 bg-[#f5efff] text-[#9333ea] px-3 py-1 rounded-lg text-xs font-bold shadow-sm border border-[#e9d5ff]">
-                    BI SIANTAR
+                {/* Image Section */}
+                <div className="relative w-full h-[220px] overflow-hidden bg-gray-100">
+                  <Image 
+                    src={(article.image && article.image.length > 0) ? article.image[0] : 'https://via.placeholder.com/400x300?text=No+Image'} 
+                    alt={article.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Badge */}
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-700 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider">
+                    Informasi
                   </div>
-
-                  <h3 className="font-extrabold text-gray-900 text-[17px] leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                </div>
+                
+                {/* Content Section */}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg leading-snug line-clamp-2 mb-3 group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>
                   
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                  <div className="flex items-center gap-2 text-xs text-gray-500 font-medium mb-4">
+                    <i className="fa-regular fa-calendar"></i>
+                    {new Date(article.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </div>
+                  
+                  <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed flex-1">
                     {article.description}
                   </p>
                   
-                  {/* Author & Date Footer */}
-                  <div className="flex items-center gap-2 border-t border-gray-100 pt-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold shrink-0">
-                      {article.author.charAt(0)}
-                    </div>
-                    <span className="text-xs font-semibold text-gray-700">{article.author}</span>
-                    <span className="text-xs text-gray-400 mx-1">&bull;</span>
-                    <span className="text-xs font-medium text-gray-500">
-                      {new Date(article.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {/* Button Baca Selengkapnya */}
+                  <div className="mt-auto">
+                    <span className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                      Baca Selengkapnya <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>
                 </div>

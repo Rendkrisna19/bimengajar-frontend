@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700"],
+const ubuntu = Ubuntu({
+  weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-ubuntu",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className={`${poppins.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${ubuntu.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 interface Article {
   id: number;
@@ -208,6 +209,7 @@ export default function ArticleDetailPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

@@ -19,6 +19,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     {
       category: "CMS Konten",
       items: [
+        { name: "Tentang Kami", icon: "fa-solid fa-circle-info", href: "/admin/tentang-kami" },
         { name: "Materi Edukasi", icon: "fa-solid fa-book-open", href: "/admin/edukasi" },
         { name: "Artikel Berita", icon: "fa-regular fa-newspaper", href: "/admin/berita" },
         { name: "Peta Edukasi", icon: "fa-solid fa-map-location-dot", href: "/admin/peta-edukasi" },

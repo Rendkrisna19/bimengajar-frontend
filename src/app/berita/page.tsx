@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 interface Article {
   id: number;
@@ -159,6 +160,7 @@ export default function BlogPage() {
           )}
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

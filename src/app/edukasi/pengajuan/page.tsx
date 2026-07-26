@@ -3,6 +3,7 @@
 import Navbar from "@/components/layout/Navbar";
 import { useState } from "react";
 import Header from "./components/Header";
+import Footer from "@/components/layout/Footer";
 import { PengajuanForm } from "./types";
 import { submitPengajuanEdukasi } from "./api";
 import Swal from "sweetalert2";
@@ -111,11 +112,11 @@ export default function PengajuanEdukasiPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f2f6fa] pb-20 font-sans">
+    <main className="min-h-screen bg-[#f2f6fa] font-sans flex flex-col">
       <Navbar />
       <Header />
       
-      <div className="px-4 md:px-8 max-w-7xl mx-auto pt-12 relative z-20">
+      <div className="px-4 md:px-8 max-w-7xl mx-auto pt-12 relative z-20 pb-20 flex-1 w-full">
         {/* Stepper Section */}
         <div className="w-full mb-10 overflow-x-auto pb-6 hide-scrollbar">
           <div className="flex items-center justify-between min-w-[700px] relative px-4">
@@ -464,6 +465,7 @@ export default function PengajuanEdukasiPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }

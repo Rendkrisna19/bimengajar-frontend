@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import dynamic from 'next/dynamic';
 import Swal from 'sweetalert2';
 import API_URL from '@/lib/api';
@@ -414,6 +415,7 @@ export default function PojokKoinPage() {
           </div>
         )}
       </div>
+      <Footer />
     </main>
   );
 }
