@@ -5,6 +5,7 @@ import StatsSection from "@/components/sections/StatsSection";
 import MapSection from "@/components/sections/MapSection";
 import NewsSection from "@/components/sections/NewsSection";
 import FloatingAction from "@/components/ui/FloatingAction";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
@@ -13,9 +14,10 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <StatsSection />
-      <MapSection />
       <NewsSection />
+      <MapSection />
       <FloatingAction />
+      <Footer />
     </main>
   );
 }

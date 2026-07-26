@@ -61,19 +61,18 @@ export default function Navbar() {
 
   const menuItems = [
     { name: 'Beranda', icon: 'fa-solid fa-house', href: '/' },
+    { name: 'Tentang Kami', icon: 'fa-solid fa-circle-info', href: '/tentang-kami' },
     { 
       name: 'Edukasi', 
       icon: 'fa-solid fa-book-open', 
-      href: '/edukasi', 
+      href: '/edukasi',
       dropdown: true,
       subItems: [
         { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' }
       ]
     },
     { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },
-    { name: 'Kalender', icon: 'fa-regular fa-calendar-check', href: '/kalender' },
-    { name: 'Kunjungan', icon: 'fa-solid fa-building-circle-arrow-right', href: '/kunjungan' },
-    { name: 'Berita', icon: 'fa-regular fa-newspaper', href: '/berita' },
+    { name: 'Aktivitas', icon: 'fa-solid fa-chart-line', href: '/berita' },
   ];
 
   return (
