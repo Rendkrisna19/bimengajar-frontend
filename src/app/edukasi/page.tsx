@@ -39,7 +39,7 @@ export default function EdukasiPage() {
       title: 'Materi Edukasi',
       description: 'Kumpulan materi seputar kebanksentralan, sistem pembayaran, Rupiah, QRIS, dan lainnya.',
       icon: 'fa-solid fa-book-open',
-      link: '/edukasi/materi',
+      link: '/edukasi/materi-edukasi',
       buttonText: 'Lihat Materi',
       color: 'blue'
     },

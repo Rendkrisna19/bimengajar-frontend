@@ -68,7 +68,8 @@ export default function Navbar() {
       href: '/edukasi',
       dropdown: true,
       subItems: [
-        { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' }
+        { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' },
+        { name: 'Materi Edukasi', href: '/edukasi/materi-edukasi' }
       ]
     },
     { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },

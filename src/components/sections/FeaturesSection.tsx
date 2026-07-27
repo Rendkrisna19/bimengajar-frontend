@@ -11,7 +11,7 @@ export default function FeaturesSection() {
       title: lang === 'ID' ? 'Materi Edukasi' : 'Education Materials',
       desc: lang === 'ID' ? 'Kumpulan materi seputar Bank Indonesia' : 'Collection of materials about Bank Indonesia',
       icon: 'fa-solid fa-book-open',
-      link: '/materi'
+      link: '/edukasi/materi-edukasi'
     },
     {
       title: lang === 'ID' ? 'Game & Kuis' : 'Games & Quizzes',

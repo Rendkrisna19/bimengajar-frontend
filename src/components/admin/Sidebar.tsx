@@ -4,10 +4,18 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: boolean, toggleSidebar: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [openMenus, setOpenMenus] = useState<string[]>([]);
+
+  const toggleSubMenu = (name: string) => {
+    setOpenMenus(prev => 
+      prev.includes(name) ? prev.filter(m => m !== name) : [...prev, name]
+    );
+  };
 
   const menus = [
     {
@@ -36,7 +44,15 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     {
       category: "Edukasi & Layanan",
       items: [
-        { name: "Materi Edukasi", icon: "fa-solid fa-book-open", href: "/admin/edukasi" },
+        { 
+          name: "Materi Edukasi", 
+          icon: "fa-solid fa-book-open", 
+          href: "#", // Menggunakan hash agar tidak route directly jika di klik
+          subItems: [
+            { name: "Daftar Materi", href: "/admin/materi-edukasi" },
+            { name: "Kategori Materi", href: "/admin/materi-edukasi/kategori" }
+          ]
+        },
         { name: "Pengajuan Edukasi", icon: "fa-solid fa-file-signature", href: "/admin/pengajuan-edukasi" },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
       ]
@@ -87,21 +103,74 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
             )}
             <ul className="flex flex-col gap-1.5 px-3">
               {group.items.map((item, itemIdx) => {
-                const isActive = pathname === item.href;
+                const hasSubItems = item.subItems && item.subItems.length > 0;
+                const isSubItemActive = hasSubItems && item.subItems?.some(sub => pathname.startsWith(sub.href));
+                const isActive = pathname === item.href || isSubItemActive;
+                const isOpen = openMenus.includes(item.name) || (isSubItemActive && !isCollapsed);
+
+                // Jika collapse, tidak bisa buka dropdown
                 return (
                   <li key={itemIdx}>
-                    <Link 
-                      href={item.href}
-                      className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 px-3 py-2.5 rounded-xl transition-colors group ${
-                        isActive 
-                        ? 'bg-primary text-white shadow-md dark:bg-blue-600' 
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-blue-300'
-                      }`}
-                      title={isCollapsed ? item.name : ""}
-                    >
-                      <i className={`${item.icon} text-lg w-6 text-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`}></i>
-                      {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
-                    </Link>
+                    {hasSubItems ? (
+                      <div className="flex flex-col">
+                        <button 
+                          onClick={() => !isCollapsed && toggleSubMenu(item.name)}
+                          className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-colors group ${
+                            isActive 
+                            ? 'bg-primary text-white shadow-md dark:bg-blue-600' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-blue-300'
+                          } ${isCollapsed ? 'justify-center' : ''}`}
+                          title={isCollapsed ? item.name : ""}
+                        >
+                          <div className="flex items-center gap-3">
+                            <i className={`${item.icon} text-lg w-6 text-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`}></i>
+                            {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
+                          </div>
+                          {!isCollapsed && (
+                            <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
+                          )}
+                        </button>
+                        
+                        {/* SubItems Render */}
+                        {hasSubItems && !isCollapsed && (
+                          <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[500px] mt-1' : 'max-h-0'}`}>
+                            <ul className="flex flex-col gap-1 pl-11 pr-2 pt-1 pb-2">
+                              {item.subItems?.map((sub, subIdx) => {
+                                const isSubActive = pathname === sub.href;
+                                return (
+                                  <li key={subIdx}>
+                                    <Link 
+                                      href={sub.href}
+                                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-[12px] font-medium ${
+                                        isSubActive
+                                        ? 'bg-blue-50 text-primary dark:bg-blue-900/30 dark:text-blue-300'
+                                        : 'text-gray-500 hover:text-primary hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
+                                      }`}
+                                    >
+                                      <div className={`w-1.5 h-1.5 rounded-full ${isSubActive ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                                      {sub.name}
+                                    </Link>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link 
+                        href={item.href}
+                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 px-3 py-2.5 rounded-xl transition-colors group ${
+                          isActive 
+                          ? 'bg-primary text-white shadow-md dark:bg-blue-600' 
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-blue-300'
+                        }`}
+                        title={isCollapsed ? item.name : ""}
+                      >
+                        <i className={`${item.icon} text-lg w-6 text-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`}></i>
+                        {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
+                      </Link>
+                    )}
                   </li>
                 );
               })}
