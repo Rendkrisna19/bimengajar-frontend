@@ -17,19 +17,26 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       ]
     },
     {
-      category: "CMS Konten",
+      category: "CMS Profil",
       items: [
         { name: "Tentang Kami", icon: "fa-solid fa-circle-info", href: "/admin/tentang-kami" },
-        { name: "Materi Edukasi", icon: "fa-solid fa-book-open", href: "/admin/edukasi" },
-        { name: "Artikel Berita", icon: "fa-regular fa-newspaper", href: "/admin/berita" },
         { name: "Peta Edukasi", icon: "fa-solid fa-map-location-dot", href: "/admin/peta-edukasi" },
         { name: "Pojok Koin", icon: "fa-solid fa-coins", href: "/admin/pojok-koin" },
       ]
     },
     {
-      category: "Layanan",
+      category: "Aktivitas",
       items: [
+        { name: "Artikel", icon: "fa-regular fa-newspaper", href: "/admin/berita" },
+        { name: "Berita", icon: "fa-solid fa-bullhorn", href: "/admin/news" },
+        { name: "Dokumentasi", icon: "fa-regular fa-images", href: "/admin/dokumentasi" },
         { name: "Jadwal Kalender", icon: "fa-regular fa-calendar-check", href: "/admin/kalender" },
+      ]
+    },
+    {
+      category: "Edukasi & Layanan",
+      items: [
+        { name: "Materi Edukasi", icon: "fa-solid fa-book-open", href: "/admin/edukasi" },
         { name: "Pengajuan Edukasi", icon: "fa-solid fa-file-signature", href: "/admin/pengajuan-edukasi" },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
       ]

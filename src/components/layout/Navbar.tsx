@@ -72,7 +72,7 @@ export default function Navbar() {
       ]
     },
     { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },
-    { name: 'Aktivitas', icon: 'fa-solid fa-chart-line', href: '/berita' },
+    { name: 'Aktivitas', icon: 'fa-solid fa-chart-line', href: '/aktivitas' },
   ];
 
   return (
