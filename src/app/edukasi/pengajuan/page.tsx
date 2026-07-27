@@ -1,7 +1,7 @@
 'use client';
 
 import Navbar from "@/components/layout/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "@/components/layout/Footer";
 import { PengajuanForm } from "./types";
@@ -13,6 +13,12 @@ export default function PengajuanEdukasiPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    setIsAuthenticated(!!token);
+  }, []);
 
   const [formData, setFormData] = useState<PengajuanForm>({
     jenis_instansi: '',
@@ -141,9 +147,29 @@ export default function PengajuanEdukasiPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Form Area */}
-          <div className="flex-1 bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-8 md:p-10 w-full relative overflow-hidden">
+        {isAuthenticated === false ? (
+          <div className="flex flex-col items-center justify-center bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-12 text-center max-w-2xl mx-auto mt-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+            <div className="w-24 h-24 bg-blue-50 text-primary rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner">
+              <i className="fa-solid fa-lock"></i>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Akses Terbatas</h2>
+            <p className="text-gray-500 mb-8 max-w-md">
+              Silakan <span className="font-bold text-primary">Login</span> atau <span className="font-bold text-primary">Register</span> terlebih dahulu untuk dapat mengajukan permintaan kegiatan edukasi Bank Indonesia.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <button onClick={() => router.push('/login')} className="px-10 py-3 rounded-xl bg-primary text-white font-bold hover:bg-blue-900 transition-all shadow-md w-full sm:w-auto text-sm">
+                Masuk (Log In)
+              </button>
+              <button onClick={() => router.push('/register')} className="px-10 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm w-full sm:w-auto text-sm">
+                Daftar Baru
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Form Area */}
+            <div className="flex-1 bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-8 md:p-10 w-full relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/4"></div>
             
             <h2 className="text-[17px] font-bold text-primary mb-8 border-b border-gray-100 pb-4">
@@ -463,7 +489,8 @@ export default function PengajuanEdukasiPage() {
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        )}
       </div>
       <Footer />
     </main>

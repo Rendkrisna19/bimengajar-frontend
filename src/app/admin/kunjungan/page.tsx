@@ -133,12 +133,9 @@ export default function AdminPengajuanEdukasiPage() {
     <div className="w-full">
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Kelola Pengajuan Edukasi</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Lihat, verifikasi, dan kelola pengajuan kegiatan edukasi dari masyarakat.</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Kelola Kunjungan</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Lihat, verifikasi, dan kelola kunjungan kegiatan edukasi dari masyarakat.</p>
         </div>
-        <button onClick={fetchData} className="px-4 py-2.5 bg-primary text-white rounded-lg shadow-md font-medium hover:bg-blue-900 transition-colors flex items-center gap-2">
-          <i className={`fa-solid fa-rotate-right ${loading ? 'animate-spin' : ''}`}></i> Refresh Data
-        </button>
       </div>
 
       {/* Filter / Search Bar (Visual matching reference) */}
