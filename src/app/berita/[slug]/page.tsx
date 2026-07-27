@@ -16,11 +16,19 @@ interface Article {
   description: string;
   content: string;
   published_at: string;
+  category?: string;
 }
 
 export default function ArticleDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
+  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+  const getImageUrl = (url: string) => {
+    if (!url) return 'https://via.placeholder.com/800x450?text=Gambar+tidak+tersedia';
+    if (url.startsWith('http')) return url;
+    return API.replace('/api', '') + url;
+  };
   
   const [article, setArticle] = useState<Article | null>(null);
   const [otherArticles, setOtherArticles] = useState<Article[]>([]);
@@ -31,22 +39,44 @@ export default function ArticleDetailPage() {
 
     const fetchArticleDetail = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles/${slug}`);
-        const data = await res.json();
-        if (data.status === 'success') {
-          setArticle(data.data);
-        }
+        let isNewsType = false;
         
-        // Fetch other articles for sidebar
-        const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles`);
-        const otherData = await otherRes.json();
-        if (otherData.status === 'success') {
-          // Filter out current article and take top 4
-          const filtered = otherData.data.filter((a: Article) => a.slug !== slug).slice(0, 4);
-          setOtherArticles(filtered);
+        // 1. Coba fetch dari artikel
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles/${slug}`, {
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        let data = null;
+        if (res.ok) {
+          data = await res.json();
+        }
+
+        // 2. Jika gagal/not found, coba dari berita
+        if (!data || data.status !== 'success') {
+          res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/news/${slug}`, {
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            data = await res.json();
+            isNewsType = true;
+          }
+        }
+
+        if (data && data.status === 'success') {
+          setArticle(data.data);
+          
+          // Fetch related items for sidebar
+          const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/${isNewsType ? 'news?category=berita' : 'articles'}`);
+          const otherData = await otherRes.json();
+          
+          if (otherData.status === 'success') {
+            const arr = Array.isArray(otherData.data) ? otherData.data : (otherData.data.data || []);
+            const filtered = arr.filter((a: Article) => a.slug !== slug).slice(0, 4);
+            setOtherArticles(filtered);
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch article details', error);
+        console.error('Failed to fetch details', error);
       } finally {
         setLoading(false);
       }
@@ -66,9 +96,9 @@ export default function ArticleDetailPage() {
   if (!article) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-[#f2f6fa]">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Artikel Tidak Ditemukan</h1>
-        <Link href="/berita" className="bg-primary text-white px-6 py-2 rounded-full hover:bg-blue-800 transition-colors">
-          Kembali ke Blog
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Konten Tidak Ditemukan</h1>
+        <Link href="/aktivitas" className="bg-primary text-white px-6 py-2 rounded-full hover:bg-blue-800 transition-colors">
+          Kembali ke Aktivitas
         </Link>
       </div>
     );
@@ -84,9 +114,9 @@ export default function ArticleDetailPage() {
           <div className="flex items-center justify-center gap-2 text-sm text-blue-200 mb-6">
             <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
             <span>&gt;</span>
-            <Link href="/berita" className="hover:text-white transition-colors">Blog</Link>
+            <Link href="/aktivitas" className="hover:text-white transition-colors">Aktivitas</Link>
             <span>&gt;</span>
-            <span className="text-white font-medium">Detail Berita</span>
+            <span className="text-white font-medium capitalize">{article.category === 'berita' ? 'Detail Berita' : 'Detail Artikel'}</span>
           </div>
           
           <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight max-w-4xl mx-auto">{article.title}</h1>
@@ -123,20 +153,21 @@ export default function ArticleDetailPage() {
                 {article.image && article.image.length > 0 && (
                   <div className="mb-8">
                     {/* Main Image */}
-                    <div className="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden mb-4 shadow-md">
+                    <div className="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100">
                       <Image 
-                        src={article.image[0]} 
+                        src={getImageUrl(article.image[0])} 
                         alt={article.title}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                     {/* Thumbnail Gallery (if more than 1 image) */}
                     {article.image.length > 1 && (
                       <div className="flex gap-3 overflow-x-auto pb-2">
                         {article.image.slice(1).map((img, idx) => (
-                          <div key={idx} className="relative min-w-[120px] h-[80px] rounded-lg overflow-hidden shadow-sm">
-                            <Image src={img} alt={`Gallery ${idx+1}`} fill className="object-cover" />
+                          <div key={idx} className="relative min-w-[120px] h-[80px] rounded-lg overflow-hidden shadow-sm bg-gray-100">
+                            <Image src={getImageUrl(img)} alt={`Gallery ${idx+1}`} fill className="object-cover" unoptimized />
                           </div>
                         ))}
                       </div>
@@ -157,15 +188,15 @@ export default function ArticleDetailPage() {
               </div>
             </div>
 
-            {/* Right: Sidebar / Berita Lainnya */}
+            {/* Right: Sidebar / Related Items */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl shadow-sm p-6 md:p-8 border border-gray-100 sticky top-24">
-                <h3 className="text-xl font-bold text-gray-800 mb-6 border-b-2 border-gray-100 pb-3 relative">
-                  Berita Lainnya
-                  <span className="absolute bottom-[-2px] left-0 w-16 h-0.5 bg-primary"></span>
+              <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm sticky top-24">
+                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                  <i className="fa-solid fa-list text-primary"></i> 
+                  Baca {article.category === 'berita' ? 'Berita' : 'Artikel'} Lainnya
                 </h3>
                 
-                <div className="flex flex-col gap-6">
+                <div className="space-y-6">
                   {otherArticles.length > 0 ? (
                     otherArticles.map(other => (
                       <Link 
@@ -175,10 +206,11 @@ export default function ArticleDetailPage() {
                       >
                         <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm">
                           <Image 
-                            src={(other.image && other.image.length > 0) ? other.image[0] : 'https://via.placeholder.com/150'} 
+                            src={(other.image && other.image.length > 0) ? getImageUrl(other.image[0]) : 'https://via.placeholder.com/150'} 
                             alt={other.title}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            unoptimized
                           />
                         </div>
                         <div className="flex flex-col justify-center">
@@ -198,10 +230,10 @@ export default function ArticleDetailPage() {
                 </div>
                 
                 <Link 
-                  href="/berita" 
+                  href="/aktivitas" 
                   className="mt-8 block w-full text-center bg-blue-50 text-primary font-bold py-3 rounded-xl hover:bg-primary hover:text-white transition-colors"
                 >
-                  Lihat Semua Berita
+                  Lihat Semua Aktivitas
                 </Link>
               </div>
             </div>
