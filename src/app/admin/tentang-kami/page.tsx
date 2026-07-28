@@ -95,15 +95,15 @@ export default function TentangKamiAdmin() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Manajemen Tentang Kami</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Manajemen Tentang Kami</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden mb-6">
+        <div className="flex border-b border-gray-200 dark:border-gray-800">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-4 text-center font-semibold text-sm transition-colors ${activeTab === tab.id ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+              className={`flex-1 py-4 text-center font-semibold text-sm transition-colors ${activeTab === tab.id ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
             >
               {tab.label}
             </button>
@@ -118,36 +118,36 @@ export default function TentangKamiAdmin() {
           ) : (
             <form onSubmit={handleSave} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Judul</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Judul</label>
                 <input
                   type="text"
                   required
                   value={data.title}
                   onChange={(e) => setData({ ...data, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white dark:bg-black text-gray-800 dark:text-white"
                   placeholder="Contoh: Tentang Bank Indonesia"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Konten / Deskripsi</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Konten / Deskripsi</label>
                 <textarea
                   required
                   rows={6}
                   value={data.content}
                   onChange={(e) => setData({ ...data, content: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white dark:bg-black text-gray-800 dark:text-white"
                   placeholder="Masukkan deskripsi lengkap..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Gambar</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gambar</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg outline-none bg-white dark:bg-black text-gray-800 dark:text-white"
                 />
                 {data.preview && (
                   <div className="mt-4 relative w-[300px] h-[200px] border border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">

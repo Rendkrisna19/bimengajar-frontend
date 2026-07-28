@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mediumaquamarine-panther-356087.hostingersite.com',
       }
     ],
   },

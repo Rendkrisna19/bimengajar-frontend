@@ -179,8 +179,8 @@ export default function AdminDokumentasiPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manajemen Dokumentasi</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola foto dan video dokumentasi kegiatan BI Mengajar</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Dokumentasi</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola foto dan video dokumentasi kegiatan BI Mengajar</p>
         </div>
         <button onClick={openCreate} className="bg-primary hover:bg-blue-800 text-white font-bold py-2.5 px-5 rounded-xl shadow-md flex items-center gap-2 transition-colors">
           <i className="fa-solid fa-plus"></i> Tambah Dokumentasi
@@ -202,14 +202,14 @@ export default function AdminDokumentasiPage() {
       {loading ? (
         <div className="flex justify-center items-center h-40"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div></div>
       ) : items.length === 0 ? (
-        <div className="text-center py-20 text-gray-400 bg-white rounded-2xl border border-gray-100">
+        <div className="text-center py-20 text-gray-400 bg-white dark:bg-[#1e1e1e] rounded-2xl border border-gray-100 dark:border-gray-800">
           <i className="fa-regular fa-images text-5xl mb-4 block"></i>
           <p>Belum ada dokumentasi. Klik "Tambah Dokumentasi" untuk memulai.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {items.map(item => (
-            <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-lg transition-shadow group">
+            <div key={item.id} className="bg-white dark:bg-[#1e1e1e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-lg transition-shadow group">
               {/* Thumbnail */}
               <div className="relative h-44 bg-gray-100 overflow-hidden">
                 {item.images && item.images.length > 0 ? (
@@ -236,8 +236,8 @@ export default function AdminDokumentasiPage() {
 
               {/* Info */}
               <div className="p-4">
-                <h3 className="font-bold text-gray-800 text-sm mb-1 line-clamp-1">{item.nama_kegiatan}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2 mb-3">{item.deskripsi || '-'}</p>
+                <h3 className="font-bold text-gray-800 dark:text-white text-sm mb-1 line-clamp-1">{item.nama_kegiatan}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">{item.deskripsi || '-'}</p>
                 <div className="flex items-center justify-between text-xs text-gray-400">
                   <span className="flex items-center gap-1"><i className="fa-regular fa-calendar"></i>
                     {new Date(item.tanggal_kegiatan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -248,13 +248,13 @@ export default function AdminDokumentasiPage() {
 
               {/* Actions */}
               <div className="px-4 pb-4 flex gap-2">
-                <button onClick={() => setPreviewItem(item)} className="flex-1 py-2 rounded-xl bg-gray-50 text-gray-600 text-xs font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-1">
+                <button onClick={() => setPreviewItem(item)} className="flex-1 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-1">
                   <i className="fa-regular fa-eye"></i> Preview
                 </button>
-                <button onClick={() => openEdit(item)} className="flex-1 py-2 rounded-xl bg-blue-50 text-primary text-xs font-semibold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-1">
+                <button onClick={() => openEdit(item)} className="flex-1 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-300 text-xs font-semibold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-1">
                   <i className="fa-solid fa-pen"></i> Edit
                 </button>
-                <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 rounded-xl bg-red-50 text-red-500 text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center gap-1">
+                <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center gap-1">
                   <i className="fa-solid fa-trash"></i> Hapus
                 </button>
               </div>
@@ -285,28 +285,28 @@ export default function AdminDokumentasiPage() {
       {/* Create/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col">
             {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between shrink-0">
-              <h2 className="text-lg font-bold text-gray-800">{editItem ? 'Edit' : 'Tambah'} Dokumentasi</h2>
-              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center"><i className="fa-solid fa-times text-sm"></i></button>
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between shrink-0">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{editItem ? 'Edit' : 'Tambah'} Dokumentasi</h2>
+              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center"><i className="fa-solid fa-times text-sm"></i></button>
             </div>
 
             {/* Modal Body */}
             <form onSubmit={handleSave} className="overflow-y-auto p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama Kegiatan <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Nama Kegiatan <span className="text-red-500">*</span></label>
                   <input type="text" required value={form.nama_kegiatan} onChange={e => setForm(f => ({...f, nama_kegiatan: e.target.value}))}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
+                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
                     placeholder="Contoh: Sosialisasi QRIS 2025"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Kategori <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Kategori <span className="text-red-500">*</span></label>
                   <div className="relative">
                     <select required value={form.kategori} onChange={e => setForm(f => ({...f, kategori: e.target.value}))}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm appearance-none bg-white"
+                      className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm appearance-none"
                     >
                       <option value="">Pilih kategori...</option>
                       {KATEGORI_LIST.map(k => <option key={k} value={k}>{k}</option>)}
@@ -315,34 +315,34 @@ export default function AdminDokumentasiPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Kegiatan <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tanggal Kegiatan <span className="text-red-500">*</span></label>
                   <input type="date" required value={form.tanggal_kegiatan} onChange={e => setForm(f => ({...f, tanggal_kegiatan: e.target.value}))}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
+                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Di-posting oleh</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Di-posting oleh</label>
                   <input type="text" value={form.posted_by} onChange={e => setForm(f => ({...f, posted_by: e.target.value}))}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
+                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
                     placeholder="Admin BI"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi Kegiatan</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Deskripsi Kegiatan</label>
                 <textarea rows={3} value={form.deskripsi} onChange={e => setForm(f => ({...f, deskripsi: e.target.value}))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm resize-none"
                   placeholder="Deskripsikan kegiatan secara singkat..."
                 />
               </div>
 
               {/* Upload Foto */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Upload Foto</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Upload Foto</label>
                 <input type="file" multiple accept="image/*"
                   onChange={e => setForm(f => ({...f, images: Array.from(e.target.files || [])}))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 cursor-pointer"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 cursor-pointer"
                 />
                 {form.images.length > 0 && (
                   <p className="text-xs text-green-600 mt-1"><i className="fa-solid fa-check-circle"></i> {form.images.length} foto dipilih</p>
@@ -361,11 +361,11 @@ export default function AdminDokumentasiPage() {
 
               {/* Link Video */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Link Video <span className="text-xs text-gray-400">(YouTube / Google Drive)</span></label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Link Video <span className="text-xs text-gray-400">(YouTube / Google Drive)</span></label>
                 <div className="flex gap-2">
                   <input type="url" value={form.video_url_input} onChange={e => setForm(f => ({...f, video_url_input: e.target.value}))}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addVideoUrl(); }}}
-                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
+                    className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm"
                     placeholder="https://youtube.com/watch?v=..."
                   />
                   <button type="button" onClick={addVideoUrl} className="px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-blue-800 transition-colors shrink-0">
@@ -386,8 +386,8 @@ export default function AdminDokumentasiPage() {
               </div>
 
               {/* Footer Buttons */}
-              <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors text-sm">Batal</button>
+              <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm">Batal</button>
                 <button type="submit" disabled={saving} className="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-blue-800 transition-colors text-sm disabled:opacity-50 shadow-md">
                   {saving ? <><i className="fa-solid fa-circle-notch animate-spin mr-1"></i>Menyimpan...</> : 'Simpan'}
                 </button>

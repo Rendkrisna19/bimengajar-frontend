@@ -174,8 +174,8 @@ export default function AdminMitraPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manajemen Mitra Edukasi</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola data mitra dan persetujuan kolaborasi.</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Mitra Edukasi</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola data mitra dan persetujuan kolaborasi.</p>
         </div>
         <button onClick={openCreate}
           className="bg-primary hover:bg-blue-800 text-white font-bold py-2.5 px-5 rounded-xl shadow-md flex items-center gap-2 transition-colors"
@@ -184,11 +184,11 @@ export default function AdminMitraPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex justify-end">
+      <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-end">
           <div className="relative">
             <input type="text" placeholder="Cari mitra..." value={search} onChange={e => setSearch(e.target.value)}
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1e1e1e] text-gray-800 dark:text-white rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
             <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           </div>
@@ -215,9 +215,9 @@ export default function AdminMitraPage() {
                 {mitras.length === 0 ? (
                   <tr><td colSpan={6} className="text-center py-10 text-gray-400">Belum ada data mitra.</td></tr>
                 ) : mitras.map((mitra) => (
-                  <tr key={mitra.id} className="border-b border-gray-50 hover:bg-gray-50">
+                  <tr key={mitra.id} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center p-1">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden flex items-center justify-center p-1">
                         {mitra.logo ? (
                           <img src={getImageUrl(mitra.logo)} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
@@ -226,12 +226,12 @@ export default function AdminMitraPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <p className="font-bold text-gray-800">{mitra.singkatan}</p>
-                      <p className="text-xs text-gray-500">{mitra.nama_lengkap}</p>
+                      <p className="font-bold text-gray-800 dark:text-gray-200">{mitra.singkatan}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{mitra.nama_lengkap}</p>
                     </td>
                     <td className="px-4 py-3">
-                      <p className="font-medium text-primary">{mitra.kategori}</p>
-                      <p className="text-xs text-gray-500"><i className="fa-solid fa-location-dot"></i> {mitra.lokasi}</p>
+                      <p className="font-medium text-primary dark:text-blue-400">{mitra.kategori}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><i className="fa-solid fa-location-dot"></i> {mitra.lokasi}</p>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <select 
@@ -257,10 +257,10 @@ export default function AdminMitraPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button onClick={() => openEdit(mitra)} className="w-8 h-8 rounded-lg bg-blue-50 text-primary hover:bg-primary hover:text-white transition-colors flex items-center justify-center">
+                        <button onClick={() => openEdit(mitra)} className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-300 hover:bg-primary hover:text-white transition-colors flex items-center justify-center">
                           <i className="fa-solid fa-pen text-xs"></i>
                         </button>
-                        <button onClick={() => handleDelete(mitra.id)} className="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center">
+                        <button onClick={() => handleDelete(mitra.id)} className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center">
                           <i className="fa-solid fa-trash text-xs"></i>
                         </button>
                       </div>
@@ -285,10 +285,10 @@ export default function AdminMitraPage() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h2 className="text-lg font-bold text-gray-800">{editItem ? 'Edit Mitra' : 'Tambah Mitra'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between sticky top-0 bg-white dark:bg-[#1e1e1e] z-10">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{editItem ? 'Edit Mitra' : 'Tambah Mitra'}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center">
                 <i className="fa-solid fa-times"></i>
               </button>
             </div>
@@ -296,55 +296,55 @@ export default function AdminMitraPage() {
             <form onSubmit={handleSave} className="p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Singkatan <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Singkatan <span className="text-red-500">*</span></label>
                   <input type="text" required value={form.singkatan} onChange={e => setForm(f=>({...f, singkatan: e.target.value}))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Nama Lengkap <span className="text-red-500">*</span></label>
                   <input type="text" required value={form.nama_lengkap} onChange={e => setForm(f=>({...f, nama_lengkap: e.target.value}))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Kategori <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Kategori <span className="text-red-500">*</span></label>
                   <input type="text" required value={form.kategori} onChange={e => setForm(f=>({...f, kategori: e.target.value}))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Lokasi <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Lokasi <span className="text-red-500">*</span></label>
                   <input type="text" required value={form.lokasi} onChange={e => setForm(f=>({...f, lokasi: e.target.value}))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Nomor WA <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Nomor WA <span className="text-red-500">*</span></label>
                 <input type="text" required value={form.no_wa} onChange={e => setForm(f=>({...f, no_wa: e.target.value}))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Deskripsi</label>
                 <textarea rows={4} value={form.deskripsi} onChange={e => setForm(f=>({...f, deskripsi: e.target.value}))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Logo</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Logo</label>
                 <input type="file" accept="image/*" onChange={e => setForm(f=>({...f, logo: e.target.files?.[0] || null}))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none text-sm"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none text-sm"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
                 <button type="button" onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2 rounded-xl border text-gray-600 hover:bg-gray-50 text-sm font-medium"
+                  className="px-5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium"
                 >Batal</button>
                 <button type="submit" disabled={saving}
                   className="px-5 py-2 rounded-xl bg-primary text-white font-bold hover:bg-blue-800 disabled:opacity-50 text-sm shadow-md"

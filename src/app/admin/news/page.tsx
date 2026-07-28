@@ -127,7 +127,7 @@ export default function AdminNewsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -147,7 +147,7 @@ export default function AdminNewsPage() {
               {news.length === 0 ? (
                 <tr><td colSpan={4} className="text-center py-16 text-gray-400">Belum ada data berita.</td></tr>
               ) : news.map((item) => (
-                <tr key={item.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <tr key={item.id} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="w-16 h-12 rounded-lg bg-gray-100 overflow-hidden relative border border-gray-200">
                       {item.image && item.image.length > 0 ? (
@@ -157,12 +157,12 @@ export default function AdminNewsPage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-4 font-medium text-gray-800 max-w-[250px]">
+                  <td className="px-4 py-4 font-medium text-gray-800 dark:text-gray-200 max-w-[250px]">
                     <p className="line-clamp-1">{item.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.description}</p>
                   </td>
-                  <td className="px-4 py-4 text-gray-600">{item.author}</td>
-                  <td className="px-4 py-4 text-gray-500">
+                  <td className="px-4 py-4 text-gray-600 dark:text-gray-400">{item.author}</td>
+                  <td className="px-4 py-4 text-gray-500 dark:text-gray-400">
                     {new Date(item.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-4 text-center">
@@ -185,9 +185,9 @@ export default function AdminNewsPage() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-800">{editItem ? 'Edit' : 'Tambah'} Berita</h2>
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{editItem ? 'Edit' : 'Tambah'} Berita</h2>
               <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center">
                 <i className="fa-solid fa-times text-sm"></i>
               </button>
@@ -195,37 +195,37 @@ export default function AdminNewsPage() {
 
             <form onSubmit={handleSave} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Judul <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Judul <span className="text-red-500">*</span></label>
                 <input type="text" required value={form.title} onChange={e => setForm(f=>({...f, title: e.target.value}))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm"
                   placeholder="Masukkan judul berita"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Penulis</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Penulis</label>
                 <input type="text" value={form.author} onChange={e => setForm(f=>({...f, author: e.target.value}))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Ringkasan / Deskripsi</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Ringkasan / Deskripsi</label>
                 <textarea rows={3} value={form.description} onChange={e => setForm(f=>({...f, description: e.target.value}))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm resize-none"
                   placeholder="Ringkasan singkat berita..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Konten Lengkap</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Konten Lengkap</label>
                 <textarea rows={6} value={form.content} onChange={e => setForm(f=>({...f, content: e.target.value}))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm resize-none"
                   placeholder="Tulis konten lengkap di sini..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Gambar</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Gambar</label>
                 <input type="file" multiple accept="image/*"
                   onChange={e => setForm(f => ({...f, images: Array.from(e.target.files || [])}))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none text-sm"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none text-sm"
                 />
                 <p className="text-xs text-gray-400 mt-1">Anda bisa memilih lebih dari satu gambar.</p>
               </div>
