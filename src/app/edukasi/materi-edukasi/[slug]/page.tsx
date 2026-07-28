@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import { MateriEdukasi } from '@/app/admin/materi-edukasi/types';
+import Swal from 'sweetalert2';
 
 const getYouTubeVideoId = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -15,31 +16,63 @@ const getYouTubeVideoId = (url: string) => {
   return (match && match[2].length === 11) ? match[2] : null;
 };
 
+// Hook for Table of Contents
+function useHeadings(contentHtml: string) {
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
+
+  useEffect(() => {
+    if (!contentHtml) return;
+    // Create a temporary div to parse HTML
+    const div = document.createElement('div');
+    div.innerHTML = contentHtml;
+    const elements = Array.from(div.querySelectorAll('h1, h2, h3'));
+    
+    const parsedHeadings = elements.map((elem, index) => {
+      // Add id if missing to allow scrolling
+      if (!elem.id) {
+        elem.id = `heading-${index}`;
+      }
+      return {
+        id: elem.id,
+        text: elem.textContent || '',
+        level: parseInt(elem.tagName.replace('H', '')),
+      };
+    });
+    setHeadings(parsedHeadings);
+  }, [contentHtml]);
+
+  return headings;
+}
+
 export default function MateriEdukasiDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [materi, setMateri] = useState<MateriEdukasi | null>(null);
-  const [related, setRelated] = useState<MateriEdukasi[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Content state for TOC processing
+  const [processedContent, setProcessedContent] = useState('');
+  const headings = useHeadings(processedContent);
 
   useEffect(() => {
     const fetchMateri = async () => {
       try {
         setLoading(true);
-        // Fetch detail
         const res = await axios.get(`/materi-edukasi/${params.slug}`);
         const data = res.data.data;
         setMateri(data);
 
-        // Fetch related articles (same category)
-        if (data.kategori_materi_id) {
-          const resRelated = await axios.get(`/materi-edukasi?kategori_id=${data.kategori_materi_id}&page=1`);
-          // Filter out current article and limit to 4
-          const filtered = resRelated.data.data.data
-            .filter((item: MateriEdukasi) => item.id !== data.id)
-            .slice(0, 4);
-          setRelated(filtered);
+        // Process HTML to add IDs to headings for TOC
+        if (data.konten_teks) {
+          const div = document.createElement('div');
+          div.innerHTML = data.konten_teks;
+          const elements = Array.from(div.querySelectorAll('h1, h2, h3'));
+          elements.forEach((elem, index) => {
+            if (!elem.id) elem.id = `heading-${index}`;
+          });
+          setProcessedContent(div.innerHTML);
         }
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -52,9 +85,39 @@ export default function MateriEdukasiDetailPage() {
     }
   }, [params.slug]);
 
+  const handleShare = (platform: string) => {
+    const url = window.location.href;
+    const text = materi ? `Baca materi edukasi: ${materi.judul}` : '';
+    
+    let shareUrl = '';
+    switch (platform) {
+      case 'whatsapp': shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`; break;
+      case 'facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`; break;
+      case 'telegram': shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`; break;
+      case 'linkedin': shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`; break;
+      case 'twitter': shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`; break;
+      case 'copy':
+        navigator.clipboard.writeText(url);
+        Swal.fire({ title: 'Tersalin!', text: 'Link berhasil disalin ke clipboard.', icon: 'success', timer: 1500, showConfirmButton: false });
+        return;
+    }
+    
+    if (shareUrl) window.open(shareUrl, '_blank');
+  };
+
+  const scrollToHeading = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const headerOffset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+  };
+
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-50 flex flex-col font-sans">
+      <main className="min-h-screen bg-[#f0f4f8] flex flex-col font-sans">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center pt-32 pb-20">
           <i className="fa-solid fa-circle-notch animate-spin text-4xl text-[#003366] mb-4"></i>
@@ -67,10 +130,10 @@ export default function MateriEdukasiDetailPage() {
 
   if (!materi) {
     return (
-      <main className="min-h-screen bg-gray-50 flex flex-col font-sans">
+      <main className="min-h-screen bg-[#f0f4f8] flex flex-col font-sans">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center pt-32 pb-20 text-center px-4">
-          <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-6">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm">
             <i className="fa-solid fa-file-circle-xmark text-3xl text-gray-400"></i>
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Materi Tidak Ditemukan</h1>
@@ -85,54 +148,24 @@ export default function MateriEdukasiDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <main className="min-h-screen bg-[#f4f7f9] flex flex-col font-sans text-gray-800">
       <Navbar />
 
-      {/* Header Biru Gelap */}
-      <section className="bg-[#003366] text-white pt-32 pb-16 px-4 md:px-8">
-        <div className="max-w-[1200px] mx-auto text-center md:text-left flex flex-col items-center md:items-start">
-          <div className="flex items-center gap-2 text-sm text-blue-200 mb-6 font-medium">
-            <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
-            <span>&gt;</span>
-            <Link href="/edukasi" className="hover:text-white transition-colors">Edukasi</Link>
-            <span>&gt;</span>
-            <Link href="/edukasi/materi-edukasi" className="hover:text-white transition-colors">Materi</Link>
-            <span>&gt;</span>
-            <span className="text-white max-w-[200px] md:max-w-xs truncate">{materi.judul}</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight max-w-4xl text-center md:text-left">
-            {materi.judul}
-          </h1>
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm font-medium">
-            <div className="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
-              <i className="fa-regular fa-calendar text-blue-200"></i>
-              <span>{materi.created_at ? new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(materi.created_at)) : '-'}</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
-              <i className="fa-solid fa-layer-group text-blue-200"></i>
-              <span>{materi.kategori?.nama || 'Tanpa Kategori'}</span>
-            </div>
-            <div className="flex items-center gap-2 bg-blue-500/30 text-blue-100 px-4 py-1.5 rounded-full backdrop-blur-sm">
-              <i className="fa-solid fa-tag text-blue-200"></i>
-              <span>{materi.jenis_konten}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Konten Utama */}
-      <section className="py-12 px-4 md:px-8 flex-1">
-        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-10">
+      <section className="pt-32 pb-16 px-4 md:px-8 flex-1">
+        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-8">
           
-          {/* Bagian Kiri: Detail Artikel */}
-          <article className="flex-1 bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100">
-            {/* Banner Slider (Thumbnail & Galeri) */}
+          {/* KIRI: Konten Utama */}
+          <article className="flex-1 bg-white rounded-[24px] p-6 md:p-10 shadow-sm border border-gray-100 overflow-hidden">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
+              {materi.judul}
+            </h1>
+            
+            {/* Thumbnail Banner */}
             {(materi.thumbnail || (materi.images && materi.images.length > 0)) && (
               <div className="w-full mb-8">
-                <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide">
-                  {/* Thumbnail Utama */}
+                <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2 scrollbar-hide">
                   {materi.thumbnail && (
-                    <div className="relative w-full shrink-0 h-[300px] md:h-[500px] snap-center rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                    <div className="relative w-full shrink-0 h-[300px] md:h-[450px] snap-center rounded-2xl overflow-hidden shadow-sm border border-gray-100">
                       <Image 
                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${materi.thumbnail}`} 
                         alt={materi.judul} 
@@ -143,9 +176,8 @@ export default function MateriEdukasiDetailPage() {
                       />
                     </div>
                   )}
-                  {/* Galeri Ekstra */}
                   {materi.images?.map((img, idx) => (
-                    <div key={idx} className="relative w-full shrink-0 h-[300px] md:h-[500px] snap-center rounded-xl overflow-hidden shadow-sm border border-gray-100 group">
+                    <div key={idx} className="relative w-full shrink-0 h-[300px] md:h-[450px] snap-center rounded-2xl overflow-hidden shadow-sm border border-gray-100 group">
                       <Image 
                         src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`}
                         alt={`Galeri ${idx + 1}`}
@@ -154,162 +186,139 @@ export default function MateriEdukasiDetailPage() {
                         onClick={() => window.open(`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`, '_blank')}
                         unoptimized
                       />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <i className="fa-solid fa-magnifying-glass-plus text-white text-3xl"></i>
-                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            
-            {/* Deskripsi Singkat */}
-            {materi.deskripsi_singkat && (
-              <div className="text-xl font-medium text-gray-700 leading-relaxed mb-8 border-l-4 border-[#003366] pl-6 py-2 bg-blue-50/50 rounded-r-xl">
-                {materi.deskripsi_singkat}
-              </div>
-            )}
-            
-            {/* Teks HTML */}
-            {materi.konten_teks && (
+
+            {/* Konten Teks HTML */}
+            {processedContent && (
               <div 
-                className="prose prose-lg max-w-none prose-blue prose-img:rounded-xl mb-10 text-gray-800"
-                dangerouslySetInnerHTML={{ __html: materi.konten_teks }}
+                className="prose prose-lg max-w-none prose-blue prose-headings:text-gray-900 prose-p:text-gray-600 prose-img:rounded-xl mb-12 text-[15px] md:text-base leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: processedContent }}
               ></div>
             )}
+            
+            {/* Konten Teks Fallback jika tidak pakai Rich Text */}
+            {!processedContent && materi.deskripsi_singkat && (
+              <p className="text-gray-600 leading-relaxed mb-12 text-lg">
+                {materi.deskripsi_singkat}
+              </p>
+            )}
 
-            {/* Media Tambahan (YouTube/Drive/Files) */}
-            {((materi.link_youtube && materi.link_youtube.length > 0) || (materi.link_drive && materi.link_drive.length > 0) || materi.file_path || materi.link_eksternal) && (
+            {/* Video Youtube Paling Bawah (Grid 3 Kolom) */}
+            {materi.link_youtube && materi.link_youtube.length > 0 && (
               <div className="mt-12 pt-8 border-t border-gray-100">
-                <h3 className="text-xl font-bold text-[#003366] mb-6 flex items-center gap-2">
-                  <i className="fa-solid fa-photo-film"></i> Media & Tautan Terkait
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <i className="fa-brands fa-youtube text-red-600"></i> Video Terkait
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                  {/* Eksternal Link Tunggal */}
-                  {materi.link_eksternal && (
-                    <a href={materi.link_eksternal} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-[#003366] hover:shadow-md transition-all group bg-white">
-                      <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-[#003366] group-hover:bg-[#003366] group-hover:text-white transition-colors">
-                        <i className="fa-solid fa-arrow-up-right-from-square text-xl"></i>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-gray-800 group-hover:text-[#003366] transition-colors">Link Eksternal</p>
-                        <p className="text-xs text-gray-500 truncate">{materi.link_eksternal}</p>
-                      </div>
-                    </a>
-                  )}
-                  {/* File Lampiran Tunggal */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {materi.link_youtube.map((link, idx) => {
+                    const videoId = getYouTubeVideoId(link);
+                    if (videoId) {
+                      return (
+                        <div key={idx} className="w-full aspect-video rounded-xl overflow-hidden shadow-md bg-black">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            title={`YouTube video player ${idx}`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Lampiran File / Drive */}
+            {((materi.link_drive && materi.link_drive.length > 0) || materi.file_path || materi.link_eksternal) && (
+              <div className="mt-8 pt-8 border-t border-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <i className="fa-solid fa-paperclip text-gray-500"></i> Lampiran & Tautan Lainnya
+                </h3>
+                <div className="flex flex-wrap gap-3">
                   {materi.file_path && (
-                    <a href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${materi.file_path}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-[#003366] hover:shadow-md transition-all group bg-white">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-700 group-hover:bg-[#003366] group-hover:text-white transition-colors">
-                        <i className="fa-solid fa-file-arrow-down text-xl"></i>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-gray-800 group-hover:text-[#003366] transition-colors">Unduh Lampiran</p>
-                        <p className="text-xs text-gray-500">Berkas Pendukung</p>
-                      </div>
+                    <a href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${materi.file_path}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-lg border border-gray-200 hover:border-[#003366] hover:bg-blue-50 text-gray-700 hover:text-[#003366] font-semibold text-sm transition-all flex items-center gap-2">
+                      <i className="fa-solid fa-file-arrow-down"></i> Unduh Berkas
                     </a>
                   )}
-                  
-                  {/* Drive & Other Links remain here */}
+                  {materi.link_eksternal && (
+                    <a href={materi.link_eksternal} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-lg border border-gray-200 hover:border-[#003366] hover:bg-blue-50 text-gray-700 hover:text-[#003366] font-semibold text-sm transition-all flex items-center gap-2">
+                      <i className="fa-solid fa-arrow-up-right-from-square"></i> Link Eksternal
+                    </a>
+                  )}
                   {materi.link_drive?.map((link, idx) => (
-                    <a key={idx} href={link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-green-500 hover:shadow-md transition-all group bg-white">
-                      <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors">
-                        <i className="fa-brands fa-google-drive text-xl"></i>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-gray-800 group-hover:text-green-700 transition-colors">Akses Google Drive</p>
-                        <p className="text-xs text-gray-500 truncate">{link}</p>
-                      </div>
+                    <a key={idx} href={link} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-lg border border-gray-200 hover:border-green-600 hover:bg-green-50 text-gray-700 hover:text-green-600 font-semibold text-sm transition-all flex items-center gap-2">
+                      <i className="fa-brands fa-google-drive"></i> Akses G-Drive
                     </a>
                   ))}
                 </div>
-
-                {/* YouTube Embeds */}
-                {materi.link_youtube && materi.link_youtube.length > 0 && (
-                  <div className="mb-8 flex flex-col gap-6">
-                    {materi.link_youtube.map((link, idx) => {
-                      const videoId = getYouTubeVideoId(link);
-                      if (videoId) {
-                        return (
-                          <div key={idx} className="w-full aspect-video rounded-xl overflow-hidden shadow-md">
-                            <iframe
-                              width="100%"
-                              height="100%"
-                              src={`https://www.youtube.com/embed/${videoId}`}
-                              title={`YouTube video player ${idx}`}
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
-                          </div>
-                        );
-                      }
-                      return (
-                        <a key={idx} href={link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-red-500 hover:shadow-md transition-all group bg-white">
-                          <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-colors">
-                            <i className="fa-brands fa-youtube text-xl"></i>
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-bold text-gray-800 group-hover:text-red-600 transition-colors">Tonton di YouTube</p>
-                            <p className="text-xs text-gray-500 truncate">{link}</p>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
-                )}
-
-
               </div>
             )}
           </article>
 
-          {/* Bagian Kanan: Sidebar Rekomendasi */}
-          <aside className="w-full lg:w-[350px] shrink-0">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-32">
-              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-                <i className="fa-solid fa-list-ul text-[#003366]"></i> Baca Artikel Lainnya
-              </h3>
-              
-              <div className="flex flex-col gap-5">
-                {related.length > 0 ? (
-                  related.map((rel) => (
-                    <Link href={`/edukasi/materi-edukasi/${rel.slug}`} key={rel.id} className="group flex gap-4 items-start">
-                      <div className="w-20 h-20 bg-gray-100 rounded-lg relative overflow-hidden shrink-0 border border-gray-100">
-                        {rel.thumbnail ? (
-                          <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${rel.thumbnail}`} alt={rel.judul} fill className="object-cover group-hover:scale-110 transition-transform duration-300" unoptimized />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-300">
-                            <i className="fa-solid fa-image"></i>
-                          </div>
+          {/* KANAN: Sidebar */}
+          <aside className="w-full lg:w-[320px] shrink-0 space-y-6">
+            
+            {/* Widget Konten Artikel */}
+            {headings.length > 0 && (
+              <div className="bg-white rounded-[20px] p-6 shadow-sm border border-gray-100 sticky top-32">
+                <h3 className="text-[17px] font-extrabold text-gray-900 mb-4">
+                  Konten Artikel
+                </h3>
+                <div className="relative pl-3 border-l-[3px] border-[#003366]/20 py-1">
+                  <div className="space-y-4">
+                    {headings.map((heading, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => scrollToHeading(heading.id)}
+                        className={`block text-left text-[14px] leading-tight hover:text-[#003366] transition-colors relative ${heading.level === 1 ? 'font-bold text-gray-800' : heading.level === 2 ? 'font-semibold text-gray-600 ml-2' : 'text-gray-500 ml-4'}`}
+                      >
+                        {heading.level === 1 && (
+                          <div className="absolute -left-[16px] top-1/2 -translate-y-1/2 w-[3px] h-4 bg-[#003366] rounded-full"></div>
                         )}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-bold text-gray-800 line-clamp-2 group-hover:text-[#003366] transition-colors mb-1 leading-snug">
-                          {rel.judul}
-                        </h4>
-                        <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium">
-                          <i className="fa-regular fa-calendar"></i>
-                          {rel.created_at ? new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(rel.created_at)) : '-'}
-                        </div>
-                      </div>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="text-center py-6 text-gray-500">
-                    <i className="fa-regular fa-folder-open text-2xl mb-2 opacity-50"></i>
-                    <p className="text-sm">Belum ada materi lain di kategori ini.</p>
+                        {heading.text}
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
-              
-              {related.length > 0 && (
-                <Link href="/edukasi/materi-edukasi" className="mt-8 block w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-[#003366] font-bold text-sm text-center rounded-xl transition-colors">
-                  Lihat Semua Aktivitas
-                </Link>
-              )}
+            )}
+
+            {/* Widget Bagikan Artikel */}
+            <div className="bg-white rounded-[20px] p-6 shadow-sm border border-gray-100">
+              <h3 className="text-[17px] font-extrabold text-gray-900 mb-4">
+                Bagikan Artikel
+              </h3>
+              <div className="flex flex-wrap gap-2.5">
+                <button onClick={() => handleShare('whatsapp')} className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-brands fa-whatsapp text-lg"></i>
+                </button>
+                <button onClick={() => handleShare('facebook')} className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-brands fa-facebook-f text-lg"></i>
+                </button>
+                <button onClick={() => handleShare('telegram')} className="w-10 h-10 rounded-full bg-[#229ED9] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-brands fa-telegram text-lg"></i>
+                </button>
+                <button onClick={() => handleShare('linkedin')} className="w-10 h-10 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-brands fa-linkedin-in text-lg"></i>
+                </button>
+                <button onClick={() => handleShare('twitter')} className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-brands fa-x-twitter text-lg"></i>
+                </button>
+                <button onClick={() => handleShare('copy')} className="w-10 h-10 rounded-full bg-gray-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                  <i className="fa-solid fa-link text-lg"></i>
+                </button>
+              </div>
             </div>
+
           </aside>
 
         </div>
