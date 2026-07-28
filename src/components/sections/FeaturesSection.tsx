@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useState } from 'react';
+import KalenderModal from '@/components/ui/KalenderModal';
 
 export default function FeaturesSection() {
   const { lang, t } = useLanguage();
+  const [isKalenderOpen, setIsKalenderOpen] = useState(false);
 
   const features = [
     {
@@ -53,31 +56,57 @@ export default function FeaturesSection() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
           {features.map((feature, idx) => (
-            <Link 
-              href={feature.link}
-              key={idx} 
-              className="group bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary"
-            >
-              <div className="flex flex-col items-center text-center flex-1">
-                {/* Icon */}
-                <div className="mb-4 transition-all duration-300">
-                  <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
+            feature.link === '/kalender' ? (
+              <div 
+                key={idx} 
+                onClick={() => setIsKalenderOpen(true)}
+                className="group bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary"
+              >
+                <div className="flex flex-col items-center text-center flex-1">
+                  {/* Icon */}
+                  <div className="mb-4 transition-all duration-300">
+                    <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-base font-bold text-gray-800 mb-2 group-hover:text-white transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-gray-500 group-hover:text-white/90 text-xs leading-relaxed transition-colors duration-300">
+                    {feature.desc}
+                  </p>
                 </div>
-                
-                {/* Title */}
-                <h3 className="text-base font-bold text-gray-800 mb-2 group-hover:text-white transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                
-                {/* Description */}
-                <p className="text-gray-500 group-hover:text-white/90 text-xs leading-relaxed transition-colors duration-300">
-                  {feature.desc}
-                </p>
               </div>
-            </Link>
+            ) : (
+              <Link 
+                href={feature.link}
+                key={idx} 
+                className="group bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary"
+              >
+                <div className="flex flex-col items-center text-center flex-1">
+                  {/* Icon */}
+                  <div className="mb-4 transition-all duration-300">
+                    <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-base font-bold text-gray-800 mb-2 group-hover:text-white transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-gray-500 group-hover:text-white/90 text-xs leading-relaxed transition-colors duration-300">
+                    {feature.desc}
+                  </p>
+                </div>
+              </Link>
+            )
           ))}
         </div>
       </div>
+      <KalenderModal isOpen={isKalenderOpen} onClose={() => setIsKalenderOpen(false)} />
     </section>
   );
 }
