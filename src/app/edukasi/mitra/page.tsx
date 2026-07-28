@@ -107,58 +107,81 @@ export default function MitraEdukasiPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col font-sans relative">
-      <ParticleBackground />
+    <main className="min-h-screen bg-[#f2f6fa] flex flex-col font-sans">
       <Navbar />
 
-      <section className="max-w-[1200px] mx-auto w-full px-4 md:px-8 pt-32 pb-20 flex-1 relative z-10">
-        
-        {/* Header & Search */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-2">Mitra Edukasi</h1>
-            <p className="text-gray-600">Temukan mitra edukasi Bank Indonesia di seluruh Indonesia.</p>
+      {/* Hero / Header Section */}
+      <section className="bg-primary text-white pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 text-center">
+          <div className="flex items-center justify-center gap-2 text-sm text-blue-200 mb-6">
+            <a href="/" className="hover:text-white transition-colors">Beranda</a>
+            <span>&gt;</span>
+            <span className="text-white font-medium">Mitra Edukasi</span>
           </div>
-          <div className="w-full md:w-auto relative">
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">Jejaring Mitra Edukasi</h1>
+          <p className="text-blue-100 max-w-2xl mx-auto text-lg mb-10">
+            Temukan dan kenali berbagai mitra strategis Bank Indonesia yang turut berkolaborasi dalam meningkatkan literasi dan edukasi keuangan masyarakat di seluruh Indonesia.
+          </p>
+          
+          {/* Search Bar (Floating over header) */}
+          <div className="max-w-xl mx-auto relative group">
             <input 
               type="text" 
-              placeholder="Cari mitra..." 
+              placeholder="Cari nama mitra, singkatan, atau lokasi..." 
               value={search}
               onChange={handleSearch}
-              className="w-full md:w-72 px-4 py-2.5 pl-10 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm bg-white"
+              className="w-full px-6 py-4 pl-14 bg-white rounded-2xl border-0 shadow-lg text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all text-lg"
             />
-            <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <i className="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-primary transition-colors"></i>
           </div>
         </div>
+        
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2"></div>
+        </div>
+        <ParticleBackground />
+      </section>
 
+      {/* Main Content */}
+      <section className="max-w-[1200px] mx-auto w-full px-4 md:px-8 py-16 flex-1">
+        
         {/* Grid Mitra */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
           </div>
         ) : mitras.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
-            <p className="text-gray-500">Belum ada data mitra.</p>
+          <div className="text-center py-24 bg-white rounded-3xl shadow-sm border border-gray-100">
+            <i className="fa-regular fa-folder-open text-6xl text-gray-300 mb-4 block"></i>
+            <h3 className="text-xl font-bold text-gray-700 mb-2">Mitra Tidak Ditemukan</h3>
+            <p className="text-gray-500">Belum ada data mitra yang sesuai dengan pencarian Anda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {mitras.map((mitra) => (
-              <div key={mitra.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md border border-gray-100 transition-all flex flex-col items-center text-center">
-                <div className="w-20 h-20 rounded-full bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center mb-4 p-2 shadow-inner">
+              <div key={mitra.id} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 border border-gray-100 transition-all duration-300 flex flex-col items-center text-center group">
+                <div className="w-24 h-24 rounded-2xl bg-gray-50/50 border border-gray-100 overflow-hidden flex items-center justify-center mb-5 p-3 shadow-inner group-hover:scale-105 transition-transform">
                   {mitra.logo ? (
-                    <img src={getImageUrl(mitra.logo)} alt={mitra.singkatan} className="w-full h-full object-contain" />
+                    <img src={getImageUrl(mitra.logo)} alt={mitra.singkatan} className="w-full h-full object-contain mix-blend-multiply" />
                   ) : (
-                    <i className="fa-regular fa-handshake text-3xl text-gray-400"></i>
+                    <i className="fa-solid fa-building-ngo text-4xl text-gray-300"></i>
                   )}
                 </div>
-                <h3 className="font-bold text-xl text-gray-800">{mitra.singkatan}</h3>
-                <p className="text-sm font-medium text-gray-500 mb-2">({mitra.nama_lengkap})</p>
-                <p className="text-xs text-primary bg-blue-50 px-3 py-1 rounded-full font-semibold mb-3">{mitra.kategori}</p>
-                <p className="text-sm text-gray-600 mb-6 flex items-center gap-1"><i className="fa-solid fa-location-dot text-gray-400"></i> {mitra.lokasi}</p>
+                <h3 className="font-extrabold text-xl text-gray-800 mb-1 group-hover:text-primary transition-colors">{mitra.singkatan}</h3>
+                <p className="text-xs font-medium text-gray-500 mb-4 line-clamp-1 px-2" title={mitra.nama_lengkap}>{mitra.nama_lengkap}</p>
+                
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+                  <span className="text-[11px] text-primary bg-blue-50 px-3 py-1 rounded-full font-bold tracking-wide">{mitra.kategori}</span>
+                  <span className="text-[11px] text-gray-600 bg-gray-100 px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+                    <i className="fa-solid fa-location-dot"></i> {mitra.lokasi}
+                  </span>
+                </div>
                 
                 <button 
                   onClick={() => setSelectedMitra(mitra)}
-                  className="mt-auto w-full py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                  className="mt-auto w-full py-3 rounded-xl border-2 border-gray-100 text-gray-700 font-bold hover:bg-primary hover:border-primary hover:text-white transition-all duration-300"
                 >
                   Lihat Profil
                 </button>
@@ -186,17 +209,21 @@ export default function MitraEdukasiPage() {
         )}
 
         {/* Ajukan Kolaborasi Banner */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Ajukan Kolaborasi</h2>
-            <p className="text-gray-600">Ingin berkolaborasi dengan Bank Indonesia? Ajukan proposal kegiatan Anda di sini.</p>
+        <div className="bg-gradient-to-r from-primary to-blue-800 rounded-3xl shadow-xl overflow-hidden p-8 md:p-12 relative flex flex-col md:flex-row items-center justify-between gap-8 mt-10">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+          <div className="relative z-10 md:w-2/3">
+            <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-bold tracking-widest mb-4 border border-white/20">TERTarik Bergabung?</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">Mari Berkolaborasi dengan Bank Indonesia</h2>
+            <p className="text-blue-100 text-lg">Punya komunitas atau lembaga pendidikan? Ajukan proposal kegiatan Anda dan mari bersama-sama membangun masyarakat yang lebih melek finansial.</p>
           </div>
-          <button 
-            onClick={() => setShowCollabModal(true)}
-            className="whitespace-nowrap px-6 py-3 bg-white border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors"
-          >
-            Ajukan Kolaborasi
-          </button>
+          <div className="relative z-10 shrink-0">
+            <button 
+              onClick={() => setShowCollabModal(true)}
+              className="px-8 py-4 bg-white text-primary font-extrabold rounded-2xl hover:scale-105 hover:shadow-lg transition-all duration-300 shadow-md flex items-center gap-3"
+            >
+              <i className="fa-solid fa-paper-plane"></i> Ajukan Kolaborasi
+            </button>
+          </div>
         </div>
 
       </section>
@@ -205,49 +232,55 @@ export default function MitraEdukasiPage() {
 
       {/* Profil Modal */}
       {selectedMitra && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative">
-            <div className="absolute top-4 right-4 z-10">
-              <button onClick={() => setSelectedMitra(null)} className="w-8 h-8 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center text-gray-700 transition-colors">
-                <i className="fa-solid fa-times"></i>
-              </button>
-            </div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden relative animate-[fadeIn_0.2s_ease-out]">
+            <button onClick={() => setSelectedMitra(null)} className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center text-gray-800 transition-colors backdrop-blur-md">
+              <i className="fa-solid fa-times text-lg"></i>
+            </button>
             
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 flex flex-col items-center border-b border-gray-100">
-               <div className="w-24 h-24 rounded-full bg-white border-4 border-white shadow-md overflow-hidden flex items-center justify-center mb-4 p-2">
+            <div className="bg-gradient-to-br from-blue-50 to-white p-10 flex flex-col items-center border-b border-gray-100 relative overflow-hidden">
+               {/* decorative shapes */}
+               <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+               
+               <div className="relative w-32 h-32 rounded-2xl bg-white border border-gray-100 shadow-lg overflow-hidden flex items-center justify-center mb-6 p-4">
                   {selectedMitra.logo ? (
                     <img src={getImageUrl(selectedMitra.logo)} alt={selectedMitra.singkatan} className="w-full h-full object-contain" />
                   ) : (
-                    <i className="fa-regular fa-handshake text-4xl text-gray-400"></i>
+                    <i className="fa-solid fa-building-ngo text-5xl text-gray-300"></i>
                   )}
                 </div>
-                <h3 className="font-bold text-2xl text-gray-800 text-center">{selectedMitra.singkatan}</h3>
-                <p className="text-gray-600 text-center font-medium">({selectedMitra.nama_lengkap})</p>
+                <h3 className="font-extrabold text-3xl text-gray-800 text-center mb-2">{selectedMitra.singkatan}</h3>
+                <p className="text-gray-500 text-center font-medium px-4">{selectedMitra.nama_lengkap}</p>
             </div>
             
-            <div className="p-8 space-y-4">
-              <div>
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kategori</h4>
-                <p className="text-gray-800 font-medium">{selectedMitra.kategori}</p>
+            <div className="p-8 space-y-6">
+              <div className="flex items-center gap-6">
+                <div className="flex-1">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-2"><i className="fa-solid fa-tag text-primary"></i> Kategori</h4>
+                  <p className="text-gray-800 font-bold">{selectedMitra.kategori}</p>
+                </div>
+                <div className="flex-1 border-l border-gray-100 pl-6">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-2"><i className="fa-solid fa-location-dot text-red-500"></i> Lokasi</h4>
+                  <p className="text-gray-800 font-bold">{selectedMitra.lokasi}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Lokasi</h4>
-                <p className="text-gray-800 font-medium"><i className="fa-solid fa-location-dot text-primary mr-1"></i> {selectedMitra.lokasi}</p>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Deskripsi</h4>
-                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{selectedMitra.deskripsi || 'Tidak ada deskripsi.'}</p>
+              <div className="pt-4 border-t border-gray-100">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i className="fa-solid fa-circle-info text-blue-500"></i> Tentang Mitra</h4>
+                <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+                  <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{selectedMitra.deskripsi || 'Tidak ada deskripsi yang tersedia untuk mitra ini.'}</p>
+                </div>
               </div>
             </div>
             
-            <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-end">
+            <div className="p-6 bg-white border-t border-gray-100 flex justify-end">
               <a 
                 href={`https://wa.me/${selectedMitra.no_wa.replace(/[^0-9]/g, '')}`} 
                 target="_blank" 
                 rel="noreferrer"
-                className="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-md transition-colors flex items-center gap-2"
+                className="w-full py-4 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-extrabold text-lg rounded-xl shadow-lg shadow-green-200 transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1"
               >
-                <i className="fa-brands fa-whatsapp text-lg"></i> Hubungi Mitra
+                <i className="fa-brands fa-whatsapp text-2xl"></i> Hubungi via WhatsApp
               </a>
             </div>
           </div>
