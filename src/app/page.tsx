@@ -5,6 +5,7 @@ import StatsSection from "@/components/sections/StatsSection";
 import AboutPreviewSection from "@/components/sections/AboutPreviewSection";
 import MapSection from "@/components/sections/MapSection";
 import NewsSection from "@/components/sections/NewsSection";
+import TestimonialSection from "@/components/sections/TestimonialSection";
 import FloatingAction from "@/components/ui/FloatingAction";
 import Footer from "@/components/layout/Footer";
 
@@ -18,6 +19,7 @@ export default function Home() {
       <AboutPreviewSection />
       <MapSection />
       <NewsSection />
+      <TestimonialSection />
       <FloatingAction />
       <Footer />
     </main>
