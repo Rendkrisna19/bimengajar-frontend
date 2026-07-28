@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { gsap } from 'gsap';
+import KalenderView from '@/components/ui/KalenderView';
 
 interface Article {
   id: number;
@@ -264,10 +265,8 @@ export default function AktivitasPage() {
   );
 
   const renderKalender = () => (
-    <div className="text-center text-gray-400 py-20 bg-white rounded-2xl border border-gray-100">
-      <i className="fa-regular fa-calendar-days text-5xl mb-4 block text-primary opacity-40"></i>
-      <p className="text-lg font-medium text-gray-500">Kalender Kegiatan</p>
-      <p className="text-sm text-gray-400 mt-1">Fitur ini sedang dalam pengembangan.</p>
+    <div className="w-full">
+      <KalenderView />
     </div>
   );
 
