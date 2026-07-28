@@ -26,13 +26,13 @@ export default function FeaturesSection() {
       title: lang === 'ID' ? 'Ajukan Kegiatan' : 'Request Activity',
       desc: lang === 'ID' ? 'Ajukan sosialisasi bersama Bank Indonesia' : 'Request socialization with Bank Indonesia',
       icon: 'fa-solid fa-file-signature',
-      link: '/pengajuan'
+      link: '/edukasi/pengajuan'
     },
     {
       title: lang === 'ID' ? 'Mitra Edukasi' : 'Education Partners',
       desc: lang === 'ID' ? 'Temukan mitra edukasi Bank Indonesia' : 'Find Bank Indonesia education partners',
       icon: 'fa-solid fa-users',
-      link: '/mitra'
+      link: '/edukasi/mitra'
     },
     {
       title: lang === 'ID' ? 'Pojok Koin' : 'Coin Corner',
@@ -60,9 +60,15 @@ export default function FeaturesSection() {
               <div 
                 key={idx} 
                 onClick={() => setIsKalenderOpen(true)}
-                className="group bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary"
+                className="group relative overflow-hidden bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary z-10"
               >
-                <div className="flex flex-col items-center text-center flex-1">
+                {/* Texture Motif Background */}
+                <div 
+                  className="absolute inset-0 w-full h-full opacity-30 group-hover:opacity-50 bg-no-repeat bg-center bg-cover transition-all duration-300 pointer-events-none z-0"
+                  style={{ backgroundImage: 'url(/images/element/1.png)' }}
+                ></div>
+
+                <div className="flex flex-col items-center text-center flex-1 relative z-10">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300">
                     <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
@@ -83,9 +89,15 @@ export default function FeaturesSection() {
               <Link 
                 href={feature.link}
                 key={idx} 
-                className="group bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary"
+                className="group relative overflow-hidden bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary z-10"
               >
-                <div className="flex flex-col items-center text-center flex-1">
+                {/* Texture Motif Background */}
+                <div 
+                  className="absolute inset-0 w-full h-full opacity-30 group-hover:opacity-50 bg-no-repeat bg-center bg-cover transition-all duration-300 pointer-events-none z-0"
+                  style={{ backgroundImage: 'url(/images/element/1.png)' }}
+                ></div>
+
+                <div className="flex flex-col items-center text-center flex-1 relative z-10">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300">
                     <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>

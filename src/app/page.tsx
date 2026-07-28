@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import StatsSection from "@/components/sections/StatsSection";
+import AboutPreviewSection from "@/components/sections/AboutPreviewSection";
 import MapSection from "@/components/sections/MapSection";
 import NewsSection from "@/components/sections/NewsSection";
 import FloatingAction from "@/components/ui/FloatingAction";
@@ -14,8 +15,9 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <StatsSection />
-      <NewsSection />
+      <AboutPreviewSection />
       <MapSection />
+      <NewsSection />
       <FloatingAction />
       <Footer />
     </main>

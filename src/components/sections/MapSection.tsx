@@ -44,9 +44,15 @@ export default function MapSection() {
 
   return (
     <section ref={containerRef} className="relative bg-primary py-24 md:py-32 px-4 md:px-8 overflow-hidden">
-      {/* Background Ornaments */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] -z-0"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-300/10 rounded-full blur-[120px] -z-0"></div>
+      {/* Texture Motif Background */}
+      <div 
+        className="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay bg-no-repeat bg-center bg-cover pointer-events-none z-0"
+        style={{ backgroundImage: 'url(/images/element/1.png)' }}
+      ></div>
+
+      {/* Background Ornaments (Subtle Glows) */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-300/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         

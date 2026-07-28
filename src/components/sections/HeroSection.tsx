@@ -99,30 +99,11 @@ export default function HeroSection() {
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px] opacity-10"></div>
         <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-300 rounded-full blur-[100px] opacity-10"></div>
 
-        {/* Scattered Songket Stars (Bright Colors) */}
-        {/* Motif 1: Middle Center (Besar, transparan) */}
-        <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] text-white opacity-5" viewBox="0 0 40 40" fill="currentColor">
-          <path d="M20 0 L24 10 L34 6 L28 16 L40 20 L28 24 L34 34 L24 30 L20 40 L16 30 L6 34 L12 24 L0 20 L12 16 L6 6 L16 10 Z"/>
-          <path d="M20 12 L28 20 L20 28 L12 20 Z" fill="#003366" />
-        </svg>
-
-        {/* Motif 2: Top Right (Gold) */}
-        <svg className="absolute top-[15%] right-[10%] w-16 h-16 text-yellow-400 opacity-60 animate-pulse" viewBox="0 0 40 40" fill="currentColor">
-          <path d="M20 0 L24 10 L34 6 L28 16 L40 20 L28 24 L34 34 L24 30 L20 40 L16 30 L6 34 L12 24 L0 20 L12 16 L6 6 L16 10 Z"/>
-          <path d="M20 14 L26 20 L20 26 L14 20 Z" fill="#003366" />
-        </svg>
-
-        {/* Motif 3: Bottom Left (Cyan/Light Blue) */}
-        <svg className="absolute bottom-[20%] left-[8%] w-12 h-12 text-cyan-400 opacity-70" viewBox="0 0 40 40" fill="currentColor">
-          <path d="M20 0 L24 10 L34 6 L28 16 L40 20 L28 24 L34 34 L24 30 L20 40 L16 30 L6 34 L12 24 L0 20 L12 16 L6 6 L16 10 Z"/>
-          <path d="M20 14 L26 20 L20 26 L14 20 Z" fill="#003366" />
-        </svg>
-
-        {/* Motif 4: Top Left (Red) */}
-        <svg className="absolute top-[30%] left-[45%] w-10 h-10 text-red-400 opacity-60" viewBox="0 0 40 40" fill="currentColor">
-          <path d="M20 0 L24 10 L34 6 L28 16 L40 20 L28 24 L34 34 L24 30 L20 40 L16 30 L6 34 L12 24 L0 20 L12 16 L6 6 L16 10 Z"/>
-          <path d="M20 14 L26 20 L20 26 L14 20 Z" fill="#003366" />
-        </svg>
+        {/* Texture Motif Background */}
+        <div 
+          className="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay bg-no-repeat bg-center bg-cover"
+          style={{ backgroundImage: 'url(/images/element/1.png)' }}
+        ></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-16 lg:pb-20 flex-1">
