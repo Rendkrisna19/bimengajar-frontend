@@ -132,10 +132,10 @@ export default function AktivitasPage() {
   useEffect(() => { setNewsPage(1); }, [activeTab]);
   const newsItems = news.slice((newsPage - 1) * newsPerPage, newsPage * newsPerPage);
 
-  const renderPagination = (cur: number, total: number, onSet: (n: number) => void) =>
+  const renderPagination = (cur: number, total: number, onSet: any) =>
     total > 1 ? (
       <div className="flex justify-center gap-2 mt-8">
-        <button onClick={() => onSet(c => Math.max(c - 1, 1))} disabled={cur === 1}
+        <button onClick={() => onSet((c: number) => Math.max(c - 1, 1))} disabled={cur === 1}
           className="w-10 h-10 rounded-xl flex items-center justify-center border border-gray-200 bg-white text-gray-600 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
           <i className="fa-solid fa-chevron-left text-xs"></i>
         </button>
@@ -143,7 +143,7 @@ export default function AktivitasPage() {
           <button key={p} onClick={() => onSet(p)}
             className={`w-10 h-10 rounded-xl text-sm font-bold transition-colors ${cur === p ? 'bg-primary text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{p}</button>
         ))}
-        <button onClick={() => onSet(c => Math.min(c + 1, total))} disabled={cur === total}
+        <button onClick={() => onSet((c: number) => Math.min(c + 1, total))} disabled={cur === total}
           className="w-10 h-10 rounded-xl flex items-center justify-center border border-gray-200 bg-white text-gray-600 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
           <i className="fa-solid fa-chevron-right text-xs"></i>
         </button>

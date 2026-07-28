@@ -34,6 +34,7 @@ export default function AdminNewsPage() {
     author: 'Admin BI',
     description: '',
     content: '',
+    category: 'berita',
     images: [] as File[],
   });
 
@@ -51,13 +52,13 @@ export default function AdminNewsPage() {
 
   const openCreate = () => {
     setEditItem(null);
-    setForm({ title: '', author: 'Admin BI', description: '', content: '', images: [] });
+    setForm({ title: '', author: 'Admin BI', description: '', content: '', category: 'berita', images: [] });
     setIsModalOpen(true);
   };
 
   const openEdit = (item: NewsItem) => {
     setEditItem(item);
-    setForm({ title: item.title, author: item.author, description: item.description, content: item.content, images: [] });
+    setForm({ title: item.title, author: item.author, description: item.description, content: item.content, category: item.category || 'berita', images: [] });
     setIsModalOpen(true);
   };
 
