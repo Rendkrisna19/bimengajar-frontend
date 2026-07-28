@@ -71,6 +71,7 @@ export default function ParticleBackground() {
       }
 
       update() {
+        if (!canvas) return;
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);

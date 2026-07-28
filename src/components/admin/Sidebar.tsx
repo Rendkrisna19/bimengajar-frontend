@@ -44,6 +44,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     {
       category: "Edukasi & Layanan",
       items: [
+        { name: "Mitra Edukasi", icon: "fa-regular fa-handshake", href: "/admin/mitra" },
         { 
           name: "Materi Edukasi", 
           icon: "fa-solid fa-book-open", 
