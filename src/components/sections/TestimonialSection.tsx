@@ -49,7 +49,7 @@ export default function TestimonialSection() {
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 relative z-20 md:ml-[35%] lg:ml-[40%]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 relative z-20 md:mr-[35%] lg:mr-[40%]">
           <div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1a365d] mb-2">Ulasan</h2>
             <p className="text-gray-500 text-sm md:text-base">Apa kata mereka tentang edukasi BI Mengajar</p>
@@ -62,21 +62,8 @@ export default function TestimonialSection() {
         {/* Content Container */}
         <div className="relative flex items-center min-h-[400px]">
           
-          {/* Mascot Image (Left side, overlaying carousel) */}
-          <div className="hidden md:block absolute left-[-5%] lg:left-0 bottom-0 z-20 w-[40%] lg:w-[35%] h-[120%] pointer-events-none flex items-end">
-            <div className="relative w-full h-[500px]">
-              {/* Note: User will upload the mascot image to public/images/maskot-ulasan.png */}
-              <Image 
-                src="/images/maskot-ulasan.png" 
-                alt="Mascot" 
-                fill
-                className="object-contain object-bottom drop-shadow-2xl"
-              />
-            </div>
-          </div>
-
-          {/* Carousel Track (Right side, goes behind mascot) */}
-          <div className="w-full md:w-[65%] lg:w-[65%] md:ml-auto relative z-10 overflow-hidden rounded-l-3xl py-4">
+          {/* Carousel Track (Left side now, goes behind mascot) */}
+          <div className="w-full md:w-[65%] lg:w-[65%] relative z-10 overflow-hidden rounded-r-3xl py-4">
             {loading ? (
                <div className="flex justify-center items-center h-48">
                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
@@ -84,17 +71,27 @@ export default function TestimonialSection() {
             ) : ulasanList.length === 0 ? (
                <div className="text-center text-gray-500 py-8">Belum ada ulasan.</div>
             ) : (
-              <div className="flex gap-6 animate-marquee hover:[animation-play-state:paused] w-max px-4">
+              <div 
+                className="flex gap-6 animate-marquee hover:[animation-play-state:paused] w-max px-4"
+                style={{ animationDuration: '60s' }} // Slower animation
+              >
                 {duplicatedUlasan.map((ulasan, idx) => (
                   <div 
                     key={`ulasan-${ulasan.id}-${idx}`}
                     className="w-[280px] md:w-[320px] shrink-0 bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-lg transition-shadow flex flex-col h-[280px]"
                   >
-                    {/* Stars */}
-                    <div className="flex gap-1 mb-4 text-[#fbbf24]">
-                      {[...Array(5)].map((_, i) => (
-                        <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
-                      ))}
+                    {/* Stars and Date */}
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex gap-1 text-[#fbbf24]">
+                        {[...Array(5)].map((_, i) => (
+                          <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
+                        ))}
+                      </div>
+                      {ulasan.created_at && (
+                        <span className="text-[11px] font-medium text-gray-400">
+                          {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </span>
+                      )}
                     </div>
                     
                     {/* Comment */}
@@ -113,6 +110,18 @@ export default function TestimonialSection() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Mascot Image (Right side, overlaying carousel) */}
+          <div className="hidden md:block absolute right-[-5%] lg:right-0 bottom-0 z-20 w-[40%] lg:w-[35%] h-[120%] pointer-events-none flex items-end">
+            <div className="relative w-full h-[500px]">
+              <Image 
+                src="/images/maskot-ulasan.png" 
+                alt="Mascot" 
+                fill
+                className="object-contain object-bottom drop-shadow-2xl"
+              />
+            </div>
           </div>
 
         </div>
