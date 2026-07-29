@@ -46,6 +46,12 @@ export default function TestimonialSection() {
 
   return (
     <section className="bg-white py-16 md:py-24 relative overflow-hidden">
+      {/* Background Texture Element */}
+      <div 
+        className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-multiply bg-repeat"
+        style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '400px' }}
+      ></div>
+
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative">
         
         {/* Header Section */}

@@ -235,49 +235,114 @@ export default function UlasanPage() {
         </div>
 
         {/* RIGHT: Daftar Ulasan */}
-        <div ref={listRef} className="lg:col-span-8 bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-xl relative z-10">
-          <h3 className="text-2xl font-extrabold text-[#1a365d] mb-8 border-b border-gray-100 pb-4">Ulasan Terbaru</h3>
+        <div ref={listRef} className="lg:col-span-8 bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-xl relative z-10 flex flex-col h-[760px] overflow-hidden">
+          <style>{`
+            @keyframes marquee-up {
+              0% { transform: translateY(0); }
+              100% { transform: translateY(-50%); }
+            }
+            @keyframes marquee-down {
+              0% { transform: translateY(-50%); }
+              100% { transform: translateY(0); }
+            }
+            .animate-marquee-up {
+              animation: marquee-up 60s linear infinite;
+            }
+            .animate-marquee-down {
+              animation: marquee-down 60s linear infinite;
+            }
+          `}</style>
+          
+          <h3 className="text-2xl font-extrabold text-[#1a365d] mb-6 border-b border-gray-100 pb-4 shrink-0">Ulasan Terbaru</h3>
           
           {loading ? (
-            <div className="flex justify-center py-20">
+            <div className="flex justify-center items-center flex-1">
               <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>
             </div>
           ) : ulasanList.length === 0 ? (
-            <div className="text-center text-gray-500 py-20 bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
-              Belum ada ulasan. Jadilah yang pertama!
+            <div className="flex justify-center items-center flex-1">
+              <div className="text-center text-gray-500 py-10 px-6 w-full bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
+                Belum ada ulasan. Jadilah yang pertama!
+              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {ulasanList.map((ulasan) => (
-                <div key={ulasan.id} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col h-full hover:-translate-y-1 duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex gap-1 text-[#fbbf24] text-sm">
-                      {[...Array(5)].map((_, i) => (
-                        <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
-                      ))}
-                    </div>
-                    {ulasan.created_at && (
-                      <span className="text-xs font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
-                        {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-gray-600 text-sm italic mb-6 flex-1 leading-relaxed">
-                    "{ulasan.komentar}"
-                  </p>
-                  <div className="border-t border-gray-50 pt-4 mt-auto">
-                    <h4 className="font-bold text-[#1a365d] text-base truncate">{ulasan.nama}</h4>
-                    <p className="text-xs font-medium text-gray-500 mt-1 truncate">
-                      {ulasan.kategori} <span className="mx-1 text-gray-300">•</span> {ulasan.instansi}
-                    </p>
+            <div className="flex-1 relative overflow-hidden -mx-4 px-4 mask-vertical-faded">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                {/* Column 1: Up */}
+                <div className="h-full relative overflow-hidden">
+                  <div className="flex flex-col gap-6 w-full absolute animate-marquee-up hover:[animation-play-state:paused]">
+                    {[...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList].filter((_, i) => i % 2 === 0).map((ulasan, idx) => (
+                      <div key={`col1-${ulasan.id}-${idx}`} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex gap-1 text-[#fbbf24] text-sm">
+                            {[...Array(5)].map((_, i) => (
+                              <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
+                            ))}
+                          </div>
+                          {ulasan.created_at && (
+                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                              {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-600 text-sm italic mb-6 leading-relaxed">
+                          "{ulasan.komentar}"
+                        </p>
+                        <div className="border-t border-gray-50 pt-4 mt-auto">
+                          <h4 className="font-bold text-[#1a365d] text-base truncate">{ulasan.nama}</h4>
+                          <p className="text-xs font-medium text-gray-500 mt-1 truncate">
+                            {ulasan.kategori} <span className="mx-1 text-gray-300">•</span> {ulasan.instansi}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
+                
+                {/* Column 2: Down */}
+                <div className="h-full relative overflow-hidden hidden md:block">
+                  <div className="flex flex-col gap-6 w-full absolute animate-marquee-down hover:[animation-play-state:paused]">
+                    {[...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList].filter((_, i) => i % 2 !== 0).map((ulasan, idx) => (
+                      <div key={`col2-${ulasan.id}-${idx}`} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex gap-1 text-[#fbbf24] text-sm">
+                            {[...Array(5)].map((_, i) => (
+                              <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
+                            ))}
+                          </div>
+                          {ulasan.created_at && (
+                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                              {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-600 text-sm italic mb-6 leading-relaxed">
+                          "{ulasan.komentar}"
+                        </p>
+                        <div className="border-t border-gray-50 pt-4 mt-auto">
+                          <h4 className="font-bold text-[#1a365d] text-base truncate">{ulasan.nama}</h4>
+                          <p className="text-xs font-medium text-gray-500 mt-1 truncate">
+                            {ulasan.kategori} <span className="mx-1 text-gray-300">•</span> {ulasan.instansi}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
       </div>
 
+      {/* Global Style for fade mask */}
+      <style>{`
+        .mask-vertical-faded {
+          -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+          mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+        }
+      `}</style>
+      
       <Footer />
     </main>
   );

@@ -3,8 +3,14 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-white pt-16 pb-8 border-t-4 border-blue-400">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+    <footer className="bg-primary text-white pt-16 pb-8 border-t-4 border-blue-400 relative overflow-hidden">
+      {/* Background Texture Element */}
+      <div 
+        className="absolute inset-0 w-full h-full opacity-10 pointer-events-none mix-blend-overlay bg-repeat"
+        style={{ backgroundImage: 'url(/images/element/3.png)', backgroundSize: '500px' }}
+      ></div>
+
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
           
           {/* Logo & Tagline */}
