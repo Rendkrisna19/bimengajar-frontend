@@ -8,6 +8,11 @@ import Image from 'next/image';
 import axios from '@/lib/axios';
 import { KategoriMateri, MateriEdukasi } from '@/app/admin/materi-edukasi/types';
 
+const stripHtml = (html: string) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').trim();
+};
+
 export default function MateriEdukasiUserPage() {
   const [kategori, setKategori] = useState<KategoriMateri[]>([]);
   const [materi, setMateri] = useState<MateriEdukasi[]>([]);
@@ -234,7 +239,7 @@ export default function MateriEdukasiUserPage() {
                         <span className="text-xs font-semibold text-[#003366] uppercase tracking-wider">{item.kategori?.nama}</span>
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#003366] transition-colors">{item.judul}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat}</p>
+                      <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat || stripHtml(item.konten_teks || '')}</p>
                       
                       <Link href={`/edukasi/materi-edukasi/${item.slug}`} className="w-full py-2.5 rounded-xl border-2 border-gray-100 text-center font-bold text-gray-700 text-sm group-hover:border-[#003366] group-hover:bg-[#003366] group-hover:text-white transition-all block">
                         {item.jenis_konten === 'Video' ? 'Tonton' : 'Baca'}

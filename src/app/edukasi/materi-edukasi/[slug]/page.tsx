@@ -49,6 +49,7 @@ export default function MateriEdukasiDetailPage() {
   const router = useRouter();
   const [materi, setMateri] = useState<MateriEdukasi | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   // Content state for TOC processing
   const [processedContent, setProcessedContent] = useState('');
@@ -84,6 +85,36 @@ export default function MateriEdukasiDetailPage() {
       fetchMateri();
     }
   }, [params.slug]);
+
+  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+    
+    const handleScroll = () => {
+      const headingElements = headings
+        .map((h) => document.getElementById(h.id))
+        .filter(Boolean) as HTMLElement[];
+
+      let currentActiveId = '';
+      for (const elem of headingElements) {
+        const rect = elem.getBoundingClientRect();
+        if (rect.top <= 140) {
+          currentActiveId = elem.id;
+        }
+      }
+
+      if (currentActiveId) {
+        setActiveHeadingId(currentActiveId);
+      } else if (headings.length > 0) {
+        setActiveHeadingId(headings[0].id);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    setTimeout(handleScroll, 100);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [headings]);
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
@@ -160,37 +191,69 @@ export default function MateriEdukasiDetailPage() {
               {materi.judul}
             </h1>
             
-            {/* Thumbnail Banner */}
-            {(materi.thumbnail || (materi.images && materi.images.length > 0)) && (
-              <div className="w-full mb-8">
-                <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2 scrollbar-hide">
-                  {materi.thumbnail && (
-                    <div className="relative w-full shrink-0 h-[300px] md:h-[450px] snap-center rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                      <Image 
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${materi.thumbnail}`} 
-                        alt={materi.judul} 
-                        fill 
-                        className="object-cover"
-                        priority
-                        unoptimized
-                      />
+            {/* Thumbnail Banner Slider */}
+            {(() => {
+              const allImages = [];
+              if (materi.thumbnail) allImages.push(materi.thumbnail);
+              if (materi.images && materi.images.length > 0) allImages.push(...materi.images);
+              
+              if (allImages.length === 0) return null;
+
+              return (
+                <div className="w-full mb-8 relative group">
+                  <div className="relative w-full h-[300px] md:h-[480px] rounded-2xl overflow-hidden shadow-md border border-gray-100 bg-gray-50">
+                    {/* Slides */}
+                    <div 
+                      className="flex h-full transition-transform duration-500 ease-out"
+                      style={{ transform: `translateX(-${(activeImageIndex * 100) / allImages.length}%)`, width: `${allImages.length * 100}%` }}
+                    >
+                      {allImages.map((img, idx) => (
+                        <div key={idx} className="relative h-full select-none" style={{ width: `${100 / allImages.length}%` }}>
+                          <Image 
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`} 
+                            alt={`${materi.judul} - Slide ${idx + 1}`} 
+                            fill 
+                            className="object-cover cursor-pointer"
+                            onClick={() => window.open(`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`, '_blank')}
+                            priority={idx === 0}
+                            unoptimized
+                          />
+                        </div>
+                      ))}
                     </div>
-                  )}
-                  {materi.images?.map((img, idx) => (
-                    <div key={idx} className="relative w-full shrink-0 h-[300px] md:h-[450px] snap-center rounded-2xl overflow-hidden shadow-sm border border-gray-100 group">
-                      <Image 
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`}
-                        alt={`Galeri ${idx + 1}`}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
-                        onClick={() => window.open(`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`, '_blank')}
-                        unoptimized
-                      />
-                    </div>
-                  ))}
+
+                    {/* Navigation Arrows */}
+                    {allImages.length > 1 && (
+                      <>
+                        <button 
+                          onClick={() => setActiveImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/50 flex items-center justify-center text-gray-800 hover:bg-white hover:text-primary hover:scale-105 active:scale-95 transition-all shadow-md z-30 cursor-pointer"
+                        >
+                          <i className="fa-solid fa-chevron-left text-sm"></i>
+                        </button>
+                        <button 
+                          onClick={() => setActiveImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/50 flex items-center justify-center text-gray-800 hover:bg-white hover:text-primary hover:scale-105 active:scale-95 transition-all shadow-md z-30 cursor-pointer"
+                        >
+                          <i className="fa-solid fa-chevron-right text-sm"></i>
+                        </button>
+
+                        {/* Dots Indicator */}
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                          {allImages.map((_, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setActiveImageIndex(idx)}
+                              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                            ></button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Konten Teks HTML */}
             {processedContent && (
@@ -273,20 +336,27 @@ export default function MateriEdukasiDetailPage() {
                 <h3 className="text-[17px] font-extrabold text-gray-900 mb-4">
                   Konten Artikel
                 </h3>
-                <div className="relative pl-3 border-l-[3px] border-[#003366]/20 py-1">
-                  <div className="space-y-4">
-                    {headings.map((heading, idx) => (
-                      <button 
-                        key={idx}
-                        onClick={() => scrollToHeading(heading.id)}
-                        className={`block text-left text-[14px] leading-tight hover:text-[#003366] transition-colors relative ${heading.level === 1 ? 'font-bold text-gray-800' : heading.level === 2 ? 'font-semibold text-gray-600 ml-2' : 'text-gray-500 ml-4'}`}
-                      >
-                        {heading.level === 1 && (
-                          <div className="absolute -left-[16px] top-1/2 -translate-y-1/2 w-[3px] h-4 bg-[#003366] rounded-full"></div>
-                        )}
-                        {heading.text}
-                      </button>
-                    ))}
+                <div className="relative pl-0 py-1">
+                  {/* Continuous thin vertical line track */}
+                  <div className="absolute left-[3px] top-0 bottom-0 w-[1.5px] bg-gray-100 rounded-full"></div>
+                  
+                  <div className="space-y-3.5 relative z-10">
+                    {headings.map((heading, idx) => {
+                      const isActive = heading.id === activeHeadingId;
+                      return (
+                        <button 
+                          key={idx}
+                          onClick={() => scrollToHeading(heading.id)}
+                          className={`block text-left text-[13.5px] leading-snug hover:text-[#003366] transition-all relative pl-5 py-0.5 border-l-2 -ml-[1px] ${
+                            isActive 
+                              ? 'font-bold text-[#003366] border-[#003366]' 
+                              : 'font-medium text-gray-400 border-transparent hover:text-gray-700'
+                          } ${heading.level === 2 ? 'pl-7' : heading.level === 3 ? 'pl-9' : ''}`}
+                        >
+                          {heading.text}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
