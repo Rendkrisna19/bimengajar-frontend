@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic';
 import Swal from 'sweetalert2';
 import API_URL from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PageHeader from '@/components/ui/PageHeader';
+import FloatingAction from '@/components/ui/FloatingAction';
 
 const MapView = dynamic(() => import('@/components/PojokKoin/MapView'), {
   ssr: false,
@@ -162,23 +164,19 @@ export default function PojokKoinPage() {
     <main className="min-h-screen bg-[#f0f4f8]">
       <Navbar />
 
-      {/* Hero */}
-      <section className="bg-primary text-white pt-32 pb-20 md:pt-40 md:pb-28 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px]"></div>
-          <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-yellow-300 rounded-full blur-[120px]"></div>
-        </div>
-        <div className="max-w-[900px] mx-auto px-4 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/20 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 border border-white/30 backdrop-blur-sm">
-            <i className="fa-solid fa-coins text-yellow-300"></i>
-            {t('pk.badge')}
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-5 leading-tight">
+      {/* Hero / Header Section using PageHeader Component */}
+      <PageHeader
+        title={
+          <>
             {t('pk.title')} <span className="text-yellow-300">{t('pk.titleAccent')}</span>
-          </h1>
-          <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">{t('pk.subtitle')}</p>
-        </div>
-      </section>
+          </>
+        }
+        description={t('pk.subtitle')}
+        breadcrumbs={[
+          { label: lang === 'ID' ? 'Beranda' : 'Home', href: '/' },
+          { label: t('pk.badge') }
+        ]}
+      />
 
       {/* Tab Toggle */}
       <div className="max-w-[1100px] mx-auto px-4 md:px-8 -mt-8 relative z-20">
@@ -415,6 +413,7 @@ export default function PojokKoinPage() {
           </div>
         )}
       </div>
+      <FloatingAction />
       <Footer />
     </main>
   );

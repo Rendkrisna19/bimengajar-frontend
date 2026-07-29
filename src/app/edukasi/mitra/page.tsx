@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
 import ParticleBackground from '@/components/ui/ParticleBackground';
+import PageHeader from '@/components/ui/PageHeader';
 
 interface Mitra {
   id: number;
@@ -111,38 +112,26 @@ export default function MitraEdukasiPage() {
       <Navbar />
 
       {/* Hero / Header Section */}
-      <section className="bg-primary text-white pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 text-center">
-          <div className="flex items-center justify-center gap-2 text-sm text-blue-200 mb-6">
-            <a href="/" className="hover:text-white transition-colors">Beranda</a>
-            <span>&gt;</span>
-            <span className="text-white font-medium">Mitra Edukasi</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">Jejaring Mitra Edukasi</h1>
-          <p className="text-blue-100 max-w-2xl mx-auto text-lg mb-10">
-            Temukan dan kenali berbagai mitra strategis Bank Indonesia yang turut berkolaborasi dalam meningkatkan literasi dan edukasi keuangan masyarakat di seluruh Indonesia.
-          </p>
-          
-          {/* Search Bar (Floating over header) */}
-          <div className="max-w-xl mx-auto relative group">
-            <input 
-              type="text" 
-              placeholder="Cari nama mitra, singkatan, atau lokasi..." 
-              value={search}
-              onChange={handleSearch}
-              className="w-full px-6 py-4 pl-14 bg-white rounded-2xl border-0 shadow-lg text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all text-lg"
-            />
-            <i className="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-primary transition-colors"></i>
-          </div>
+      <PageHeader 
+        title="Jejaring Mitra Edukasi" 
+        description="Temukan dan kenali berbagai mitra strategis Bank Indonesia yang turut berkolaborasi dalam meningkatkan literasi dan edukasi keuangan masyarakat di seluruh Indonesia."
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Mitra Edukasi' }
+        ]}
+      >
+        {/* Search Bar (Floating over header) */}
+        <div className="max-w-xl mx-auto relative group">
+          <input 
+            type="text" 
+            placeholder="Cari nama mitra, singkatan, atau lokasi..." 
+            value={search}
+            onChange={handleSearch}
+            className="w-full px-6 py-4 pl-14 bg-white rounded-2xl border-0 shadow-lg text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all text-lg"
+          />
+          <i className="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-primary transition-colors"></i>
         </div>
-        
-        {/* Background Decorations */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2"></div>
-        </div>
-        <ParticleBackground />
-      </section>
+      </PageHeader>
 
       {/* Main Content */}
       <section className="max-w-[1200px] mx-auto w-full px-4 md:px-8 py-16 flex-1">
@@ -228,6 +217,7 @@ export default function MitraEdukasiPage() {
 
       </section>
 
+      <FloatingAction />
       <Footer />
 
       {/* Profil Modal */}

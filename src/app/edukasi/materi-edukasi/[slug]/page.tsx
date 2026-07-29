@@ -9,6 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import { MateriEdukasi } from '@/app/admin/materi-edukasi/types';
 import Swal from 'sweetalert2';
+import FloatingAction from '@/components/ui/FloatingAction';
 
 const getYouTubeVideoId = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -179,10 +180,24 @@ export default function MateriEdukasiDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f4f7f9] flex flex-col font-sans text-gray-800">
+    <main className="min-h-screen bg-[#f4f7f9] flex flex-col font-sans text-gray-800 relative overflow-hidden">
       <Navbar />
 
-      <section className="pt-32 pb-16 px-4 md:px-8 flex-1">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Soft glowing blur blobs */}
+        <div className="absolute top-[10%] -left-20 w-96 h-96 bg-[#003366]/5 rounded-full blur-[100px]"></div>
+        <div className="absolute top-[50%] -right-20 w-[450px] h-[450px] bg-blue-100/10 rounded-full blur-[120px]"></div>
+        
+        {/* Repeating Motif Accent (Watermark Pattern) */}
+        <div 
+          className="absolute inset-0 w-full h-full opacity-[0.05] bg-repeat"
+          style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '360px' }}
+        ></div>
+
+      </div>
+
+      <section className="pt-32 pb-16 px-4 md:px-8 flex-1 relative z-10">
         <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-8">
           
           {/* KIRI: Konten Utama */}
@@ -394,6 +409,7 @@ export default function MateriEdukasiDetailPage() {
         </div>
       </section>
       
+      <FloatingAction />
       <Footer />
     </main>
   );

@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
+import PageHeader from '@/components/ui/PageHeader';
+import FloatingAction from '@/components/ui/FloatingAction';
 
 export default function TentangKamiPage() {
   const [activeTab, setActiveTab] = useState('tentang_bi');
@@ -51,10 +53,15 @@ export default function TentangKamiPage() {
     <main className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
       
-      {/* Header Section with Navy Background */}
-      <div className="bg-primary text-white pt-32 pb-40 px-4 md:px-8">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-center mb-10 drop-shadow-md">Tentang Kami</h1>
-
+      {/* Header Section using PageHeader Component */}
+      <PageHeader 
+        title="Tentang Kami" 
+        description="Mengenal lebih dekat Bank Indonesia Pematang Siantar dan visi misi kami."
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Tentang Kami' }
+        ]}
+      >
         {/* Tabs */}
         <div className="flex justify-center max-w-[1200px] mx-auto">
           {tabs.map((tab) => (
@@ -71,7 +78,7 @@ export default function TentangKamiPage() {
             </button>
           ))}
         </div>
-      </div>
+      </PageHeader>
 
       <div className="max-w-[1200px] mx-auto w-full px-4 md:px-8 -mt-24 relative z-10 pb-20 flex-1">
         {/* Content Area */}
@@ -137,6 +144,7 @@ export default function TentangKamiPage() {
           ))}
         </div>
       </div>
+      <FloatingAction />
       <Footer />
     </main>
   );
