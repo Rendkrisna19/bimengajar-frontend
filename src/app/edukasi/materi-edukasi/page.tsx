@@ -7,6 +7,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import axios from '@/lib/axios';
 import { KategoriMateri, MateriEdukasi } from '@/app/admin/materi-edukasi/types';
+import PageHeader from '@/components/ui/PageHeader';
+import FloatingAction from '@/components/ui/FloatingAction';
+
+const stripHtml = (html: string) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').trim();
+};
 
 export default function MateriEdukasiUserPage() {
   const [kategori, setKategori] = useState<KategoriMateri[]>([]);
@@ -98,34 +105,34 @@ export default function MateriEdukasiUserPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <main className="min-h-screen bg-gray-50 flex flex-col font-sans relative overflow-hidden">
       <Navbar />
 
-      <div className="pt-28 pb-10 px-4 md:px-8 max-w-[1400px] mx-auto w-full flex-1">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Soft glowing blur blobs */}
+        <div className="absolute top-[10%] -left-20 w-96 h-96 bg-[#003366]/5 rounded-full blur-[100px]"></div>
+        <div className="absolute top-[50%] -right-20 w-[450px] h-[450px] bg-blue-100/10 rounded-full blur-[120px]"></div>
         
-        {/* Header Area */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-gray-200">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[#003366] mb-3">Materi Edukasi</h1>
-            <p className="text-gray-600 max-w-xl">
-              Kumpulan materi terpercaya untuk menambah pengetahuan seputar Bank Indonesia.
-            </p>
-          </div>
-          <div className="w-full md:w-80">
-            <form onSubmit={handleSearchSubmit} className="relative group">
-              <input 
-                type="text" 
-                placeholder="Cari materi..." 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-5 py-3 pr-12 rounded-xl border border-gray-200 focus:border-[#003366] focus:ring-1 focus:ring-[#003366] transition-all bg-white shadow-sm"
-              />
-              <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-[#003366] transition-colors">
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </form>
-          </div>
-        </div>
+        {/* Repeating Motif Accent (Watermark Pattern) */}
+        <div 
+          className="absolute inset-0 w-full h-full opacity-[0.05] bg-repeat"
+          style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '360px' }}
+        ></div>
+
+      </div>
+
+      <PageHeader 
+        title="Materi Edukasi" 
+        description="Kumpulan materi terpercaya untuk menambah pengetahuan seputar Bank Indonesia."
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Edukasi', href: '/edukasi' },
+          { label: 'Materi Edukasi' }
+        ]}
+      />
+
+      <div className="pt-12 pb-16 px-4 md:px-8 max-w-[1400px] mx-auto w-full flex-1 z-10">
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filter */}
@@ -179,19 +186,34 @@ export default function MateriEdukasiUserPage() {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Top Bar (Stats & Sort) */}
-            <div className="flex justify-between items-center mb-6">
+            {/* Top Bar (Stats, Search, & Sort) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <p className="text-sm text-gray-600">
                 Menampilkan <span className="font-semibold">{materi.length}</span> dari <span className="font-semibold">{totalItems}</span> materi
               </p>
-              <select 
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#003366]"
-              >
-                <option value="Terbaru">Terbaru</option>
-                <option value="Terlama">Terlama</option>
-              </select>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <form onSubmit={handleSearchSubmit} className="relative group flex-1 sm:flex-initial">
+                  <input 
+                    type="text" 
+                    placeholder="Cari materi..." 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full sm:w-64 px-4 py-2 pr-10 rounded-lg border border-gray-200 focus:border-[#003366] focus:ring-1 focus:ring-[#003366] transition-all bg-white text-sm shadow-sm"
+                  />
+                  <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-[#003366] transition-colors">
+                    <i className="fa-solid fa-magnifying-glass text-sm"></i>
+                  </button>
+                </form>
+
+                <select 
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#003366]"
+                >
+                  <option value="Terbaru">Terbaru</option>
+                  <option value="Terlama">Terlama</option>
+                </select>
+              </div>
             </div>
 
             {/* Grid */}
@@ -234,7 +256,7 @@ export default function MateriEdukasiUserPage() {
                         <span className="text-xs font-semibold text-[#003366] uppercase tracking-wider">{item.kategori?.nama}</span>
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#003366] transition-colors">{item.judul}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat}</p>
+                      <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat || stripHtml(item.konten_teks || '')}</p>
                       
                       <Link href={`/edukasi/materi-edukasi/${item.slug}`} className="w-full py-2.5 rounded-xl border-2 border-gray-100 text-center font-bold text-gray-700 text-sm group-hover:border-[#003366] group-hover:bg-[#003366] group-hover:text-white transition-all block">
                         {item.jenis_konten === 'Video' ? 'Tonton' : 'Baca'}
@@ -289,6 +311,7 @@ export default function MateriEdukasiUserPage() {
         </div>
       </div>
       
+      <FloatingAction />
       <Footer />
     </main>
   );

@@ -231,11 +231,31 @@ export default function EditMateriEdukasiPage() {
               </label>
               <div className="flex gap-6 h-[46px] items-center px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-black">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                  <input type="checkbox" checked={useYoutube} onChange={(e) => setUseYoutube(e.target.checked)} className="w-4 h-4 rounded text-primary focus:ring-primary border-gray-300 dark:border-gray-600" />
+                  <input 
+                    type="checkbox" 
+                    checked={useYoutube} 
+                    onChange={(e) => {
+                      setUseYoutube(e.target.checked);
+                      if (e.target.checked && (!youtubeLinks || youtubeLinks.length === 0)) {
+                        setYoutubeLinks(['']);
+                      }
+                    }} 
+                    className="w-4 h-4 rounded text-primary focus:ring-primary border-gray-300 dark:border-gray-600" 
+                  />
                   YouTube
                 </label>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                  <input type="checkbox" checked={useDrive} onChange={(e) => setUseDrive(e.target.checked)} className="w-4 h-4 rounded text-primary focus:ring-primary border-gray-300 dark:border-gray-600" />
+                  <input 
+                    type="checkbox" 
+                    checked={useDrive} 
+                    onChange={(e) => {
+                      setUseDrive(e.target.checked);
+                      if (e.target.checked && (!driveLinks || driveLinks.length === 0)) {
+                        setDriveLinks(['']);
+                      }
+                    }} 
+                    className="w-4 h-4 rounded text-primary focus:ring-primary border-gray-300 dark:border-gray-600" 
+                  />
                   Google Drive
                 </label>
               </div>

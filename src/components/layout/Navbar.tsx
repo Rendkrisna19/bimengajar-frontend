@@ -96,6 +96,7 @@ export default function Navbar() {
               src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
               alt={`Bendera ${lang}`}
               fill
+              sizes="16px"
               className="object-cover"
             />
           </div>
@@ -250,6 +251,7 @@ export default function Navbar() {
               src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
               alt={`Bendera ${lang}`}
               fill
+              sizes="24px"
               className="object-cover"
             />
           </button>
