@@ -310,15 +310,15 @@ export default function Navbar() {
                 </div>
                 
                 {/* Mobile Dropdown */}
-                {item.dropdown && item.subItems && (
-                  <div className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ${openMobileDropdown === item.name ? 'max-h-64 mt-2 opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="ml-4 pl-4 border-l-2 border-blue-100 flex flex-col gap-1 py-1">
+                {item.dropdown && item.subItems && openMobileDropdown === item.name && (
+                  <div className="flex flex-col gap-1 mt-2 mb-2 animate-fade-in-down">
+                    <div className="ml-4 pl-4 border-l-2 border-blue-100 flex flex-col gap-2 py-2">
                       {item.subItems.map((sub, sIdx) => (
                         <Link 
                           key={sIdx} 
                           href={sub.href}
                           onClick={() => setIsMobileOpen(false)}
-                          className="text-sm font-medium text-gray-600 hover:text-primary hover:bg-blue-50 py-2 px-3 rounded-xl transition-colors"
+                          className="text-sm font-medium text-gray-600 hover:text-primary hover:bg-blue-50 py-2 px-3 rounded-xl transition-colors w-full block"
                         >
                           {sub.name}
                         </Link>
