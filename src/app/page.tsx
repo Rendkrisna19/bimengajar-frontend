@@ -37,12 +37,11 @@ export default function Home() {
           y: 0,
           opacity: 1,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
             start: "top 85%", // Mulai animasi ketika bagian atas elemen mencapai 85% viewport
-            end: "bottom 15%", // Selesai ketika bagian bawah mencapai 15%
-            toggleActions: "play reverse play reverse", // Animasi akan masuk & keluar saat discroll naik/turun
+            toggleActions: "play none none reverse", // Play saat masuk, reverse HANYA ketika scroll naik ke atas elemen ini lagi
           }
         }
       );

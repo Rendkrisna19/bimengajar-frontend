@@ -85,10 +85,16 @@ export default function TestimonialSection() {
                 {duplicatedUlasan.map((ulasan, idx) => (
                   <div 
                     key={`ulasan-${ulasan.id}-${idx}`}
-                    className="w-[280px] md:w-[320px] shrink-0 bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-lg transition-shadow flex flex-col h-[280px]"
+                    className="w-[280px] md:w-[320px] shrink-0 bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-lg transition-shadow flex flex-col h-[280px] relative overflow-hidden group"
                   >
+                    {/* Card Background Texture */}
+                    <div 
+                      className="absolute inset-0 w-full h-full opacity-[0.03] group-hover:opacity-[0.06] pointer-events-none transition-opacity duration-300"
+                      style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '150px' }}
+                    ></div>
+
                     {/* Stars and Date */}
-                    <div className="flex justify-between items-start mb-4">
+                    <div className="flex justify-between items-start mb-4 relative z-10">
                       <div className="flex gap-1 text-[#fbbf24]">
                         {[...Array(5)].map((_, i) => (
                           <i key={i} className={`fa-solid fa-star ${i < ulasan.rating ? 'text-[#fbbf24]' : 'text-gray-200'}`}></i>
@@ -102,12 +108,12 @@ export default function TestimonialSection() {
                     </div>
                     
                     {/* Comment */}
-                    <p className="text-gray-600 text-sm md:text-base italic mb-6 line-clamp-4 flex-1">
+                    <p className="text-gray-600 text-sm md:text-base italic mb-6 line-clamp-4 flex-1 relative z-10">
                       "{ulasan.komentar}"
                     </p>
                     
                     {/* Author */}
-                    <div className="mt-auto pt-4 border-t border-gray-50">
+                    <div className="mt-auto pt-4 border-t border-gray-50 relative z-10">
                       <h4 className="font-bold text-[#1a365d] text-sm md:text-base truncate">{ulasan.nama}</h4>
                       <p className="text-xs text-gray-500 mt-1 truncate">
                         {ulasan.kategori} - {ulasan.instansi}
