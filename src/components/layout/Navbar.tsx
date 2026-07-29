@@ -12,6 +12,7 @@ export default function Navbar() {
   const { lang, setLang } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<{name: string, role: string} | null>(null);
 
   useEffect(() => {
@@ -275,35 +276,54 @@ export default function Navbar() {
           ref={mobileMenuRef}
           className="xl:hidden absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-5 flex flex-col gap-4 z-[100] max-h-[80vh] overflow-y-auto"
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {menuItems.map((item, idx) => (
               <div key={idx} className="flex flex-col">
-                <Link 
-                  href={item.href} 
-                  onClick={() => setIsMobileOpen(false)}
-                  className="flex items-center justify-between text-gray-700 font-semibold hover:text-primary transition-colors text-base border-b border-gray-100 pb-3"
+                <div 
+                  className={`flex items-center justify-between text-gray-700 font-semibold transition-colors text-base border-b border-gray-100 pb-2 ${item.dropdown && openMobileDropdown === item.name ? 'text-primary border-primary/20' : 'hover:text-primary'}`}
                 >
-                  <span className="flex items-center gap-3">
-                    <i className={`${item.icon} text-primary/70 w-5 text-center`}></i>
+                  <Link 
+                    href={item.dropdown ? '#' : item.href} 
+                    onClick={(e) => {
+                      if (item.dropdown) {
+                        e.preventDefault();
+                        setOpenMobileDropdown(openMobileDropdown === item.name ? null : item.name);
+                      } else {
+                        setIsMobileOpen(false);
+                      }
+                    }}
+                    className="flex items-center gap-3 flex-1"
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${item.dropdown && openMobileDropdown === item.name ? 'bg-blue-50 text-primary' : 'bg-gray-50 text-gray-500'}`}>
+                      <i className={`${item.icon} text-sm`}></i>
+                    </div>
                     {item.name}
-                  </span>
+                  </Link>
                   {item.dropdown && (
-                    <i className="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                    <button 
+                      onClick={() => setOpenMobileDropdown(openMobileDropdown === item.name ? null : item.name)}
+                      className="p-2 text-gray-400 hover:text-primary transition-colors"
+                    >
+                      <i className={`fa-solid fa-chevron-down transition-transform duration-300 ${openMobileDropdown === item.name ? 'rotate-180 text-primary' : ''}`}></i>
+                    </button>
                   )}
-                </Link>
+                </div>
+                
                 {/* Mobile Dropdown */}
                 {item.dropdown && item.subItems && (
-                  <div className="flex flex-col mt-2 ml-8 gap-2 border-l-2 border-gray-100 pl-4">
-                    {item.subItems.map((sub, sIdx) => (
-                      <Link 
-                        key={sIdx} 
-                        href={sub.href}
-                        onClick={() => setIsMobileOpen(false)}
-                        className="text-sm font-medium text-gray-600 hover:text-primary py-1"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
+                  <div className={`flex flex-col gap-1 overflow-hidden transition-all duration-300 ${openMobileDropdown === item.name ? 'max-h-64 mt-2 opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="ml-4 pl-4 border-l-2 border-blue-100 flex flex-col gap-1 py-1">
+                      {item.subItems.map((sub, sIdx) => (
+                        <Link 
+                          key={sIdx} 
+                          href={sub.href}
+                          onClick={() => setIsMobileOpen(false)}
+                          className="text-sm font-medium text-gray-600 hover:text-primary hover:bg-blue-50 py-2 px-3 rounded-xl transition-colors"
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
