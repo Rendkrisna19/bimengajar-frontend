@@ -11,6 +11,7 @@ interface Ulasan {
   instansi: string;
   komentar: string;
   rating: number;
+  created_at?: string;
 }
 
 export default function TestimonialSection() {

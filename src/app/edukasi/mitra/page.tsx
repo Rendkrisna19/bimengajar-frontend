@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Swal from 'sweetalert2';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import PageHeader from '@/components/ui/PageHeader';
+import FloatingAction from '@/components/ui/FloatingAction';
 
 interface Mitra {
   id: number;
