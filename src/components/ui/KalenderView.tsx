@@ -48,7 +48,7 @@ export default function KalenderView() {
       });
       setKegiatan(res.data.data);
     } catch (error) {
-      console.error('Error fetching calendar:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -89,16 +89,16 @@ export default function KalenderView() {
       days.push(
         <div
           key={day.toString()}
-          className={`min-h-[100px] border-b border-r border-gray-200 p-2 transition-all ${
+          className={`min-h-[100px] border-b border-r border-gray-200 dark:border-gray-800 p-2 transition-all ${
             !isSameMonth(day, monthStart)
-              ? 'bg-gray-50 text-gray-400'
+              ? 'bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600'
               : isSameDay(day, new Date())
-              ? 'bg-blue-50/30 text-[#003366] font-semibold'
-              : 'bg-white text-gray-700'
+              ? 'bg-blue-50/30 dark:bg-blue-900/20 text-[#003366] dark:text-blue-400 font-semibold'
+              : 'bg-white dark:bg-black text-gray-700 dark:text-gray-300'
           }`}
         >
           <div className="flex justify-end">
-            <span className={`text-sm ${isSameDay(day, new Date()) ? 'bg-[#003366] text-white w-6 h-6 flex items-center justify-center rounded-full' : ''}`}>
+            <span className={`text-sm ${isSameDay(day, new Date()) ? 'bg-[#003366] dark:bg-primary text-white w-6 h-6 flex items-center justify-center rounded-full' : ''}`}>
               {formattedDate}
             </span>
           </div>
@@ -109,8 +109,8 @@ export default function KalenderView() {
                 key={idx} 
                 className={`text-[10px] p-1.5 rounded-md leading-tight border-l-2 shadow-sm truncate ${
                   evt.status === 'Terlaksana' 
-                    ? 'bg-green-50 border-green-500 text-green-700' 
-                    : 'bg-orange-50 border-orange-500 text-orange-700'
+                    ? 'bg-green-50 dark:bg-green-900/30 border-green-500 text-green-700 dark:text-green-400' 
+                    : 'bg-orange-50 dark:bg-orange-900/30 border-orange-500 text-orange-700 dark:text-orange-400'
                 }`}
                 title={`${evt.judul}\n${evt.lokasi || ''}`}
               >
@@ -132,8 +132,7 @@ export default function KalenderView() {
   }
 
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 relative">
-      {/* Controls */}
+    <div className="w-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 relative">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center bg-[#003366] text-white rounded-lg shadow-sm hover:bg-blue-900 transition-colors">
@@ -144,33 +143,30 @@ export default function KalenderView() {
           </button>
           <button 
             onClick={() => setCurrentDate(new Date())} 
-            className="ml-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors"
+            className="ml-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           >
             Hari Ini
           </button>
         </div>
-        <h3 className="text-xl md:text-2xl font-bold text-gray-800 uppercase tracking-wide">
+        <h3 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white uppercase tracking-wide">
           {format(currentDate, 'MMMM yyyy', { locale: id })}
         </h3>
-        <div className="w-24"></div> {/* Spacer */}
+        <div className="w-24"></div>
       </div>
 
-      {/* Calendar */}
-      <div className="w-full bg-white border-t border-l border-gray-200 rounded-xl overflow-hidden shadow-sm">
-        {/* Days Header */}
-        <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+      <div className="w-full bg-white dark:bg-black border-t border-l border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
+        <div className="grid grid-cols-7 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((dayName, i) => (
-            <div key={i} className="py-3 text-center text-xs font-bold text-gray-500 uppercase border-r border-gray-200">
+            <div key={i} className="py-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-gray-200 dark:border-gray-800">
               {dayName}
             </div>
           ))}
         </div>
         
-        {/* Grid */}
         <div className="flex flex-col relative">
           {loading && (
-            <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
-              <i className="fa-solid fa-circle-notch animate-spin text-4xl text-[#003366]"></i>
+            <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-sm z-10 flex items-center justify-center">
+              <i className="fa-solid fa-circle-notch animate-spin text-4xl text-[#003366] dark:text-blue-400"></i>
             </div>
           )}
           {rows}
@@ -180,11 +176,11 @@ export default function KalenderView() {
       <div className="mt-6 flex items-center gap-6 justify-center text-sm font-medium">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-orange-400"></span>
-          <span className="text-gray-600">Belum Dilaksanakan</span>
+          <span className="text-gray-600 dark:text-gray-400">Belum Dilaksanakan</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-green-500"></span>
-          <span className="text-gray-600">Terlaksana</span>
+          <span className="text-gray-600 dark:text-gray-400">Terlaksana</span>
         </div>
       </div>
     </div>
