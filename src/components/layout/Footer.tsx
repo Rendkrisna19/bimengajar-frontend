@@ -21,7 +21,7 @@ export default function Footer() {
                   src="/images/logo.png" 
                   alt="Bank Indonesia" 
                   fill 
-                  className="object-contain object-left brightness-0 invert" 
+                  className="object-contain object-left" 
                 />
               </div>
             </Link>
