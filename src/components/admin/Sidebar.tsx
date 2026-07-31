@@ -77,24 +77,38 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
   return (
     <aside 
-      className={`relative h-full bg-white dark:bg-[#1e1e1e] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)]`}
+      className={`relative h-full bg-white dark:bg-[#1e1e1e] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)] overflow-hidden`}
     >
+      {/* Sidebar Texture Background (2.png) */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.015] pointer-events-none bg-repeat z-0"
+        style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '120px 120px' }}
+      ></div>
+
+      {/* Sidebar Center Seal Watermark (1.png) */}
+      {!isCollapsed && (
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] opacity-[0.04] dark:opacity-[0.02] pointer-events-none bg-no-repeat bg-center z-0"
+          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'contain' }}
+        ></div>
+      )}
+
       {/* Logo Area */}
-      <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-gray-800 px-3 shrink-0 overflow-hidden">
+      <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-gray-800 px-3 shrink-0 overflow-hidden relative z-10">
         {/* Logo tetap menggunakan logo.png baik ditarik maupun dilebarkan */}
-        <div className={`relative ${isCollapsed ? 'w-10 h-10' : 'w-32 h-10'} transition-all duration-300 flex items-center justify-center`}>
+        <div className={`relative ${isCollapsed ? 'w-8 h-8' : 'w-36 h-10'} transition-all duration-300 flex items-center justify-center`}>
           <Image 
             src="/images/logo.png" 
             alt="Logo" 
             fill
-            className={`dark:brightness-200 transition-all duration-300 ${isCollapsed ? 'object-cover object-left' : 'object-contain'}`}
+            className="dark:brightness-200 transition-all duration-300 object-contain"
             priority 
           />
         </div>
       </div>
 
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto py-6 custom-scrollbar relative z-10">
         {menus.map((group, idx) => (
           <div key={idx} className="mb-8">
             {!isCollapsed && (
@@ -181,7 +195,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       </div>
 
       {/* Logout Area */}
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800 shrink-0">
+      <div className="p-4 border-t border-gray-100 dark:border-gray-800 shrink-0 relative z-10 bg-white/95 dark:bg-[#1e1e1e]/95 backdrop-blur-sm">
         <button 
           onClick={handleLogout}
           className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 w-full px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group`}
@@ -192,6 +206,14 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
           {!isCollapsed && <span className="text-[13px] font-bold">Log Out</span>}
         </button>
       </div>
+
+      {/* Sidebar Bottom Ornament (5.png) */}
+      {!isCollapsed && (
+        <div 
+          className="absolute -bottom-10 -right-10 w-[220px] h-[220px] opacity-[0.25] dark:opacity-[0.15] pointer-events-none bg-no-repeat bg-right-bottom z-0 mix-blend-multiply dark:mix-blend-normal"
+          style={{ backgroundImage: 'url(/images/element/5.png)', backgroundSize: '160px auto' }}
+        ></div>
+      )}
     </aside>
   );
 }
