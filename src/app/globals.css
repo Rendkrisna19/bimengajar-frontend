@@ -149,3 +149,180 @@
   }
 }
 
+/* ==========================================
+   SWEETALERT2 CUSTOM PREMIUM STYLING
+   ========================================== */
+.swal2-container {
+  z-index: 99999 !important;
+}
+
+.swal2-popup {
+  font-family: var(--font-sans) !important;
+  border-radius: 32px !important;
+  padding: 2.75rem 2rem 2.25rem 2rem !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 32, 74, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  background: #ffffff !important;
+  position: relative !important;
+  overflow: hidden !important; /* To clip the corner decorations */
+}
+
+/* Custom Corner Sash Decorations (matching user's reference) */
+.swal2-popup::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 110px;
+  height: 110px;
+  background: 
+    radial-gradient(circle at 0 0, transparent 48%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.2) 53%, transparent 53%),
+    radial-gradient(circle at 0 0, #002244 0%, #003366 60%, #004488 72%, transparent 73%);
+  border-bottom-right-radius: 90px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.swal2-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  right: -12px;
+  width: 110px;
+  height: 110px;
+  background: 
+    radial-gradient(circle at 100% 100%, transparent 48%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.2) 53%, transparent 53%),
+    radial-gradient(circle at 100% 100%, #002244 0%, #003366 60%, #004488 72%, transparent 73%);
+  border-top-left-radius: 90px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.swal2-title {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  color: #00204a !important; /* Muted deep navy */
+  margin-bottom: 0.5rem !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.2 !important;
+  margin-top: 1rem !important;
+}
+
+.swal2-html-container {
+  font-size: 1.05rem !important;
+  line-height: 1.625 !important;
+  color: #4b6584 !important;
+  margin: 0.5rem 0 2rem 0 !important;
+  position: relative;
+}
+
+/* Horizontal line under the text with a dark blue accent marker in the center */
+.swal2-html-container::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #e2e8f0 15%, #003366 45%, #003366 55%, #e2e8f0 85%, transparent);
+  margin-top: 1.75rem;
+}
+
+/* Actions Wrapper */
+.swal2-actions {
+  gap: 16px !important;
+  margin-top: 1.75rem !important;
+  width: 100% !important;
+}
+
+/* Common button styles */
+.swal2-styled {
+  padding: 0.875rem 2.25rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important; /* Pill shaped buttons */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  outline: none !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Confirm Button (Primary blue BI gradient with auto checkmark icon) */
+.swal2-styled.swal2-confirm {
+  background: linear-gradient(135deg, #002244 0%, #003366 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3) !important;
+  min-width: 150px;
+  border: none !important;
+}
+
+
+
+.swal2-styled.swal2-confirm:hover {
+  background: linear-gradient(135deg, #001122 0%, #002244 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 51, 102, 0.4) !important;
+}
+
+.swal2-styled.swal2-confirm:focus {
+  box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.25) !important;
+}
+
+/* Cancel Button */
+.swal2-styled.swal2-cancel {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.swal2-styled.swal2-cancel:hover {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  transform: translateY(-2px);
+}
+
+/* SweetAlert Icons */
+.swal2-icon {
+  margin: 0.5rem auto 1rem auto !important;
+  border-width: 4px !important;
+  scale: 1.1;
+  background: transparent !important;
+}
+
+/* Custom Success Icon styles to match user's custom green checkmark */
+.swal2-icon.swal2-success {
+  border-color: #00a86b !important;
+  color: #00a86b !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #00a86b !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: rgba(0, 168, 107, 0.15) !important;
+}
+
+/* Error/X Icon */
+.swal2-icon.swal2-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: #ef4444 !important;
+}
+
+/* Warning Icon */
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+/* Info Icon */
+.swal2-icon.swal2-info {
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+}
+
