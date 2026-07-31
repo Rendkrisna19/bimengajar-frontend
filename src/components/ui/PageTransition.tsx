@@ -12,7 +12,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
     gsap.fromTo(
       containerRef.current,
       { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', clearProps: 'all' }
     );
   }, { scope: containerRef });
 
