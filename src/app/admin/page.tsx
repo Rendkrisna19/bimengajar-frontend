@@ -67,11 +67,16 @@ export default function DashboardPage() {
     { title: "Berita Aktif", value: data.berita_aktif.toLocaleString('id-ID'), trend: "-2.1%", icon: "fa-regular fa-newspaper", color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30" },
     { title: "Kunjungan Web", value: realtimeVisits.toLocaleString('id-ID'), trend: "+24.8%", icon: "fa-solid fa-globe", color: "text-green-600", bg: "bg-green-100 dark:bg-green-900/30" },
   ];
-
   return (
-    <div className="flex flex-col gap-6 w-full h-full px-2">
+    <div className="flex flex-col gap-6 w-full h-full px-2 relative overflow-visible">
+      {/* Dashboard Top-Right Ornament (5.png) */}
+      <div 
+        className="absolute -top-24 -right-10 w-[320px] h-64 opacity-[0.38] dark:opacity-[0.25] pointer-events-none bg-no-repeat bg-right-top z-0 mix-blend-multiply dark:mix-blend-normal"
+        style={{ backgroundImage: 'url(/images/element/5.png)', backgroundSize: 'contain' }}
+      ></div>
+
       {/* Header Info */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between relative z-10">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard Analytics</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Ringkasan data operasional BI Mengajar Siantar.</p>

@@ -76,13 +76,21 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
   return (
     <aside 
-      className={`relative h-full bg-[#002a5c] dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40`}
+      className={`relative h-full bg-[#002a5c] dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 overflow-hidden`}
     >
       {/* Background element for Sidebar */}
       <div 
         className="absolute inset-0 opacity-[0.06] pointer-events-none bg-no-repeat bg-cover bg-center z-0"
         style={{ backgroundImage: 'url("/images/element/2.png")' }} 
       ></div>
+
+      {/* Sidebar Center Seal Watermark (1.png) */}
+      {!isCollapsed && (
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] opacity-[0.04] dark:opacity-[0.02] pointer-events-none bg-no-repeat bg-center z-0"
+          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'contain' }}
+        ></div>
+      )}
 
       {/* Logo Area */}
       <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">
@@ -208,6 +216,14 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
           {!isCollapsed && <span className="text-[13px] font-bold">Log Out</span>}
         </button>
       </div>
+
+      {/* Sidebar Bottom Ornament (5.png) */}
+      {!isCollapsed && (
+        <div 
+          className="absolute -bottom-10 -right-10 w-[220px] h-[220px] opacity-[0.25] dark:opacity-[0.15] pointer-events-none bg-no-repeat bg-right-bottom z-0 mix-blend-multiply dark:mix-blend-normal"
+          style={{ backgroundImage: 'url(/images/element/5.png)', backgroundSize: '160px auto' }}
+        ></div>
+      )}
     </aside>
   );
 }
