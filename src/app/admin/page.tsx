@@ -6,7 +6,9 @@ export default function DashboardPage() {
     pengajuan_kunjungan: 0,
     konten_edukasi: 0,
     berita_aktif: 0,
-    kunjungan_web: 8920
+    kunjungan_web: 8920,
+    tren_pengajuan: Array(12).fill(0),
+    proporsi_materi: [] as {name: string, value: number}[]
   });
 
   const [realtimeVisits, setRealtimeVisits] = useState(8920);
@@ -116,27 +118,40 @@ export default function DashboardPage() {
         {/* Line Chart Simulation (CSS Based) */}
         <div className="lg:col-span-2 bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-bold text-gray-800 dark:text-white">Tren Kunjungan Website</h3>
+            <h3 className="text-base font-bold text-gray-800 dark:text-white">Tren Pengajuan Edukasi</h3>
             <select className="bg-gray-50 dark:bg-[#252525] border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-lg px-3 py-1.5 outline-none">
               <option>Tahun Ini</option>
-              <option>Bulan Ini</option>
             </select>
           </div>
           <div className="relative h-64 w-full flex items-end justify-between gap-2 px-2 pb-6 pt-10 border-b border-l border-gray-200 dark:border-gray-700">
             {/* Y Axis Labels */}
             <div className="absolute left-0 top-0 bottom-6 -ml-8 flex flex-col justify-between text-[10px] text-gray-400 h-full py-2">
-              <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+              {(() => {
+                const max = Math.max(...data.tren_pengajuan, 10);
+                return (
+                  <>
+                    <span>{max}</span>
+                    <span>{Math.round(max * 0.75)}</span>
+                    <span>{Math.round(max * 0.5)}</span>
+                    <span>{Math.round(max * 0.25)}</span>
+                    <span>0</span>
+                  </>
+                );
+              })()}
             </div>
             
             {/* CSS Bar Chart Simulation */}
-            {[40, 70, 45, 90, 65, 85, 55, 75, 40, 60, 80, 50].map((h, i) => (
+            {data.tren_pengajuan.map((h: number, i: number) => {
+              const max = Math.max(...data.tren_pengajuan, 10);
+              const percentage = (h / max) * 100;
+              return (
               <div key={i} className="relative w-full flex justify-center group h-full items-end">
                 <div 
                   className="w-full max-w-[24px] bg-primary/20 dark:bg-blue-900/40 rounded-t-sm hover:bg-primary dark:hover:bg-blue-500 transition-colors relative cursor-pointer"
-                  style={{ height: `${h}%` }}
+                  style={{ height: `${percentage}%` }}
                 >
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                    {h}k
+                    {h}
                   </div>
                 </div>
                 {/* X Axis Labels */}
@@ -144,7 +159,7 @@ export default function DashboardPage() {
                   {['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'][i]}
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         </div>
 
@@ -155,35 +170,49 @@ export default function DashboardPage() {
           <div className="flex-1 flex flex-col items-center justify-center">
             {/* CSS Conic Gradient Donut */}
             <div className="relative w-40 h-40 rounded-full flex items-center justify-center shadow-inner" 
-                 style={{ background: 'conic-gradient(#003366 0% 45%, #eab308 45% 75%, #f97316 75% 100%)' }}>
+                 style={{ 
+                   background: data.proporsi_materi.length > 0 
+                     ? (() => {
+                         let currentPercent = 0;
+                         const colors = ['#003366', '#eab308', '#f97316', '#3b82f6', '#22c55e', '#a855f7'];
+                         const total = data.proporsi_materi.reduce((sum, item) => sum + item.value, 0);
+                         if (total === 0) return 'gray';
+                         const gradientParts = data.proporsi_materi.map((item, idx) => {
+                           const percent = (item.value / total) * 100;
+                           const start = currentPercent;
+                           currentPercent += percent;
+                           return `${colors[idx % colors.length]} ${start}% ${currentPercent}%`;
+                         });
+                         return `conic-gradient(${gradientParts.join(', ')})`;
+                       })()
+                     : '#f3f4f6'
+                 }}>
                <div className="absolute w-24 h-24 bg-white dark:bg-[#1e1e1e] rounded-full flex flex-col items-center justify-center shadow-lg">
-                 <span className="text-2xl font-bold text-gray-800 dark:text-white">128</span>
+                 <span className="text-2xl font-bold text-gray-800 dark:text-white">
+                   {data.proporsi_materi.reduce((sum, item) => sum + item.value, 0)}
+                 </span>
                  <span className="text-[10px] text-gray-500">Total Konten</span>
                </div>
             </div>
 
             <div className="w-full mt-8 flex flex-col gap-3">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-primary"></span>
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">Kebanksentralan</span>
-                </div>
-                <span className="font-bold text-gray-800 dark:text-white">45%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-accent-warning"></span>
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">QRIS</span>
-                </div>
-                <span className="font-bold text-gray-800 dark:text-white">30%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-accent-cta"></span>
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">CBP Rupiah</span>
-                </div>
-                <span className="font-bold text-gray-800 dark:text-white">25%</span>
-              </div>
+              {data.proporsi_materi.map((item, idx) => {
+                const colors = ['bg-primary', 'bg-[#eab308]', 'bg-[#f97316]', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
+                const total = data.proporsi_materi.reduce((sum, item) => sum + item.value, 0);
+                const percent = total > 0 ? Math.round((item.value / total) * 100) : 0;
+                return (
+                  <div key={idx} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-3 h-3 rounded-full ${colors[idx % colors.length]}`}></span>
+                      <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[120px]" title={item.name}>{item.name}</span>
+                    </div>
+                    <span className="font-bold text-gray-800 dark:text-white">{percent}%</span>
+                  </div>
+                )
+              })}
+              {data.proporsi_materi.length === 0 && (
+                <div className="text-center text-sm text-gray-400">Belum ada data kategori.</div>
+              )}
             </div>
           </div>
         </div>
