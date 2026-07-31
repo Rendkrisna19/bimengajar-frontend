@@ -39,7 +39,7 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
     
     try {
       if (sendMessage) {
-        // @ts-expect-error - AI SDK version mismatch on UIMessage type
+        // Adapt to the new API: sendMessage takes a message object or array
         await sendMessage({ role: 'user', content: textToSend } as any);
       } else {
         alert("Fungsi sendMessage tidak ditemukan pada AI SDK.");
