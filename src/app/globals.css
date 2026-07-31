@@ -326,3 +326,13 @@
   color: #3b82f6 !important;
 }
 
+/* Custom Scrollbar - Hidden but still scrollable */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
