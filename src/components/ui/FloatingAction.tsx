@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import KalenderModal from './KalenderModal';
+import Chatbot from '../Chatbot';
 
 export default function FloatingAction() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isKalenderOpen, setIsKalenderOpen] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleCollabClick = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -87,6 +89,23 @@ export default function FloatingAction() {
                 <i className="fa-solid fa-book-open text-lg"></i>
               </button>
             </div>
+            {/* Button 4: AI Assistant */}
+            <div className="relative group/btn">
+              {/* Tooltip */}
+              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white text-gray-800 text-xs font-bold rounded-lg shadow-lg opacity-0 invisible group-hover/btn:opacity-100 group-hover/btn:visible transition-all whitespace-nowrap border border-gray-100">
+                AI Assistant
+                <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-white rotate-45 border-r border-t border-gray-100"></div>
+              </div>
+              <button
+                onClick={() => {
+                  setIsChatbotOpen(true);
+                  setIsOpen(false);
+                }}
+                className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
+              >
+                <i className="fa-solid fa-robot text-lg"></i>
+              </button>
+            </div>
           </div>
         )}
 
@@ -104,6 +123,9 @@ export default function FloatingAction() {
 
       {/* Render Calendar Modal */}
       <KalenderModal isOpen={isKalenderOpen} onClose={() => setIsKalenderOpen(false)} />
+      
+      {/* Render Chatbot Window */}
+      <Chatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </>
   );
 }
