@@ -247,10 +247,10 @@ export default function AdminPetaEdukasiPage() {
 
       if (formData.id) {
         await axios.post(`${API_URL}/locations/${formData.id}`, payload, config);
-        Swal.fire('Berhasil', 'Data lokasi diperbarui!', 'success');
+        Swal.fire({ title: 'Berhasil', text: 'Data lokasi diperbarui!', icon: 'success', showConfirmButton: false, timer: 1500 });
       } else {
         await axios.post(`${API_URL}/locations`, payload, config);
-        Swal.fire('Berhasil', 'Lokasi baru ditambahkan!', 'success');
+        Swal.fire({ title: 'Berhasil', text: 'Lokasi baru ditambahkan!', icon: 'success', showConfirmButton: false, timer: 1500 });
       }
       
       setView('list');
@@ -275,7 +275,7 @@ export default function AdminPetaEdukasiPage() {
       try {
         const token = localStorage.getItem('token');
         await axios.delete(`${API_URL}/locations/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-        Swal.fire('Terhapus!', 'Data lokasi telah dihapus.', 'success');
+        Swal.fire({ title: 'Terhapus!', text: 'Data lokasi telah dihapus.', icon: 'success', showConfirmButton: false, timer: 1500 });
         fetchLocations();
       } catch (err) {
         Swal.fire('Error', 'Gagal menghapus data', 'error');

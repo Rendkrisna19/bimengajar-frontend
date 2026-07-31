@@ -39,7 +39,8 @@ export default function RegisterPage() {
           title: 'Registrasi Berhasil!',
           text: 'Akun Anda telah dibuat. Silakan login untuk melanjutkan pengajuan kegiatan.',
           icon: 'success',
-          confirmButtonColor: '#003366',
+          showConfirmButton: false,
+          timer: 1500,
           background: '#ffffff',
         }).then(() => {
           router.push('/login');

@@ -66,10 +66,20 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#003366',
-      confirmButtonText: 'Ya, Keluar'
+      confirmButtonText: 'Ya, Keluar',
+      cancelButtonText: 'Batal'
     }).then((result) => {
       if (result.isConfirmed) {
-        router.push('/login');
+        Swal.fire({
+          title: 'Berhasil Keluar',
+          text: 'Anda telah keluar dari sistem.',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1500,
+          background: '#ffffff',
+        }).then(() => {
+          router.push('/login');
+        });
       }
     });
   };

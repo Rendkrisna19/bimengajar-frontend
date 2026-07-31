@@ -47,7 +47,8 @@ export default function LoginPage() {
           title: 'Login Berhasil!',
           text: msg,
           icon: 'success',
-          confirmButtonColor: '#003366',
+          showConfirmButton: false,
+          timer: 1500,
           background: '#ffffff',
         }).then(() => {
           router.push(dest);
