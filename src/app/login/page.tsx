@@ -39,7 +39,7 @@ export default function LoginPage() {
         }
 
         const role = data.user?.role || 'user';
-        const dest = role === 'admin' ? '/admin' : '/dashboard';
+        const dest = role === 'admin' ? '/admin' : '/user/dashboard';
         const msg = role === 'admin' ? 'Selamat datang di Dashboard Admin.' : `Selamat datang, ${data.user?.name || 'Pengguna'}!`;
 
         Swal.fire({

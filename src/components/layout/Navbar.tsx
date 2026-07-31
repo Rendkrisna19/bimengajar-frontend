@@ -165,7 +165,7 @@ export default function Navbar() {
         {user ? (
           <div className="relative group shrink-0">
             <Link 
-              href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+              href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
               className="flex-shrink-0 px-5 py-1.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-3 whitespace-nowrap cursor-pointer"
             >
               <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs">
@@ -182,7 +182,7 @@ export default function Navbar() {
               </div>
               
               <Link 
-                href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+                href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
                 className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
               >
                 <i className="fa-solid fa-house w-4 text-center"></i> Dashboard
@@ -190,7 +190,7 @@ export default function Navbar() {
               
               {user.role !== 'admin' && (
                 <Link 
-                  href="/dashboard/riwayat" 
+                  href="/user/dashboard/riwayat" 
                   className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
                 >
                   <i className="fa-solid fa-file-invoice w-4 text-center"></i> Riwayat Pengajuan
@@ -343,7 +343,7 @@ export default function Navbar() {
               </div>
               <div className={`grid ${user.role === 'admin' ? 'grid-cols-1' : 'grid-cols-2'} gap-2`}>
                 <Link 
-                  href={user.role === 'admin' ? '/admin' : '/dashboard'} 
+                  href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
                   onClick={() => setIsMobileOpen(false)}
                   className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
                 >
@@ -352,7 +352,7 @@ export default function Navbar() {
                 </Link>
                 {user.role !== 'admin' && (
                   <Link 
-                    href="/dashboard/riwayat" 
+                    href="/user/dashboard/riwayat" 
                     onClick={() => setIsMobileOpen(false)}
                     className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
                   >
