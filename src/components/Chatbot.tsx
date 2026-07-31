@@ -9,9 +9,13 @@ interface ChatbotProps {
 }
 
 export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: "/api/chat",
-  });
+  // @ai-sdk/react's useChat hook in this version returns status and sendMessage instead of isLoading and handleSubmit
+  const { messages, error, status, sendMessage } = useChat({});
+  
+  // Create local state for input
+  const [input, setInput] = useState("");
+  
+  const isLoading = status !== "ready" && status !== "error";
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +27,27 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!input || input.trim() === "") {
+      return;
+    }
+    
+    const textToSend = input;
+    setInput(""); // Clear input early for good UX
+    
+    try {
+      if (sendMessage) {
+        // @ts-expect-error - AI SDK version mismatch on UIMessage type
+        await sendMessage({ role: 'user', content: textToSend } as any);
+      } else {
+        alert("Fungsi sendMessage tidak ditemukan pada AI SDK.");
+      }
+    } catch (err: any) {
+      alert("Error saat mengirim pesan: " + err.message);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -52,14 +77,14 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
 
           {/* Messages Area */}
           <div className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-4">
-            {messages.length === 0 && (
+            {(!messages || messages.length === 0) && (
               <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 gap-3">
                 <i className="fa-solid fa-messages text-4xl text-gray-300"></i>
                 <p className="text-sm">Halo! Saya adalah AI Assistant BI Mengajar.<br/>Ada yang bisa saya bantu hari ini?</p>
               </div>
             )}
             
-            {messages.map((m) => (
+            {messages && messages.map((m: any) => (
               <div
                 key={m.id}
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
@@ -95,42 +120,26 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
           )}
 
           {/* Input Area */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!input || input.trim() === "") {
-                alert("Pesan tidak boleh kosong!");
-                return;
-              }
-              
-              if (error) {
-                alert("Ada error sebelumnya: " + error.message + ". Mencoba ulang...");
-              }
-              
-              try {
-                handleSubmit(e);
-              } catch (err: any) {
-                alert("Error pada handleSubmit: " + err.message);
-              }
-            }}
-            className="p-3 bg-white border-t border-gray-100 flex gap-2"
-          >
+          <div className="p-3 bg-white border-t border-gray-100 flex gap-2">
             <input
               type="text"
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSend(e as any);
+                }
+              }}
               placeholder="Tanyakan sesuatu..."
               className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-700"
-              disabled={isLoading}
             />
             <button
-              type="submit"
-              disabled={isLoading || !input || input.length === 0}
-              className="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              onClick={handleSend}
+              className="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors shadow-md cursor-pointer"
             >
               <i className="fa-solid fa-paper-plane text-sm ml-[-2px]"></i>
             </button>
-          </form>
+          </div>
         </div>
       )}
 

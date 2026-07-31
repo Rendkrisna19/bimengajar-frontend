@@ -90,14 +90,14 @@ export default function NewsSection() {
                       try {
                         let img = article.image;
                         if (typeof img === 'string') img = JSON.parse(img);
-                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://placehold.co/400x300?text=No+Image';
                       } catch(e) {
-                        return 'https://via.placeholder.com/400x300?text=No+Image';
+                        return 'https://placehold.co/400x300?text=No+Image';
                       }
                     })()}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=No+Image'; }}
                   />
                   {/* Badge */}
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-700 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider">
@@ -169,14 +169,14 @@ export default function NewsSection() {
                       try {
                         let img = news.image;
                         if (typeof img === 'string') img = JSON.parse(img);
-                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://placehold.co/400x300?text=No+Image';
                       } catch(e) {
-                        return 'https://via.placeholder.com/400x300?text=No+Image';
+                        return 'https://placehold.co/400x300?text=No+Image';
                       }
                     })()}
                     alt={news.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=No+Image'; }}
                   />
                   {/* Badge */}
                   <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider">

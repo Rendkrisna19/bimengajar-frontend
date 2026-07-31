@@ -16,26 +16,29 @@ export async function POST(req: Request) {
     // 1. Ambil embedding gratis menggunakan HuggingFace
     let vector: number[] = [];
     if (process.env.HF_TOKEN) {
-      const embeddingResponse = await fetch(
-        'https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.HF_TOKEN}`,
-          },
-          body: JSON.stringify({ inputs: [lastMessage] }),
-        }
-      );
+      try {
+        const embeddingResponse = await fetch(
+          'https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.HF_TOKEN}`,
+            },
+            body: JSON.stringify({ inputs: [lastMessage] }),
+          }
+        );
 
-      const embeddingData = await embeddingResponse.json();
-      
-      if (embeddingData.error) {
-        // Sering terjadi jika model HF sedang "loading" (cold start)
-        return new Response(`HuggingFace Error: ${embeddingData.error}. Tunggu sebentar dan coba lagi.`, { status: 503 });
+        const embeddingData = await embeddingResponse.json();
+        
+        if (embeddingData.error) {
+          console.warn(`HuggingFace API Error: ${embeddingData.error}. Melanjutkan tanpa konteks database.`);
+        } else {
+          vector = embeddingData[0];
+        }
+      } catch (err: any) {
+        console.warn(`HuggingFace Fetch Failed: ${err.message}. Melanjutkan tanpa konteks database.`);
       }
-      
-      vector = embeddingData[0];
     }
 
     // 2. Query ke Pinecone Vector Database
@@ -56,7 +59,7 @@ export async function POST(req: Request) {
           .join('\n\n');
       } catch (error: any) {
         console.error("Pinecone Error:", error);
-        return new Response(`Pinecone Error: ${error.message || "Gagal menghubungi database."}`, { status: 500 });
+        throw new Error(`Pinecone Failed: ${error.message}`);
       }
     }
 
@@ -78,13 +81,17 @@ ${contextText ? contextText : "Belum ada dokumen pendukung di database saat ini.
     }
 
     // 4. Stream response
-    const result = await streamText({
-      model: groq('llama3-8b-8192'),
-      system: systemPrompt,
-      messages,
-    });
+    try {
+      const result = await streamText({
+        model: groq('llama3-8b-8192'),
+        system: systemPrompt,
+        messages,
+      });
 
-    return result.toTextStreamResponse();
+      return result.toTextStreamResponse();
+    } catch (err: any) {
+      throw new Error(`Groq LLM Failed: ${err.message}`);
+    }
   } catch (error: any) {
     console.error("Chat API Error:", error);
     return new Response(`Server Error: ${error.message || "Terjadi kesalahan pada server"}`, { status: 500 });
