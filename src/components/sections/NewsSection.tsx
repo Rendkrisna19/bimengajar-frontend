@@ -61,7 +61,7 @@ export default function NewsSection() {
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 flex items-center justify-between relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Artikel Terbaru</h2>
-        <Link href="/berita" className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-primary font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
+        <Link href="/artikel" className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-primary font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
           Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
         </Link>
       </div>
@@ -80,7 +80,7 @@ export default function NewsSection() {
             {(articles.length >= 4 ? duplicatedArticles : articles).map((article, idx) => (
               <Link 
                 key={`article-${article.id}-${idx}`}
-                href={`/berita/${article.slug}`}
+                href={`/artikel/${article.slug}`}
                 className="w-[320px] md:w-[380px] bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Image Section */}

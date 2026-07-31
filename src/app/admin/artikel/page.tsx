@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import Image from 'next/image';
 import API_URL from '@/lib/api';
 
-interface NewsItem {
+interface Article {
   id: number;
   title: string;
   slug: string;
@@ -14,12 +14,11 @@ interface NewsItem {
   image: string[];
   description: string;
   content: string;
-  category: string;
   published_at: string;
 }
 
-export default function AdminBeritaPage() {
-  const [news, setNews] = useState<NewsItem[]>([]);
+export default function AdminArtikelPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
   const [view, setView] = useState<'list' | 'form'>('list');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -39,50 +38,50 @@ export default function AdminBeritaPage() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
   useEffect(() => {
-    fetchNews();
+    fetchArticles();
   }, []);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, itemsPerPage]);
 
-  const fetchNews = async () => {
+  const fetchArticles = async () => {
     try {
-      const res = await axios.get(`${API_URL}/news?all=true&category=berita`);
+      const res = await axios.get(`${API_URL}/articles?all=true`);
       if (res.data.status === 'success') {
-        setNews(res.data.data);
+        setArticles(res.data.data);
       }
     } catch (err) {
-      console.error('Failed to fetch news', err);
+      console.error('Failed to fetch articles', err);
     }
   };
 
-  const filteredNews = news.filter(item => {
-    return item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.author.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredArticles = articles.filter(art => {
+    return art.title.toLowerCase().includes(searchQuery.toLowerCase()) || art.author.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredNews.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
+  const currentItems = filteredArticles.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
 
-  const handleOpenForm = (item: NewsItem | null = null) => {
-    if (item) {
+  const handleOpenForm = (art: Article | null = null) => {
+    if (art) {
       setFormData({
-        id: item.id,
-        title: item.title,
-        author: item.author,
-        existing_images: item.image || [],
+        id: art.id,
+        title: art.title,
+        author: art.author,
+        existing_images: art.image || [],
         new_images: [],
-        description: item.description || '',
-        content: item.content || '',
-        published_at: item.published_at ? new Date(item.published_at).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+        description: art.description || '',
+        content: art.content || '',
+        published_at: art.published_at ? new Date(art.published_at).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
       });
     } else {
       setFormData({
         id: null,
         title: '',
-        author: 'Admin BI',
+        author: 'Admin',
         existing_images: [],
         new_images: [],
         description: '',
@@ -126,7 +125,6 @@ export default function AdminBeritaPage() {
       payload.append('description', formData.description);
       payload.append('content', formData.content);
       payload.append('published_at', formData.published_at);
-      payload.append('category', 'berita'); // Selalu set kategori berita
       
       formData.existing_images.forEach(img => {
         payload.append('existing_images[]', img);
@@ -137,17 +135,15 @@ export default function AdminBeritaPage() {
       });
 
       if (formData.id) {
-        // Karena API Laravel di update kadang bermasalah dengan method spoofing untuk FormData multipart, 
-        // pastikan route update mendukung POST method di API route-nya (biasanya Route::post('news/{id}', update))
-        await axios.post(`${API_URL}/news/${formData.id}`, payload, config);
-        Swal.fire({ title: 'Berhasil', text: 'Berita diperbarui!', icon: 'success', showConfirmButton: false, timer: 1500 });
+        await axios.post(`${API_URL}/articles/${formData.id}`, payload, config);
+        Swal.fire({ title: 'Berhasil', text: 'Artikel diperbarui!', icon: 'success', showConfirmButton: false, timer: 1500 });
       } else {
-        await axios.post(`${API_URL}/news`, payload, config);
-        Swal.fire({ title: 'Berhasil', text: 'Berita baru ditambahkan!', icon: 'success', showConfirmButton: false, timer: 1500 });
+        await axios.post(`${API_URL}/articles`, payload, config);
+        Swal.fire({ title: 'Berhasil', text: 'Artikel baru ditambahkan!', icon: 'success', showConfirmButton: false, timer: 1500 });
       }
       
       setView('list');
-      fetchNews();
+      fetchArticles();
     } catch (err: any) {
       Swal.fire('Gagal', err.response?.data?.message || 'Terjadi kesalahan', 'error');
     } finally {
@@ -168,9 +164,9 @@ export default function AdminBeritaPage() {
     if (result.isConfirmed) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`${API_URL}/news/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-        Swal.fire({ title: 'Terhapus!', text: 'Berita telah dihapus.', icon: 'success', showConfirmButton: false, timer: 1500 });
-        fetchNews();
+        await axios.delete(`${API_URL}/articles/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        Swal.fire({ title: 'Terhapus!', text: 'Artikel telah dihapus.', icon: 'success', showConfirmButton: false, timer: 1500 });
+        fetchArticles();
       } catch (err) {
         Swal.fire('Error', 'Gagal menghapus data', 'error');
       }
@@ -183,11 +179,11 @@ export default function AdminBeritaPage() {
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm p-6 border border-gray-100 dark:border-gray-800">
           <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Berita</h2>
-              <p className="text-gray-500 text-sm mt-1">Kelola konten berita terkini BI Mengajar.</p>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Artikel</h2>
+              <p className="text-gray-500 text-sm mt-1">Kelola konten artikel edukasi BI Mengajar.</p>
             </div>
             <button onClick={() => handleOpenForm()} className="bg-primary hover:bg-blue-800 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md transition-all hover:-translate-y-0.5">
-              <i className="fa-solid fa-plus"></i> Tambah Berita
+              <i className="fa-solid fa-plus"></i> Tambah Artikel
             </button>
           </div>
 
@@ -224,20 +220,20 @@ export default function AdminBeritaPage() {
               <thead>
                 <tr className="bg-primary text-white">
                   <th className="p-4 text-xs font-bold uppercase tracking-wider w-16 text-center">Gambar</th>
-                  <th className="p-4 text-xs font-bold uppercase tracking-wider">Judul Berita</th>
+                  <th className="p-4 text-xs font-bold uppercase tracking-wider">Judul Artikel</th>
                   <th className="p-4 text-xs font-bold uppercase tracking-wider">Penulis</th>
                   <th className="p-4 text-xs font-bold uppercase tracking-wider">Tanggal</th>
                   <th className="p-4 text-xs font-bold uppercase tracking-wider text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="text-slate-600 dark:text-gray-300 text-sm font-semibold divide-y divide-gray-100 dark:divide-gray-800">
-                {currentItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                {currentItems.map((art) => (
+                  <tr key={art.id} className="hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors">
                     <td className="p-4">
                       <div className="relative w-16 h-12 rounded overflow-hidden bg-gray-100 border border-slate-200">
                         <Image 
-                          src={(item.image && item.image.length > 0) ? item.image[0] : 'https://via.placeholder.com/150'} 
-                          alt={item.title} 
+                          src={(art.image && art.image.length > 0) ? art.image[0] : 'https://via.placeholder.com/150'} 
+                          alt={art.title} 
                           fill 
                           className="object-cover"
                           unoptimized 
@@ -245,18 +241,18 @@ export default function AdminBeritaPage() {
                       </div>
                     </td>
                     <td className="p-4 text-slate-800 dark:text-gray-200 font-bold">
-                      <div className="max-w-[200px] md:max-w-[300px] truncate">{item.title}</div>
+                      <div className="max-w-[200px] md:max-w-[300px] truncate">{art.title}</div>
                     </td>
-                    <td className="p-4">{item.author}</td>
+                    <td className="p-4">{art.author}</td>
                     <td className="p-4">
-                      {new Date(item.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(art.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-4">
-                        <button onClick={() => handleOpenForm(item)} className="text-primary hover:text-blue-900 transition-colors" title="Edit">
+                        <button onClick={() => handleOpenForm(art)} className="text-primary hover:text-blue-900 transition-colors" title="Edit">
                           <i className="fa-solid fa-pen-to-square text-base"></i>
                         </button>
-                        <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
+                        <button onClick={() => handleDelete(art.id)} className="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
                           <i className="fa-solid fa-trash-can text-base"></i>
                         </button>
                       </div>
@@ -265,7 +261,7 @@ export default function AdminBeritaPage() {
                 ))}
                 {currentItems.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-12 text-center text-slate-400 font-bold">Belum ada berita.</td>
+                    <td colSpan={5} className="p-12 text-center text-slate-400 font-bold">Belum ada artikel.</td>
                   </tr>
                 )}
               </tbody>
@@ -275,7 +271,7 @@ export default function AdminBeritaPage() {
           {totalPages > 0 && (
             <div className="flex justify-between items-center mt-6">
               <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-                Menampilkan <span className="text-slate-800 dark:text-gray-200">{indexOfFirstItem + 1}</span> - <span className="text-slate-800 dark:text-gray-200">{Math.min(indexOfLastItem, filteredNews.length)}</span> dari <span className="text-slate-800 dark:text-gray-200">{filteredNews.length}</span> data
+                Menampilkan <span className="text-slate-800 dark:text-gray-200">{indexOfFirstItem + 1}</span> - <span className="text-slate-800 dark:text-gray-200">{Math.min(indexOfLastItem, filteredArticles.length)}</span> dari <span className="text-slate-800 dark:text-gray-200">{filteredArticles.length}</span> data
               </span>
               <div className="flex gap-2">
                 <button 
@@ -310,12 +306,12 @@ export default function AdminBeritaPage() {
               </button>
               <div>
                 <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold uppercase tracking-wider">
-                  <span>Berita & Artikel</span>
+                  <span>Artikel Edukasi</span>
                   <span>/</span>
-                  <span>{formData.id ? 'Edit Berita' : 'Tambah Berita'}</span>
+                  <span>{formData.id ? 'Edit Artikel' : 'Tambah Artikel'}</span>
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-white mt-1">
-                  {formData.id ? 'Edit Detail Berita' : 'Tambah Berita Baru'}
+                  {formData.id ? 'Edit Detail Artikel' : 'Tambah Artikel Baru'}
                 </h2>
               </div>
             </div>
@@ -343,19 +339,19 @@ export default function AdminBeritaPage() {
           <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-3xl p-6 md:p-8 border border-slate-100 dark:border-gray-800 shadow-sm flex flex-col gap-6">
             
             <h4 className="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-gray-700 pb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
-              <i className="fa-regular fa-newspaper text-primary"></i> Detail Informasi Berita
+              <i className="fa-regular fa-newspaper text-primary"></i> Detail Informasi Artikel
             </h4>
 
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <div className="flex flex-col gap-1.5">
-                <label className="block text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider px-1">Judul Berita *</label>
+                <label className="block text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider px-1">Judul Artikel *</label>
                 <input 
                   type="text" 
                   required 
                   value={formData.title} 
                   onChange={e => setFormData({...formData, title: e.target.value})} 
                   className="w-full p-2.5 border border-slate-200 dark:border-gray-600 rounded-xl outline-none focus:border-primary/50 text-sm dark:bg-gray-700 text-slate-800 dark:text-white" 
-                  placeholder="Masukkan judul berita..."
+                  placeholder="Masukkan judul artikel..."
                 />
               </div>
 
@@ -398,10 +394,10 @@ export default function AdminBeritaPage() {
                       }
                     }}
                     className="hidden" 
-                    id="berita-image-upload"
+                    id="artikel-image-upload"
                   />
                   <label 
-                    htmlFor="berita-image-upload"
+                    htmlFor="artikel-image-upload"
                     className="w-full py-3 px-4 border-2 border-dashed border-slate-200 hover:border-primary/40 rounded-xl bg-slate-50/50 dark:bg-gray-700 hover:bg-slate-50 flex items-center justify-center gap-2 cursor-pointer transition-all text-xs font-bold text-slate-500 hover:text-primary"
                   >
                     <i className="fa-regular fa-image text-sm"></i> Klik untuk Memilih File Gambar
@@ -455,7 +451,7 @@ export default function AdminBeritaPage() {
                   value={formData.description} 
                   onChange={e => setFormData({...formData, description: e.target.value})} 
                   className="w-full p-2.5 border border-slate-200 dark:border-gray-600 rounded-xl outline-none focus:border-primary/50 text-sm dark:bg-gray-700 h-20 resize-none text-slate-800 dark:text-white" 
-                  placeholder="Tulis ringkasan berita..."
+                  placeholder="Tulis ringkasan artikel..."
                 ></textarea>
               </div>
 
@@ -465,7 +461,7 @@ export default function AdminBeritaPage() {
                   value={formData.content} 
                   onChange={e => setFormData({...formData, content: e.target.value})} 
                   className="w-full p-2.5 border border-slate-200 dark:border-gray-600 rounded-xl outline-none focus:border-primary/50 text-sm dark:bg-gray-700 h-40 text-slate-800 dark:text-white" 
-                  placeholder="Tulis konten berita selengkapnya..."
+                  placeholder="Tulis konten artikel selengkapnya..."
                 ></textarea>
               </div>
             </div>

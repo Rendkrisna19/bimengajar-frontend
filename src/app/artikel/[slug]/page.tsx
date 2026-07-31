@@ -39,7 +39,7 @@ export default function ArticleDetailPage() {
 
     const fetchArticleDetail = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/news/${slug}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles/${slug}`, {
           headers: { 'Accept': 'application/json' }
         });
         
@@ -52,7 +52,7 @@ export default function ArticleDetailPage() {
           setArticle(data.data);
           
           // Fetch related items for sidebar
-          const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/news?category=berita`);
+          const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles`);
           const otherData = await otherRes.json();
           
           if (otherData.status === 'success') {
@@ -102,7 +102,7 @@ export default function ArticleDetailPage() {
             <span>&gt;</span>
             <Link href="/aktivitas" className="hover:text-white transition-colors">Aktivitas</Link>
             <span>&gt;</span>
-            <span className="text-white font-medium capitalize">Detail Berita</span>
+            <span className="text-white font-medium capitalize">Detail Artikel</span>
           </div>
           
           <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight max-w-4xl mx-auto">{article.title}</h1>
@@ -179,7 +179,7 @@ export default function ArticleDetailPage() {
               <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm sticky top-24">
                 <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                   <i className="fa-solid fa-list text-primary"></i> 
-                  Baca Berita Lainnya
+                  Baca Artikel Lainnya
                 </h3>
                 
                 <div className="space-y-6">
@@ -187,7 +187,7 @@ export default function ArticleDetailPage() {
                     otherArticles.map(other => (
                       <Link 
                         key={other.id} 
-                        href={`/berita/${other.slug}`}
+                        href={`/artikel/${other.slug}`}
                         className="flex gap-4 group"
                       >
                         <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm">
@@ -211,7 +211,7 @@ export default function ArticleDetailPage() {
                       </Link>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500 text-center py-4">Belum ada berita lainnya.</p>
+                    <p className="text-sm text-gray-500 text-center py-4">Belum ada artikel lainnya.</p>
                   )}
                 </div>
                 

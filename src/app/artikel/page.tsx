@@ -30,7 +30,7 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/news?all=true&category=berita`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/articles?all=true`);
         const data = await res.json();
         if (data.status === 'success') {
           setArticles(data.data);
@@ -75,8 +75,8 @@ export default function BlogPage() {
             <span>&gt;</span>
             <span className="text-white font-medium">Blog</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Berita Terkini</h1>
-          <p className="text-blue-100 max-w-2xl mx-auto text-lg">Ikuti perkembangan terbaru dan informasi seputar program BI Mengajar di Kota Pematangsiantar.</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Artikel Edukasi</h1>
+          <p className="text-blue-100 max-w-2xl mx-auto text-lg">Ikuti perkembangan terbaru dan informasi edukatif seputar program BI Mengajar di Kota Pematangsiantar.</p>
         </div>
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -93,7 +93,7 @@ export default function BlogPage() {
               <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>
             </div>
           ) : articles.length === 0 ? (
-            <div className="text-center text-gray-500 py-16 text-xl">Belum ada berita yang diterbitkan.</div>
+            <div className="text-center text-gray-500 py-16 text-xl">Belum ada artikel yang diterbitkan.</div>
           ) : (
             <>
               {/* 4x2 Grid */}
@@ -101,7 +101,7 @@ export default function BlogPage() {
                 {currentItems.map((article) => (
                   <Link 
                     key={article.id} 
-                    href={`/berita/${article.slug}`}
+                    href={`/artikel/${article.slug}`}
                     className="article-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100"
                   >
                     <div className="relative h-48 w-full overflow-hidden">

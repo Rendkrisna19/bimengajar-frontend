@@ -35,8 +35,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     {
       category: "Aktivitas",
       items: [
-        { name: "Artikel", icon: "fa-regular fa-newspaper", href: "/admin/berita" },
-        { name: "Berita", icon: "fa-solid fa-bullhorn", href: "/admin/news" },
+        { name: "Artikel", icon: "fa-regular fa-newspaper", href: "/admin/artikel" },
+        { name: "Berita", icon: "fa-solid fa-bullhorn", href: "/admin/berita" },
         { name: "Dokumentasi", icon: "fa-regular fa-images", href: "/admin/dokumentasi" },
         { name: "Jadwal Kalender", icon: "fa-regular fa-calendar-check", href: "/admin/kalender" },
       ]
