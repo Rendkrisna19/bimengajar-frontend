@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Script from 'next/script';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import { useRouter } from 'next/navigation';
 
@@ -84,8 +85,11 @@ export default function LoginPage() {
   const inputNormal = `${inputBase} border-gray-200 focus:border-primary focus:bg-white`;
   const inputError = `${inputBase} border-red-400 bg-red-50 focus:border-red-500 focus:bg-red-50 text-red-700`;
 
+  const LottiePlayer = 'lottie-player' as any;
+
   return (
-    <main className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+    <main className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-slate-50">
+      <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" strategy="lazyOnload" />
       <ParticleBackground />
 
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] hidden md:block">
@@ -99,95 +103,123 @@ export default function LoginPage() {
         <i className="fa-solid fa-arrow-left"></i> Kembali ke Beranda
       </Link>
 
-      <div className="w-full max-w-[420px] bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-[0_20px_50px_rgba(0,51,102,0.1)] relative z-10">
-        <div className="flex flex-col items-center mb-8">
-          <div className="mb-6">
-            <Image
-              src="/images/logo.png"
-              alt="Logo BI Mengajar"
-              width={160}
-              height={50}
-              className="h-10 w-auto object-contain"
-              priority
+      {/* Split Pane Card Container */}
+      <div className="w-full max-w-[920px] bg-white border border-gray-100 rounded-3xl shadow-[0_20px_50px_rgba(0,51,102,0.08)] relative z-10 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        {/* Left Side: Lottie Animation (hidden on mobile, flex on desktop) */}
+        <div className="hidden md:flex flex-col items-center justify-center p-10 bg-slate-50/50 border-r border-gray-100 relative">
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #003366 1px, transparent 0)', backgroundSize: '16px 16px' }}>
+          </div>
+          <div className="w-full max-w-[360px] h-[360px] flex items-center justify-center relative z-10">
+            <LottiePlayer
+              src="/images/lottie/login.json"
+              background="transparent"
+              speed="1"
+              loop
+              autoplay
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Masuk ke Akun Anda</h1>
-          <p className="text-sm text-gray-500 mt-2 text-center">
-            Silakan login untuk mengakses layanan BI Mengajar.
-          </p>
+          <div className="text-center mt-4 relative z-10">
+            <h3 className="text-base font-extrabold text-primary tracking-wider uppercase">BI-MENGAJAR</h3>
+            <p className="text-xs text-slate-400 mt-1.5 max-w-[260px] leading-relaxed mx-auto">
+              Mari bersama-sama belajar dan berbagi kecintaan, kebanggaan, serta kepahaman tentang Rupiah.
+            </p>
+          </div>
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-5">
-          {/* Email Field */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-bold text-gray-700 px-1">Alamat Email</label>
-            <div className="relative group">
-              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
-                <i className="fa-regular fa-envelope"></i>
-              </div>
-              <input
-                type="email"
-                placeholder="Masukkan email admin..."
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
-                }}
-                required
-                className={fieldErrors.email ? inputError : inputNormal}
+        {/* Right Side: Login Form */}
+        <div className="p-8 md:p-10 flex flex-col justify-center">
+          <div className="flex flex-col items-center mb-8">
+            <div className="mb-6">
+              <Image
+                src="/images/logo.png"
+                alt="Logo BI Mengajar"
+                width={160}
+                height={50}
+                className="h-10 w-auto object-contain"
+                priority
               />
             </div>
-            {fieldErrors.email && (
-              <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
-                <i className="fa-solid fa-circle-exclamation"></i>
-                {fieldErrors.email}
-              </p>
-            )}
+            <h1 className="text-xl font-bold text-gray-800 tracking-tight">Masuk ke Akun Anda</h1>
+            <p className="text-xs text-gray-500 mt-1.5 text-center">
+              Silakan login untuk mengakses layanan BI Mengajar.
+            </p>
           </div>
 
-          {/* Password Field */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-bold text-gray-700 px-1">Password</label>
-            <div className="relative group">
-              <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
-                <i className="fa-solid fa-lock"></i>
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            {/* Email Field */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-gray-600 px-1">Alamat Email</label>
+              <div className="relative group">
+                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                  <i className="fa-regular fa-envelope"></i>
+                </div>
+                <input
+                  type="email"
+                  placeholder="Masukkan email admin..."
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
+                  }}
+                  required
+                  className={fieldErrors.email ? inputError : inputNormal}
+                />
               </div>
-              <input
-                type="password"
-                placeholder="Masukkan password..."
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
-                }}
-                required
-                className={fieldErrors.password ? inputError : inputNormal}
-              />
+              {fieldErrors.email && (
+                <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
+                  <i className="fa-solid fa-circle-exclamation"></i>
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
-            {fieldErrors.password && (
-              <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
-                <i className="fa-solid fa-circle-exclamation"></i>
-                {fieldErrors.password}
-              </p>
-            )}
+
+            {/* Password Field */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-gray-600 px-1">Password</label>
+              <div className="relative group">
+                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                  <i className="fa-solid fa-lock"></i>
+                </div>
+                <input
+                  type="password"
+                  placeholder="Masukkan password..."
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
+                  }}
+                  required
+                  className={fieldErrors.password ? inputError : inputNormal}
+                />
+              </div>
+              {fieldErrors.password && (
+                <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
+                  <i className="fa-solid fa-circle-exclamation"></i>
+                  {fieldErrors.password}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
+            >
+              {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Masuk ke Dashboard'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center border-t border-gray-100 pt-5">
+            <p className="text-xs text-gray-500">
+              Belum punya akun?{' '}
+              <Link href="/register" className="text-primary font-bold hover:underline transition-all">
+                Daftar di sini
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
-          >
-            {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Masuk ke Dashboard'}
-          </button>
-        </form>
-
-        <div className="mt-8 text-center border-t border-gray-100 pt-6">
-          <p className="text-sm text-gray-600">
-            Belum punya akun?{' '}
-            <Link href="/register" className="text-primary font-bold hover:underline transition-all">
-              Daftar di sini
-            </Link>
-          </p>
         </div>
       </div>
     </main>

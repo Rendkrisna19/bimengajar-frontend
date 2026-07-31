@@ -66,7 +66,7 @@ export default function UserDashboardBeranda() {
               <span className="capitalize">{userName.toLowerCase()}</span>.
             </h1>
             <p className="text-blue-100/90 text-xs md:text-sm mt-3 max-w-md leading-relaxed">
-              Selamat datang kembali di <strong>BI-TEACH</strong> — ruang belajarmu untuk Cinta, Bangga, dan Paham Rupiah.
+              Selamat datang kembali di <strong>BI-MENGAJAR</strong> — ruang belajarmu untuk Cinta, Bangga, dan Paham Rupiah.
             </p>
           </div>
         </div>
@@ -102,7 +102,6 @@ export default function UserDashboardBeranda() {
           <i className="fa-solid fa-chevron-right text-xs text-slate-300"></i>
         </div>
 
-        {/* Laman BI-TEACH */}
         <div className="flex flex-col justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
@@ -110,7 +109,7 @@ export default function UserDashboardBeranda() {
                 <i className="fa-solid fa-building-columns text-base"></i>
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Laman BI-TEACH</p>
+                <p className="text-xs font-bold text-slate-800">Laman BI-MENGAJAR</p>
                 <p className="text-[10px] text-slate-400">Cinta, Bangga, & Paham Rupiah</p>
               </div>
             </div>

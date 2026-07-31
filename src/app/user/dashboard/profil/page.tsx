@@ -55,7 +55,7 @@ export default function UserDashboardProfil() {
   ];
 
   const group2 = [
-    { label: 'Tentang BI-TEACH', icon: 'fa-solid fa-circle-info' },
+    { label: 'Tentang BI-MENGAJAR', icon: 'fa-solid fa-circle-info' },
     { label: 'Kebijakan Privasi', icon: 'fa-solid fa-shield-halved' },
     { label: 'Bantuan & Dukungan', icon: 'fa-solid fa-circle-question' },
   ];

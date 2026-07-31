@@ -50,7 +50,7 @@ export default function UserDashboardLayout({
     if (pathname === '/user/dashboard/kuis') return 'Kuis';
     if (pathname === '/user/dashboard/riwayat') return 'Riwayat Pengajuan';
     if (pathname === '/user/dashboard/profil') return 'Profil';
-    return 'BI-TEACH';
+    return 'BI-MENGAJAR';
   };
 
   const navItems = [
