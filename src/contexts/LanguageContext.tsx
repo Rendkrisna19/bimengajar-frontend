@@ -50,7 +50,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
   'pk.search.notFoundDesc2': {
     ID: 'KM dari lokasi Anda. Coba perluas radius pencarian.',
-    EN: 'KM from your location. Try expanding the search radius.',
+    EN: 'KM from   your location. Try expanding the search radius.',
   },
   'pk.search.contact': { ID: 'Hubungi via WhatsApp', EN: 'Contact via WhatsApp' },
   'pk.search.distance': { ID: 'KM dari lokasi Anda', EN: 'KM from your location' },

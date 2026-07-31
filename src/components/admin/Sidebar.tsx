@@ -54,7 +54,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
             { name: "Kategori Materi", href: "/admin/materi-edukasi/kategori" }
           ]
         },
-        { name: "Pengajuan Edukasi", icon: "fa-solid fa-file-signature", href: "/admin/pengajuan-edukasi" },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
       ]
     }
@@ -77,37 +76,62 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
   return (
     <aside 
-      className={`relative h-full bg-white dark:bg-[#1e1e1e] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 shadow-[1px_0_10px_rgba(0,0,0,0.02)]`}
+      className={`relative h-full bg-[#002a5c] dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40`}
     >
+      {/* Background element for Sidebar */}
+      <div 
+        className="absolute inset-0 opacity-[0.06] pointer-events-none bg-no-repeat bg-cover bg-center z-0"
+        style={{ backgroundImage: 'url("/images/element/2.png")' }} 
+      ></div>
+
       {/* Logo Area */}
-      <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-gray-800 px-3 shrink-0 overflow-hidden">
+      <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">
         {/* Logo tetap menggunakan logo.png baik ditarik maupun dilebarkan */}
-        <div className={`relative ${isCollapsed ? 'w-10 h-10' : 'w-32 h-10'} transition-all duration-300 flex items-center justify-center`}>
+        <div className="relative w-10 h-10 transition-all duration-300 flex items-center justify-center shrink-0 bg-white rounded-full p-1 shadow-sm">
           <Image 
             src="/images/logo.png" 
             alt="Logo" 
             fill
-            className={`dark:brightness-200 transition-all duration-300 ${isCollapsed ? 'object-cover object-left' : 'object-contain'}`}
+            className="transition-all duration-300 object-contain p-1"
             priority 
           />
         </div>
+        {!isCollapsed && (
+          <span className="font-bold text-[15px] text-white whitespace-nowrap tracking-wide">
+            BI Mengajar
+          </span>
+        )}
       </div>
 
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
+      <div className="relative z-10 flex-1 overflow-y-auto py-6 custom-scrollbar overflow-x-hidden">
         {menus.map((group, idx) => (
           <div key={idx} className="mb-8">
             {!isCollapsed && (
-              <h3 className="px-6 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+              <h3 className="px-6 text-[10px] font-bold text-white/50 uppercase tracking-wider mb-3">
                 {group.category}
               </h3>
             )}
-            <ul className="flex flex-col gap-1.5 px-3">
+            <ul className="flex flex-col gap-1.5">
               {group.items.map((item, itemIdx) => {
                 const hasSubItems = item.subItems && item.subItems.length > 0;
                 const isSubItemActive = hasSubItems && item.subItems?.some(sub => pathname.startsWith(sub.href));
                 const isActive = pathname === item.href || isSubItemActive;
                 const isOpen = openMenus.includes(item.name) || (isSubItemActive && !isCollapsed);
+
+                // Desain Inset Curve Keren untuk item aktif
+                const activeClasses = `
+                  bg-white dark:bg-[#121212] text-[#002a5c] dark:text-blue-400
+                  rounded-l-3xl ml-4 pl-4 pr-0
+                  relative
+                  before:absolute before:w-[30px] before:h-[30px] before:right-0 before:-top-[30px] before:rounded-full before:shadow-[15px_15px_0_0_#ffffff] dark:before:shadow-[15px_15px_0_0_#121212] before:bg-transparent before:pointer-events-none
+                  after:absolute after:w-[30px] after:h-[30px] after:right-0 after:-bottom-[30px] after:rounded-full after:shadow-[15px_-15px_0_0_#ffffff] dark:after:shadow-[15px_-15px_0_0_#121212] after:bg-transparent after:pointer-events-none
+                `;
+                const inactiveClasses = `
+                  text-white/70 hover:bg-white/10 hover:text-white mx-3 px-3 rounded-xl
+                `;
+                const itemClasses = isActive ? activeClasses : inactiveClasses;
+                const iconClasses = isActive ? 'text-[#002a5c] dark:text-blue-400' : 'text-white/50 group-hover:text-white';
 
                 // Jika collapse, tidak bisa buka dropdown
                 return (
@@ -116,19 +140,15 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                       <div className="flex flex-col">
                         <button 
                           onClick={() => !isCollapsed && toggleSubMenu(item.name)}
-                          className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl transition-colors group ${
-                            isActive 
-                            ? 'bg-primary text-white shadow-md dark:bg-blue-600' 
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-blue-300'
-                          } ${isCollapsed ? 'justify-center' : ''}`}
+                          className={`flex items-center justify-between py-2.5 transition-colors group ${itemClasses} ${isCollapsed ? 'justify-center ml-0 px-0 rounded-xl' : ''}`}
                           title={isCollapsed ? item.name : ""}
                         >
                           <div className="flex items-center gap-3">
-                            <i className={`${item.icon} text-lg w-6 text-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`}></i>
+                            <i className={`${item.icon} text-lg w-6 text-center ${iconClasses}`}></i>
                             {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
                           </div>
                           {!isCollapsed && (
-                            <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
+                            <i className={`fa-solid fa-chevron-down text-[10px] mr-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
                           )}
                         </button>
                         
@@ -144,11 +164,11 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                                       href={sub.href}
                                       className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-[12px] font-medium ${
                                         isSubActive
-                                        ? 'bg-blue-50 text-primary dark:bg-blue-900/30 dark:text-blue-300'
-                                        : 'text-gray-500 hover:text-primary hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
+                                        ? 'bg-white/20 text-white'
+                                        : 'text-white/60 hover:text-white hover:bg-white/10'
                                       }`}
                                     >
-                                      <div className={`w-1.5 h-1.5 rounded-full ${isSubActive ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                                      <div className={`w-1.5 h-1.5 rounded-full ${isSubActive ? 'bg-white' : 'bg-white/30'}`}></div>
                                       {sub.name}
                                     </Link>
                                   </li>
@@ -161,14 +181,10 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                     ) : (
                       <Link 
                         href={item.href}
-                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 px-3 py-2.5 rounded-xl transition-colors group ${
-                          isActive 
-                          ? 'bg-primary text-white shadow-md dark:bg-blue-600' 
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-blue-300'
-                        }`}
+                        className={`flex items-center ${isCollapsed ? 'justify-center ml-0 px-0 rounded-xl' : 'justify-start'} gap-3 py-2.5 transition-colors group ${itemClasses}`}
                         title={isCollapsed ? item.name : ""}
                       >
-                        <i className={`${item.icon} text-lg w-6 text-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary'}`}></i>
+                        <i className={`${item.icon} text-lg w-6 text-center ${iconClasses}`}></i>
                         {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
                       </Link>
                     )}
@@ -181,10 +197,10 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       </div>
 
       {/* Logout Area */}
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800 shrink-0">
+      <div className="relative z-10 p-4 border-t border-white/10 shrink-0">
         <button 
           onClick={handleLogout}
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 w-full px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group`}
+          className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 w-full px-3 py-2.5 rounded-xl text-red-400 hover:bg-white/10 transition-colors group`}
           title={isCollapsed ? "Log Out" : ""}
         >
           {/* Ikon Logout */}
