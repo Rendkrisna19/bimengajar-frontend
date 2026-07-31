@@ -25,6 +25,10 @@ export default function AdminKalenderPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const [formData, setFormData] = useState({
     judul: '',
     deskripsi: '',
@@ -133,17 +137,43 @@ export default function AdminKalenderPage() {
     }
   };
 
+  const filteredData = kegiatan.filter(item => 
+    item.judul.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item.lokasi && item.lokasi.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    item.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white">Daftar Kegiatan</h2>
-          <button
-            onClick={openModalForCreate}
-            className="px-4 py-2 bg-[#003366] text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition-colors flex items-center gap-2"
-          >
-            <i className="fa-solid fa-plus"></i> Tambah Kegiatan
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Daftar Kegiatan</h2>
+            <p className="text-sm text-gray-500 mt-1">Kelola jadwal edukasi dan aktivitas BI Mengajar</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <input 
+                type="text" 
+                placeholder="Cari judul, lokasi, status..." 
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-[#002a5c]/20 focus:border-[#002a5c] transition-colors shadow-sm"
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+              />
+              <i className="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <button
+              onClick={openModalForCreate}
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#002a5c] text-white text-sm font-semibold rounded-xl hover:bg-blue-900 transition-colors flex items-center justify-center gap-2 shadow-md whitespace-nowrap"
+            >
+              <i className="fa-solid fa-plus"></i> <span>Tambah Kegiatan</span>
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -151,73 +181,125 @@ export default function AdminKalenderPage() {
             <i className="fa-solid fa-circle-notch animate-spin text-3xl text-primary dark:text-blue-400"></i>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
-              <thead className="bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 uppercase font-semibold text-xs border-b border-gray-200 dark:border-gray-800">
-                <tr>
-                  <th className="px-6 py-4">No</th>
-                  <th className="px-6 py-4">Kegiatan</th>
-                  <th className="px-6 py-4">Waktu</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {kegiatan.length > 0 ? (
-                  kegiatan.map((item, index) => (
-                    <tr key={item.id} className="hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-colors">
-                      <td className="px-6 py-4">{index + 1}</td>
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900 dark:text-gray-100">{item.judul}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
-                          <i className="fa-solid fa-location-dot"></i> {item.lokasi || '-'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-800 dark:text-gray-200">
-                          {format(new Date(item.tanggal_mulai), 'dd MMM yyyy', { locale: id })}
-                        </div>
-                        {item.tanggal_selesai && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            s/d {format(new Date(item.tanggal_selesai), 'dd MMM yyyy', { locale: id })}
+          <>
+            <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+                  <thead className="bg-[#002a5c] text-white uppercase font-semibold text-xs tracking-wider">
+                    <tr>
+                      <th className="px-6 py-4">No</th>
+                      <th className="px-6 py-4">Kegiatan</th>
+                      <th className="px-6 py-4">Waktu</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#1e1e1e]">
+                    {currentItems.length > 0 ? (
+                      currentItems.map((item, index) => (
+                        <tr key={item.id} className="hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-colors group">
+                          <td className="px-6 py-4 whitespace-nowrap">{indexOfFirstItem + index + 1}</td>
+                        <td className="px-6 py-4">
+                          <div className="font-bold text-gray-900 dark:text-gray-100">{item.judul}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                            <i className="fa-solid fa-location-dot"></i> {item.lokasi || '-'}
                           </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === 'Terlaksana' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'}`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            onClick={() => openModalForEdit(item)}
-                            className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
-                            title="Edit"
-                          >
-                            <i className="fa-solid fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
-                            title="Hapus"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-medium text-gray-800 dark:text-gray-200">
+                            {format(new Date(item.tanggal_mulai), 'dd MMM yyyy', { locale: id })}
+                          </div>
+                          {item.tanggal_selesai && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              s/d {format(new Date(item.tanggal_selesai), 'dd MMM yyyy', { locale: id })}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === 'Terlaksana' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'}`}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => openModalForEdit(item)}
+                              className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                              title="Edit"
+                            >
+                              <i className="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                              title="Hapus"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                        <div className="flex flex-col items-center justify-center">
+                          <i className="fa-regular fa-calendar-xmark text-4xl mb-3 text-gray-300 dark:text-gray-600"></i>
+                          <p>Data tidak ditemukan.</p>
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
-                      Belum ada data kegiatan.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  )}
+                </tbody>
+              </table>
+              </div>
+            </div>
+            
+            {/* Pagination Controls */}
+            {filteredData.length > 0 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4 border-t border-gray-100 dark:border-gray-800 pt-6">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Menampilkan <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstItem + 1}</span> hingga <span className="font-semibold text-gray-900 dark:text-white">{Math.min(indexOfLastItem, filteredData.length)}</span> dari <span className="font-semibold text-gray-900 dark:text-white">{filteredData.length}</span> entri
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                  >
+                    <i className="fa-solid fa-chevron-left text-xs"></i>
+                  </button>
+                  
+                  <div className="flex items-center gap-1">
+                    {[...Array(totalPages)].map((_, i) => {
+                      if (totalPages <= 5 || i === 0 || i === totalPages - 1 || Math.abs(currentPage - 1 - i) <= 1) {
+                        return (
+                          <button 
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`w-9 h-9 flex items-center justify-center rounded-xl text-sm font-semibold transition-all ${currentPage === i + 1 ? 'bg-[#002a5c] text-white shadow-md shadow-blue-900/20' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                          >
+                            {i + 1}
+                          </button>
+                        )
+                      } else if (Math.abs(currentPage - 1 - i) === 2) {
+                        return <span key={i} className="px-1 text-gray-400">...</span>
+                      }
+                      return null;
+                    })}
+                  </div>
+
+                  <button 
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                  >
+                    <i className="fa-solid fa-chevron-right text-xs"></i>
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -316,13 +398,13 @@ export default function AdminKalenderPage() {
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-5 py-2 rounded-lg font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="px-5 py-2.5 rounded-xl font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-lg font-semibold text-white bg-[#003366] hover:bg-blue-900 transition-colors shadow-md"
+              className="px-5 py-2.5 rounded-xl font-semibold text-white bg-[#002a5c] hover:bg-blue-900 transition-colors shadow-lg shadow-blue-900/20"
             >
               Simpan Kegiatan
             </button>
