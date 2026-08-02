@@ -35,16 +35,30 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        Swal.fire({
-          title: 'Registrasi Berhasil!',
-          text: 'Akun Anda telah dibuat. Silakan login untuk melanjutkan pengajuan kegiatan.',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          background: '#ffffff',
-        }).then(() => {
-          router.push('/login');
-        });
+        if (data.requires_otp) {
+          Swal.fire({
+            title: 'Registrasi Berhasil!',
+            text: 'Silakan cek email Anda untuk kode verifikasi OTP.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Verifikasi OTP',
+            confirmButtonColor: '#003366',
+            background: '#ffffff',
+          }).then(() => {
+            router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+          });
+        } else {
+          Swal.fire({
+            title: 'Registrasi Berhasil!',
+            text: 'Akun Anda telah dibuat. Silakan login untuk melanjutkan.',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1500,
+            background: '#ffffff',
+          }).then(() => {
+            router.push('/login');
+          });
+        }
       } else if (res.status === 422) {
         // Validation Error
         const errors = data.errors || {};

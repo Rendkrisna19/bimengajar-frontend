@@ -72,6 +72,18 @@ export default function LoginPage() {
         }
 
         setFieldErrors(newErrors);
+      } else if (res.status === 403 && data.requires_otp) {
+        Swal.fire({
+          title: 'Verifikasi Diperlukan',
+          text: data.message || 'Silakan verifikasi akun Anda terlebih dahulu.',
+          icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonText: 'Verifikasi Sekarang',
+          confirmButtonColor: '#003366',
+          background: '#ffffff',
+        }).then(() => {
+          router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+        });
       } else {
         Swal.fire('Gagal', data.message || 'Email atau password salah.', 'error');
       }
