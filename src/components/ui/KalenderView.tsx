@@ -93,12 +93,12 @@ export default function KalenderView() {
             !isSameMonth(day, monthStart)
               ? 'bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600'
               : isSameDay(day, new Date())
-              ? 'bg-blue-50/30 dark:bg-blue-900/20 text-[#003366] dark:text-blue-400 font-semibold'
+              ? 'bg-blue-50/40 dark:bg-blue-900/20 text-primary dark:text-blue-400 font-semibold'
               : 'bg-white dark:bg-black text-gray-700 dark:text-gray-300'
           }`}
         >
           <div className="flex justify-end">
-            <span className={`text-sm ${isSameDay(day, new Date()) ? 'bg-[#003366] dark:bg-primary text-white w-6 h-6 flex items-center justify-center rounded-full' : ''}`}>
+            <span className={`text-sm ${isSameDay(day, new Date()) ? 'bg-[#fbbf24] text-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm' : ''}`}>
               {formattedDate}
             </span>
           </div>
@@ -135,10 +135,10 @@ export default function KalenderView() {
     <div className="w-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 relative">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center bg-[#003366] text-white rounded-lg shadow-sm hover:bg-blue-900 transition-colors">
+          <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg shadow-sm hover:bg-[#004080] transition-colors">
             <i className="fa-solid fa-chevron-left text-sm"></i>
           </button>
-          <button onClick={nextMonth} className="w-9 h-9 flex items-center justify-center bg-[#003366] text-white rounded-lg shadow-sm hover:bg-blue-900 transition-colors">
+          <button onClick={nextMonth} className="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg shadow-sm hover:bg-[#004080] transition-colors">
             <i className="fa-solid fa-chevron-right text-sm"></i>
           </button>
           <button 
@@ -166,7 +166,7 @@ export default function KalenderView() {
         <div className="flex flex-col relative">
           {loading && (
             <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-sm z-10 flex items-center justify-center">
-              <i className="fa-solid fa-circle-notch animate-spin text-4xl text-[#003366] dark:text-blue-400"></i>
+              <i className="fa-solid fa-circle-notch animate-spin text-4xl text-primary dark:text-blue-400"></i>
             </div>
           )}
           {rows}
