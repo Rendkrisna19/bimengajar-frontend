@@ -42,20 +42,29 @@ export default function StatsSection() {
         </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {stats.map((stat, idx) => (
-            <div 
-              key={idx} 
-              className="group bg-primary rounded-2xl p-6 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-6 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,51,102,0.3)] transition-all duration-300 cursor-default"
-            >
-              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors duration-300">
-                <i className={`${stat.icon} text-2xl text-white`}></i>
+          {stats.map((stat, idx) => {
+            const isYellow = idx % 2 !== 0;
+            const bgClass = isYellow ? 'bg-[#fbbf24]' : 'bg-primary';
+            const shadowHoverClass = isYellow ? 'hover:shadow-[0_20px_40px_rgba(251,191,36,0.4)]' : 'hover:shadow-[0_20px_40px_rgba(0,51,102,0.3)]';
+            const iconBg = isYellow ? 'bg-white/30 group-hover:bg-white/40' : 'bg-white/10 group-hover:bg-white/20';
+            const textColor = 'text-white';
+            const subTextColor = isYellow ? 'text-white/90' : 'text-blue-100';
+
+            return (
+              <div 
+                key={idx} 
+                className={`group ${bgClass} rounded-2xl p-6 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-6 hover:-translate-y-2 ${shadowHoverClass} transition-all duration-300 cursor-default`}
+              >
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${iconBg}`}>
+                  <i className={`${stat.icon} text-2xl ${textColor}`}></i>
+                </div>
+                <div>
+                  <h3 className={`text-3xl font-extrabold mb-1 ${textColor}`}>{stat.value}</h3>
+                  <p className={`text-sm font-medium ${subTextColor}`}>{stat.label}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-3xl font-extrabold text-white mb-1">{stat.value}</h3>
-                <p className="text-sm text-blue-100 font-medium">{stat.label}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

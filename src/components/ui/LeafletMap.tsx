@@ -56,7 +56,10 @@ export default function LeafletMap() {
   const [locations, setLocations] = useState<EdukasiLocation[]>([]);
   const centerPos: [number, number] = [2.9620, 99.0667]; // Center at Pematang Siantar
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const fetchLocations = async () => {
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/locations`);
@@ -69,6 +72,12 @@ export default function LeafletMap() {
     };
     fetchLocations();
   }, []);
+
+  if (!mounted) return (
+    <div className="w-full h-[450px] bg-gray-100 flex items-center justify-center rounded-[2rem]">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>
+    </div>
+  );
 
   return (
     <div style={{ height: '450px', width: '100%', zIndex: 0 }} className="relative z-0">

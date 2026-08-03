@@ -10,7 +10,7 @@ const ubuntu = Ubuntu({
 });
 
 export const metadata: Metadata = {
-  title: "Home Page | BI Mengajar Siantar",
+  title: "Home Page | PLAT-BK",
   description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematang Siantar",
   icons: {
     icon: "/images/logo.png",

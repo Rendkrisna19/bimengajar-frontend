@@ -60,7 +60,7 @@ export default function PageHeader({ title, description, breadcrumbs, children }
         
         {/* Texture Motif Background */}
         <div 
-          className="absolute inset-0 w-full h-full opacity-40 mix-blend-overlay bg-no-repeat bg-center bg-cover"
+          className="absolute inset-0 w-full h-full opacity-15 bg-no-repeat bg-center bg-cover"
           style={{ backgroundImage: 'url(/images/element/1.png)' }}
         ></div>
       </div>

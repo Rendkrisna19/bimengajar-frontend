@@ -158,7 +158,7 @@ export default function PengajuanEdukasiPage() {
               Silakan <span className="font-bold text-primary">Login</span> atau <span className="font-bold text-primary">Register</span> terlebih dahulu untuk dapat mengajukan permintaan kegiatan edukasi Bank Indonesia.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <button onClick={() => router.push('/login')} className="px-10 py-3 rounded-xl bg-primary text-white font-bold hover:bg-blue-900 transition-all shadow-md w-full sm:w-auto text-sm">
+              <button onClick={() => router.push('/login')} className="px-10 py-3 rounded-xl bg-[#fbbf24] text-white font-bold hover:bg-yellow-500 transition-all shadow-md w-full sm:w-auto text-sm">
                 Masuk (Log In)
               </button>
               <button onClick={() => router.push('/register')} className="px-10 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm w-full sm:w-auto text-sm">
@@ -386,7 +386,7 @@ export default function PengajuanEdukasiPage() {
               )}
               
               {step < 5 ? (
-                <button type="button" onClick={nextStep} className="px-10 py-3.5 rounded-xl bg-primary text-white font-bold shadow-lg hover:shadow-xl hover:bg-blue-900 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5 w-full md:w-auto">
+                <button type="button" onClick={nextStep} className="px-10 py-3.5 rounded-xl bg-[#fbbf24] text-white font-bold shadow-lg hover:shadow-xl hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5 w-full md:w-auto">
                   Selanjutnya <i className="fa-solid fa-arrow-right"></i>
                 </button>
               ) : (

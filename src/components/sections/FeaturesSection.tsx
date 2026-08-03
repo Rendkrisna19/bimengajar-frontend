@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
 import KalenderModal from '@/components/ui/KalenderModal';
@@ -12,38 +13,32 @@ export default function FeaturesSection() {
   const features = [
     {
       title: lang === 'ID' ? 'Materi Edukasi' : 'Education Materials',
-      desc: lang === 'ID' ? 'Kumpulan materi seputar Bank Indonesia' : 'Collection of materials about Bank Indonesia',
-      icon: 'fa-solid fa-book-open',
+      image: '/images/menu-cepat/1.png',
       link: '/edukasi/materi-edukasi'
     },
     {
       title: lang === 'ID' ? 'Game & Kuis' : 'Games & Quizzes',
-      desc: lang === 'ID' ? 'Belajar seru dengan game interaktif' : 'Fun learning with interactive games',
-      icon: 'fa-solid fa-gamepad',
+      image: '/images/menu-cepat/2.png',
       link: '/game'
     },
     {
       title: lang === 'ID' ? 'Ajukan Kegiatan' : 'Request Activity',
-      desc: lang === 'ID' ? 'Ajukan sosialisasi bersama Bank Indonesia' : 'Request socialization with Bank Indonesia',
-      icon: 'fa-solid fa-file-signature',
+      image: '/images/menu-cepat/3.png',
       link: '/edukasi/pengajuan'
     },
     {
       title: lang === 'ID' ? 'Mitra Edukasi' : 'Education Partners',
-      desc: lang === 'ID' ? 'Temukan mitra edukasi Bank Indonesia' : 'Find Bank Indonesia education partners',
-      icon: 'fa-solid fa-users',
+      image: '/images/menu-cepat/4.png',
       link: '/edukasi/mitra'
     },
     {
-      title: lang === 'ID' ? 'Pojok Koin' : 'Coin Corner',
-      desc: lang === 'ID' ? 'Temukan lokasi tukar uang logam' : 'Find coin exchange locations',
-      icon: 'fa-solid fa-map-location-dot',
+      title: lang === 'ID' ? 'Titik Temu' : 'Coin Corner',
+      image: '/images/menu-cepat/5.png',
       link: '/titik-temu'
     },
     {
       title: lang === 'ID' ? 'Kalender Kegiatan' : 'Activity Calendar',
-      desc: lang === 'ID' ? 'Lihat jadwal kegiatan edukasi terbaru' : 'View the latest education activity schedule',
-      icon: 'fa-regular fa-calendar-days',
+      image: '/images/menu-cepat/6.png',
       link: '/kalender'
     }
   ];
@@ -68,21 +63,16 @@ export default function FeaturesSection() {
                   style={{ backgroundImage: 'url(/images/element/1.png)' }}
                 ></div>
 
-                <div className="flex flex-col items-center text-center flex-1 relative z-10">
+                <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
-                  <div className="mb-4 transition-all duration-300">
-                    <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
+                  <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">
+                    <Image src={feature.image} alt={feature.title} fill className="object-contain drop-shadow-md" />
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-base font-bold text-gray-800 mb-2 group-hover:text-white transition-colors duration-300">
+                  <h3 className="text-sm font-bold text-gray-800 group-hover:text-white transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  
-                  {/* Description */}
-                  <p className="text-gray-500 group-hover:text-white/90 text-xs leading-relaxed transition-colors duration-300">
-                    {feature.desc}
-                  </p>
                 </div>
               </div>
             ) : (
@@ -97,21 +87,16 @@ export default function FeaturesSection() {
                   style={{ backgroundImage: 'url(/images/element/1.png)' }}
                 ></div>
 
-                <div className="flex flex-col items-center text-center flex-1 relative z-10">
+                <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
-                  <div className="mb-4 transition-all duration-300">
-                    <i className={`${feature.icon} text-4xl text-gray-700 group-hover:text-white group-hover:scale-110 transition-all duration-300`}></i>
+                  <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">
+                    <Image src={feature.image} alt={feature.title} fill className="object-contain drop-shadow-md" />
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-base font-bold text-gray-800 mb-2 group-hover:text-white transition-colors duration-300">
+                  <h3 className="text-sm font-bold text-gray-800 group-hover:text-white transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  
-                  {/* Description */}
-                  <p className="text-gray-500 group-hover:text-white/90 text-xs leading-relaxed transition-colors duration-300">
-                    {feature.desc}
-                  </p>
                 </div>
               </Link>
             )

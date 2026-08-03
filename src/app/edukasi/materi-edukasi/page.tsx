@@ -229,7 +229,7 @@ export default function MateriEdukasiUserPage() {
                 </div>
                 <h3 className="text-lg font-bold text-gray-800 mb-2">Materi Tidak Ditemukan</h3>
                 <p className="text-gray-500 max-w-md">Tidak ada materi edukasi yang sesuai dengan kriteria pencarian dan filter Anda.</p>
-                <button onClick={resetFilters} className="mt-6 px-6 py-2 bg-[#003366] text-white rounded-full text-sm font-semibold hover:bg-blue-900 transition-colors">
+                <button onClick={resetFilters} className="mt-6 px-6 py-2 bg-[#fbbf24] text-white rounded-full text-sm font-semibold hover:bg-yellow-500 transition-colors shadow-sm">
                   Reset Filter
                 </button>
               </div>
@@ -258,8 +258,8 @@ export default function MateriEdukasiUserPage() {
                       <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#003366] transition-colors">{item.judul}</h3>
                       <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat || stripHtml(item.konten_teks || '')}</p>
                       
-                      <Link href={`/edukasi/materi-edukasi/${item.slug}`} className="w-full py-2.5 rounded-xl border-2 border-gray-100 text-center font-bold text-gray-700 text-sm group-hover:border-[#003366] group-hover:bg-[#003366] group-hover:text-white transition-all block">
-                        {item.jenis_konten === 'Video' ? 'Tonton' : 'Baca'}
+                      <Link href={`/edukasi/materi-edukasi/${item.slug}`} className="w-full py-2.5 rounded-xl bg-[#fbbf24] text-center font-bold text-white text-sm hover:bg-yellow-500 shadow-sm transition-all block">
+                        {item.jenis_konten === 'Video' ? 'Tonton' : 'Baca Selengkapnya'}
                       </Link>
                     </div>
                   </div>
@@ -285,7 +285,7 @@ export default function MateriEdukasiUserPage() {
                       <button 
                         key={i} 
                         onClick={() => setPage(i + 1)}
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold transition-colors ${page === i + 1 ? 'bg-[#003366] text-white border-transparent shadow-md' : 'border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${page === i + 1 ? 'bg-[#fbbf24] text-white border-transparent shadow-md' : 'border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
                       >
                         {i + 1}
                       </button>

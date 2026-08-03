@@ -17,8 +17,8 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // --- Pojok Koin Hero ---
   'pk.badge': { ID: 'Platform Sirkulasi Uang Logam', EN: 'Coin Circulation Platform' },
-  'pk.title': { ID: 'Pojok', EN: 'Coin' },
-  'pk.titleAccent': { ID: 'Koin', EN: 'Corner' },
+  'pk.title': { ID: 'Titik', EN: 'Meeting' },
+  'pk.titleAccent': { ID: 'Temu', EN: 'Point' },
   'pk.subtitle': {
     ID: 'Platform matching antara pihak yang membutuhkan dan memiliki uang logam, untuk meningkatkan sirkulasi koin di masyarakat.',
     EN: 'A matching platform between those who need and those who have coins, to improve coin circulation in the community.',

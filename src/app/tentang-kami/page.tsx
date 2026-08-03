@@ -95,7 +95,7 @@ export default function TentangKamiPage() {
       <div className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden" ref={headerRef}>
         {/* Header Background Element 1.png */}
         <div 
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none mix-blend-overlay"
+          className="absolute inset-0 w-full h-full opacity-10 pointer-events-none mix-blend-overlay"
           style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
         ></div>
 
@@ -103,15 +103,15 @@ export default function TentangKamiPage() {
           <h1 className="text-3xl md:text-5xl font-extrabold text-center mb-10 drop-shadow-md">Tentang Kami</h1>
 
           {/* Tabs */}
-          <div className="flex justify-center max-w-[1200px] mx-auto">
+          <div className="flex justify-center max-w-[1200px] mx-auto gap-2">
             {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 max-w-[220px] text-center py-3 px-4 font-bold text-sm md:text-base border-b-4 transition-all duration-300 rounded-t-xl ${
                 activeTab === tab.id
-                  ? 'border-white text-white bg-white/10'
-                  : 'border-transparent text-white hover:bg-white/5'
+                  ? 'border-[#fbbf24] text-[#fbbf24] bg-white/20'
+                  : 'border-white/20 text-white/90 bg-white/10 hover:text-white hover:bg-white/20'
               }`}
             >
               {tab.label}
@@ -160,7 +160,7 @@ export default function TentangKamiPage() {
                     href="https://www.bi.go.id" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-primary text-white hover:bg-blue-900 font-bold px-8 py-3.5 rounded-xl shadow-[0_4px_14px_rgba(0,51,102,0.2)] hover:shadow-[0_10px_20px_rgba(0,51,102,0.3)] hover:-translate-y-1 transition-all duration-300 text-sm"
+                    className="inline-flex items-center gap-2 bg-[#fbbf24] text-white hover:bg-yellow-500 font-bold px-8 py-3.5 rounded-xl shadow-[0_4px_14px_rgba(251,191,36,0.3)] hover:shadow-[0_10px_20px_rgba(251,191,36,0.4)] hover:-translate-y-1 transition-all duration-300 text-sm"
                   >
                     Selengkapnya <i className="fa-solid fa-arrow-right"></i>
                   </a>

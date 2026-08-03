@@ -56,7 +56,7 @@ export default function UserDashboardRiwayat() {
             onClick={() => setActiveTab(tab)}
             className={`flex-1 text-center py-2 px-3 text-xs font-extrabold rounded-xl transition-all whitespace-nowrap ${
               activeTab === tab
-                ? 'bg-primary text-white shadow-sm'
+                ? 'bg-[#fbbf24] text-white shadow-sm'
                 : 'text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -84,7 +84,7 @@ export default function UserDashboardRiwayat() {
             </p>
             <Link 
               href="/edukasi/pengajuan"
-              className="mt-6 bg-primary hover:bg-[#002244] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all inline-flex items-center gap-1.5 shadow-sm"
+              className="mt-6 bg-[#fbbf24] hover:bg-yellow-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all inline-flex items-center gap-1.5 shadow-sm"
             >
               <i className="fa-solid fa-plus text-[10px]"></i> Ajukan Sekarang
             </Link>

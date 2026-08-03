@@ -6,7 +6,7 @@
   --font-sans: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
   
   /* Primary Colors */
-  --color-primary: #003366;
+  --color-primary: #0054a7;
   
   /* Background / Base Colors */
   --color-base-white: #ffffff;
@@ -14,6 +14,7 @@
   
   /* Accent Colors */
   --color-accent-warning: #eab308; /* Yellow */
+  --color-accent-yellow: #fbbf24; /* Primary Yellow BI */
   --color-accent-cta: #f97316; /* Orange */
   --color-accent-highlight: #a855f7; /* Purple */
 
@@ -278,6 +279,30 @@
 .swal2-icon.swal2-info {
   border-color: #3b82f6 !important;
   color: #3b82f6 !important;
+}
+
+/* ==========================================
+   PREMIUM DATA LOADER OVERRIDE
+   ========================================== */
+div.animate-spin.rounded-full[class*="border-"] {
+  border-width: 4px !important;
+  border-style: solid !important;
+  border-color: rgba(0, 51, 102, 0.1) !important;
+  border-top-color: #003366 !important; /* Navy */
+  border-right-color: #fbbf24 !important; /* Yellow Accent */
+  box-shadow: 0 0 20px rgba(0, 51, 102, 0.15) !important;
+  animation: premium-spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite !important;
+}
+
+@keyframes premium-spin {
+  0% { transform: rotate(0deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(0.9); }
+}
+
+i.fa-circle-notch.animate-spin {
+  animation: premium-spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite !important;
+  filter: drop-shadow(0 0 8px rgba(0, 51, 102, 0.3));
 }
 
 /* Custom Scrollbar - Hidden but still scrollable */

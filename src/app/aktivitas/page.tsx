@@ -294,9 +294,14 @@ export default function AktivitasPage() {
             ))}
           </div>
         </div>
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3 opacity-10"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2 opacity-10"></div>
+          {/* Texture Motif Background */}
+          <div 
+            className="absolute inset-0 w-full h-full opacity-15 bg-no-repeat bg-center bg-cover"
+            style={{ backgroundImage: 'url(/images/element/1.png)' }}
+          ></div>
         </div>
       </section>
 

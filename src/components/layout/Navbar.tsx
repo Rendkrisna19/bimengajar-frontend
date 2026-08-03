@@ -24,31 +24,17 @@ export default function Navbar() {
     }
   }, []);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    
     const handleScroll = () => {
-      if (!navbarRef.current) return;
       const currentScrollY = window.scrollY;
-      
-      // Jangan jalankan animasi sembunyi jika menu mobile sedang terbuka
-      if (isMobileOpen) return;
-      
-      if (currentScrollY > 50) {
-        if (currentScrollY > lastScrollY) {
-          gsap.to(navbarRef.current, { y: '-150%', duration: 0.4, ease: 'power2.out' });
-        } else {
-          gsap.to(navbarRef.current, { y: '0%', duration: 0.4, ease: 'power2.out' });
-        }
-      } else {
-        gsap.to(navbarRef.current, { y: '0%', duration: 0.4, ease: 'power2.out' });
-      }
-      lastScrollY = currentScrollY;
+      setIsScrolled(currentScrollY > 50);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobileOpen]);
+  }, []);
 
   // Animasi untuk mobile menu
   useEffect(() => {
@@ -74,14 +60,18 @@ export default function Navbar() {
         { name: 'Mitra Edukasi', href: '/edukasi/mitra' }
       ]
     },
-    { name: 'Pojok Koin', icon: 'fa-solid fa-coins', href: '/titik-temu' },
+    { name: 'Titik Temu', icon: 'fa-solid fa-coins', href: '/titik-temu' },
     { name: 'Aktivitas', icon: 'fa-solid fa-chart-line', href: '/aktivitas' },
   ];
 
   return (
     <header 
       ref={navbarRef}
-      className="fixed top-4 md:top-6 left-0 right-0 z-50 px-4 md:px-8 font-sans w-full transition-all duration-300"
+      className={`fixed left-0 right-0 z-50 px-4 md:px-8 font-sans w-full transition-all duration-300 ${
+        isScrolled
+          ? 'top-4 md:top-6' // keep the same top margin as normal
+          : 'top-4 md:top-6'
+      }`}
     >
       {/* ======================= */}
       {/* DESKTOP LAYOUT (xl up)  */}
@@ -90,9 +80,13 @@ export default function Navbar() {
         {/* KIRI - Ganti Bahasa (Left Pill) */}
         <button 
           onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
-          className="flex-shrink-0 flex items-center gap-2.5 px-5 py-2.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-semibold text-gray-700 hover:text-primary transition-colors hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
+          className={`flex-shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap group ${
+            isScrolled
+              ? 'bg-[#fbbf24] text-white shadow-md hover:bg-yellow-500 hover:-translate-y-0.5'
+              : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-700 hover:text-primary hover:border-[#fbbf24] hover:shadow-xl hover:-translate-y-0.5'
+          }`}
         >
-          <div className="w-4 h-4 rounded-full overflow-hidden relative shadow-sm border border-gray-200 shrink-0">
+          <div className="w-4 h-4 rounded-full overflow-hidden relative shadow-sm border border-gray-200 group-hover:border-[#fbbf24] transition-colors shrink-0">
             <Image 
               src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
               alt={`Bendera ${lang}`}
@@ -102,12 +96,16 @@ export default function Navbar() {
             />
           </div>
           <span className="flex items-center gap-1.5">
-            Ganti Bahasa <span className="text-gray-400 font-normal">({lang})</span>
+            Ganti Bahasa <span className={`font-normal ${isScrolled ? 'text-white/80' : 'text-gray-400'}`}>({lang})</span>
           </span>
         </button>
 
         {/* TENGAH - Logo & Menu (Center Pill) */}
-        <nav className="flex-shrink-0 flex items-center gap-6 px-4 py-2 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 mx-4">
+        <nav className={`flex-shrink-0 flex items-center gap-6 px-4 py-2 rounded-full mx-4 transition-all ${
+          isScrolled 
+            ? 'bg-[#fbbf24] text-white shadow-md' 
+            : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50'
+        }`}>
           <Link href="/" className="flex items-center pl-2 shrink-0">
             {!imgError ? (
               <Image 
@@ -126,21 +124,27 @@ export default function Navbar() {
             )}
           </Link>
 
-          <div className="w-px h-6 bg-gray-200 mx-1 shrink-0"></div>
+          <div className={`w-px h-6 mx-1 shrink-0 transition-colors ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
 
           <div className="flex items-center gap-5 pr-4 shrink-0">
             {menuItems.map((item, idx) => (
               <div key={idx} className="relative group shrink-0">
                 <Link 
                   href={item.href} 
-                  className="flex items-center gap-1.5 text-gray-700 font-semibold hover:text-primary transition-colors py-2 text-[13px] whitespace-nowrap"
+                  className={`flex items-center gap-1.5 font-semibold transition-colors py-2 text-[13px] whitespace-nowrap ${
+                    isScrolled ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-primary'
+                  }`}
                 >
                   {item.name}
                   {item.dropdown && (
-                    <i className="fa-solid fa-chevron-down text-[9px] text-gray-400 group-hover:text-primary transition-colors mt-0.5"></i>
+                    <i className={`fa-solid fa-chevron-down text-[9px] transition-colors mt-0.5 ${
+                      isScrolled ? 'text-white/80 group-hover:text-white' : 'text-gray-400 group-hover:text-primary'
+                    }`}></i>
                   )}
                 </Link>
-                <div className="absolute bottom-0 left-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-300 ease-out rounded-full"></div>
+                <div className={`absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-full ${
+                  isScrolled ? 'bg-white shadow-none' : 'bg-[#fbbf24] shadow-[0_0_5px_rgba(251,191,36,0.5)]'
+                }`}></div>
                 
                 {/* Dropdown Menu */}
                 {item.dropdown && item.subItems && (
@@ -149,7 +153,7 @@ export default function Navbar() {
                       <Link 
                         key={sIdx} 
                         href={sub.href}
-                        className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-[#fbbf24]/10 transition-colors flex items-center gap-2"
                       >
                         {sub.name}
                       </Link>
@@ -166,9 +170,15 @@ export default function Navbar() {
           <div className="relative group shrink-0">
             <Link 
               href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-              className="flex-shrink-0 px-5 py-1.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-3 whitespace-nowrap cursor-pointer"
+              className={`flex-shrink-0 px-5 py-1.5 rounded-full text-sm font-bold flex items-center gap-3 whitespace-nowrap cursor-pointer transition-all ${
+                isScrolled
+                  ? 'bg-[#fbbf24] text-white hover:bg-yellow-500 shadow-md hover:-translate-y-0.5'
+                  : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-800 hover:text-primary hover:shadow-xl hover:-translate-y-0.5'
+              }`}
             >
-              <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
+                isScrolled ? 'bg-white text-primary' : 'bg-primary text-white'
+              }`}>
                 {user.name.substring(0, 2).toUpperCase()}
               </div>
               {user.name.split(' ')[0]}
@@ -212,9 +222,13 @@ export default function Navbar() {
         ) : (
           <Link 
             href="/login" 
-            className="flex-shrink-0 px-6 py-2.5 bg-white/90 backdrop-blur-md shadow-lg rounded-full border border-white/50 text-sm font-bold text-gray-800 hover:text-primary transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 whitespace-nowrap"
+            className={`flex-shrink-0 px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              isScrolled
+                ? 'bg-[#fbbf24] text-white hover:bg-yellow-500 shadow-md hover:-translate-y-0.5'
+                : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-800 hover:text-primary hover:shadow-xl hover:-translate-y-0.5'
+            }`}
           >
-            <i className="fa-solid fa-user-lock text-primary"></i> Log In
+            <i className={`fa-solid fa-user-lock drop-shadow-md ${isScrolled ? 'text-white' : 'text-[#fbbf24]'}`}></i> Log In
           </Link>
         )}
       </div>
@@ -224,7 +238,9 @@ export default function Navbar() {
       {/* ================================== */}
       <div className="flex xl:hidden items-center justify-between w-full">
         {/* Mobile Logo Pill */}
-        <Link href="/" className="px-4 py-2 bg-white/95 backdrop-blur-md shadow-lg rounded-full border border-white/50 flex-shrink-0 z-50">
+        <Link href="/" className={`px-4 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
+          isScrolled ? 'bg-[#fbbf24] shadow-md' : 'bg-white/95 backdrop-blur-md shadow-lg border border-white/50'
+        }`}>
           {!imgError ? (
             <Image 
               src="/images/logo.png" 
@@ -243,7 +259,9 @@ export default function Navbar() {
         </Link>
 
         {/* Mobile Actions Pill */}
-        <div className="flex items-center gap-3 px-3 py-2 bg-white/95 backdrop-blur-md shadow-lg rounded-full border border-white/50 flex-shrink-0 z-50">
+        <div className={`flex items-center gap-3 px-3 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
+          isScrolled ? 'bg-[#fbbf24] text-white shadow-md' : 'bg-white/95 backdrop-blur-md shadow-lg border border-white/50 text-gray-800'
+        }`}>
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
             className="w-6 h-6 rounded-full overflow-hidden relative shadow-sm border border-gray-200 shrink-0 hover:opacity-80 transition-opacity"
@@ -257,11 +275,13 @@ export default function Navbar() {
             />
           </button>
           
-          <div className="w-px h-5 bg-gray-200"></div>
+          <div className={`w-px h-5 transition-colors ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
           
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="w-8 h-8 flex items-center justify-center text-gray-800 hover:text-primary transition-colors"
+            className={`w-8 h-8 flex items-center justify-center transition-colors ${
+              isScrolled ? 'text-white hover:text-white/80' : 'text-gray-800 hover:text-primary'
+            }`}
           >
             <i className={`fa-solid ${isMobileOpen ? 'fa-xmark text-xl' : 'fa-bars text-lg'}`}></i>
           </button>

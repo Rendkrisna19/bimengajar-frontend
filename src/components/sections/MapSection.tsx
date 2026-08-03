@@ -59,7 +59,7 @@ export default function MapSection() {
         {/* Intro Text / Rupiah Content */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
           <h2 className="map-text-anim text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight opacity-0">
-            Cinta, Bangga, Paham <span className="bg-blue-600 px-4 py-1 inline-block mt-2 shadow-lg">Rupiah</span>
+            Cinta, Bangga, Paham <span className="bg-[#fbbf24] text-primary px-4 py-1 inline-block mt-2 shadow-[0_4px_15px_rgba(251,191,36,0.3)] rounded-lg">Rupiah</span>
           </h2>
           <p className="map-text-anim text-gray-300 text-lg md:text-xl leading-relaxed opacity-0 max-w-3xl mx-auto">
             Uang Rupiah bukan sekadar alat pembayaran, melainkan simbol kedaulatan negara. Bersama BI Mengajar Siantar, kita sebarkan semangat kebanksentralan ke seluruh penjuru daerah.
@@ -138,46 +138,46 @@ export default function MapSection() {
           {/* RIGHT: Stats Grid (4 columns) */}
           <div className="xl:col-span-4 flex flex-col gap-4 map-container-anim opacity-0">
             {/* Sekolah Teredukasi - Blue */}
-            <div className="bg-[#0052cc] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300">
+            <div className="bg-primary rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-white/10">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-graduation-cap"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">128+</h4>
-                <p className="text-sm font-medium mt-0.5">Sekolah Teredukasi</p>
+                <p className="text-sm font-medium mt-0.5 text-blue-100">Sekolah Teredukasi</p>
               </div>
             </div>
             
-            {/* Peserta Edukasi - Green */}
-            <div className="bg-[#22a033] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300">
+            {/* Peserta Edukasi - Yellow */}
+            <div className="bg-[#fbbf24] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-[#fbbf24]/50">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-users"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">25.000+</h4>
-                <p className="text-sm font-medium mt-0.5">Peserta Edukasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">Peserta Edukasi</p>
               </div>
             </div>
 
-            {/* Kegiatan Terlaksana - Orange */}
-            <div className="bg-[#f08c00] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300">
+            {/* Kegiatan Terlaksana - Blue */}
+            <div className="bg-primary rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-white/10">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-calendar-check"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">85+</h4>
-                <p className="text-sm font-medium mt-0.5">Kegiatan Terlaksana</p>
+                <p className="text-sm font-medium mt-0.5 text-blue-100">Kegiatan Terlaksana</p>
               </div>
             </div>
 
-            {/* Program Inovasi - Purple */}
-            <div className="bg-[#6b3eb8] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300">
+            {/* Program Inovasi - Yellow */}
+            <div className="bg-[#fbbf24] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-[#fbbf24]/50">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-lightbulb"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">10+</h4>
-                <p className="text-sm font-medium mt-0.5">Program Inovasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">Program Inovasi</p>
               </div>
             </div>
           </div>
