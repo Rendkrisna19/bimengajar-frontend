@@ -86,7 +86,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
   return (
     <aside 
-      className={`relative h-full bg-[#002a5c] dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 overflow-hidden`}
+      className={`relative h-full bg-primary dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 overflow-hidden`}
     >
       {/* Background element for Sidebar */}
       <div 
@@ -139,7 +139,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
                 // Desain Inset Curve Keren untuk item aktif
                 const activeClasses = `
-                  bg-white dark:bg-[#121212] text-[#002a5c] dark:text-blue-400
+                  bg-white dark:bg-[#121212] text-primary dark:text-blue-400
                   rounded-l-3xl ml-4 pl-4 pr-0
                   relative
                   before:absolute before:w-[30px] before:h-[30px] before:right-0 before:-top-[30px] before:rounded-full before:shadow-[15px_15px_0_0_#ffffff] dark:before:shadow-[15px_15px_0_0_#121212] before:bg-transparent before:pointer-events-none
@@ -149,7 +149,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                   text-white/70 hover:bg-white/10 hover:text-white mx-3 px-3 rounded-xl
                 `;
                 const itemClasses = isActive ? activeClasses : inactiveClasses;
-                const iconClasses = isActive ? 'text-[#002a5c] dark:text-blue-400' : 'text-white/50 group-hover:text-white';
+                const iconClasses = isActive ? 'text-primary dark:text-blue-400' : 'text-white/50 group-hover:text-white';
 
                 // Jika collapse, tidak bisa buka dropdown
                 return (
