@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Ubuntu } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
-const ubuntu = Ubuntu({
-  weight: ["300", "400", "500", "700"],
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-ubuntu",
+  variable: "--font-geist",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className={`${ubuntu.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${geist.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>

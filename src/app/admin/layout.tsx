@@ -4,16 +4,16 @@ import Sidebar from '@/components/admin/Sidebar';
 import Header from '@/components/admin/Header';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
-import { Inter } from 'next/font/google';
+import { Geist } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+const geist = Geist({ subsets: ['latin'] });
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <ThemeProvider>
-      <div className={`flex h-screen bg-white dark:bg-[#121212] transition-colors duration-300 overflow-hidden ${inter.className}`}>
+      <div className={`flex h-screen bg-white dark:bg-[#121212] transition-colors duration-300 overflow-hidden ${geist.className}`}>
         {/* Sidebar Nempel Tanpa Jarak, tanpa border kanan agar menyatu */}
         <Sidebar isCollapsed={isSidebarCollapsed} toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
         

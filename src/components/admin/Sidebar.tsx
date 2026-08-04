@@ -29,7 +29,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       items: [
         { name: "Tentang Kami", icon: "fa-solid fa-circle-info", href: "/admin/tentang-kami" },
         { name: "Peta Edukasi", icon: "fa-solid fa-map-location-dot", href: "/admin/peta-edukasi" },
-        { name: "Pojok Koin", icon: "fa-solid fa-coins", href: "/admin/pojok-koin" },
+        { name: "Titik Temu", icon: "fa-solid fa-people-arrows", href: "/admin/titik-temu" },
       ]
     },
     {

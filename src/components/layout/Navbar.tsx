@@ -67,170 +67,166 @@ export default function Navbar() {
   return (
     <header 
       ref={navbarRef}
-      className={`fixed left-0 right-0 z-50 px-4 md:px-8 font-sans w-full transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 font-sans w-full transition-all duration-300 ${
         isScrolled
-          ? 'top-4 md:top-6' // keep the same top margin as normal
-          : 'top-4 md:top-6'
+          ? 'bg-[#fbbf24] shadow-md text-white'
+          : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 text-gray-800'
       }`}
     >
       {/* ======================= */}
       {/* DESKTOP LAYOUT (xl up)  */}
       {/* ======================= */}
-      <div className="hidden xl:flex items-center justify-between w-full max-w-7xl mx-auto">
-        {/* KIRI - Ganti Bahasa (Left Pill) */}
-        <button 
-          onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
-          className={`flex-shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap group ${
-            isScrolled
-              ? 'bg-[#fbbf24] text-white shadow-md hover:bg-yellow-500 hover:-translate-y-0.5'
-              : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-700 hover:text-primary hover:border-[#fbbf24] hover:shadow-xl hover:-translate-y-0.5'
-          }`}
-        >
-          <div className="w-4 h-4 rounded-full overflow-hidden relative shadow-sm border border-gray-200 group-hover:border-[#fbbf24] transition-colors shrink-0">
+      <div className="hidden xl:flex items-center justify-between w-full max-w-7xl mx-auto px-4 lg:px-8 h-20">
+        
+        {/* KIRI - Logo */}
+        <Link href="/" className="flex items-center shrink-0">
+          {!imgError ? (
             <Image 
-              src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
-              alt={`Bendera ${lang}`}
-              fill
-              sizes="16px"
-              className="object-cover"
+              src="/images/logo.png" 
+              alt="Logo BI Mengajar" 
+              width={140} 
+              height={45} 
+              className={`h-10 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
+              priority
+              onError={() => setImgError(true)}
             />
-          </div>
-          <span className="flex items-center gap-1.5">
-            Ganti Bahasa <span className={`font-normal ${isScrolled ? 'text-white/80' : 'text-gray-400'}`}>({lang})</span>
-          </span>
-        </button>
+          ) : (
+            <div className="flex items-center gap-2 px-3 py-1 bg-primary text-white font-bold rounded-full text-xs">
+              <i className="fa-solid fa-building-columns"></i> BI
+            </div>
+          )}
+        </Link>
 
-        {/* TENGAH - Logo & Menu (Center Pill) */}
-        <nav className={`flex-shrink-0 flex items-center gap-6 px-4 py-2 rounded-full mx-4 transition-all ${
-          isScrolled 
-            ? 'bg-[#fbbf24] text-white shadow-md' 
-            : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50'
-        }`}>
-          <Link href="/" className="flex items-center pl-2 shrink-0">
-            {!imgError ? (
-              <Image 
-                src="/images/logo.png" 
-                alt="Logo BI Mengajar" 
-                width={120} 
-                height={40} 
-                className="h-8 w-auto object-contain"
-                priority
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className="flex items-center gap-2 px-3 py-1 bg-primary text-white font-bold rounded-full text-xs">
-                <i className="fa-solid fa-building-columns"></i> BI
-              </div>
-            )}
-          </Link>
-
-          <div className={`w-px h-6 mx-1 shrink-0 transition-colors ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
-
-          <div className="flex items-center gap-5 pr-4 shrink-0">
-            {menuItems.map((item, idx) => (
-              <div key={idx} className="relative group shrink-0">
-                <Link 
-                  href={item.href} 
-                  className={`flex items-center gap-1.5 font-semibold transition-colors py-2 text-[13px] whitespace-nowrap ${
-                    isScrolled ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-primary'
-                  }`}
-                >
-                  {item.name}
-                  {item.dropdown && (
-                    <i className={`fa-solid fa-chevron-down text-[9px] transition-colors mt-0.5 ${
-                      isScrolled ? 'text-white/80 group-hover:text-white' : 'text-gray-400 group-hover:text-primary'
-                    }`}></i>
-                  )}
-                </Link>
-                <div className={`absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-full ${
-                  isScrolled ? 'bg-white shadow-none' : 'bg-[#fbbf24] shadow-[0_0_5px_rgba(251,191,36,0.5)]'
-                }`}></div>
-                
-                {/* Dropdown Menu */}
-                {item.dropdown && item.subItems && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
-                    {item.subItems.map((sub, sIdx) => (
-                      <Link 
-                        key={sIdx} 
-                        href={sub.href}
-                        className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-[#fbbf24]/10 transition-colors flex items-center gap-2"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </nav>
-
-        {/* KANAN - Log In / Profile (Right Pill) */}
-        {user ? (
-          <div className="relative group shrink-0">
-            <Link 
-              href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-              className={`flex-shrink-0 px-5 py-1.5 rounded-full text-sm font-bold flex items-center gap-3 whitespace-nowrap cursor-pointer transition-all ${
-                isScrolled
-                  ? 'bg-[#fbbf24] text-white hover:bg-yellow-500 shadow-md hover:-translate-y-0.5'
-                  : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-800 hover:text-primary hover:shadow-xl hover:-translate-y-0.5'
-              }`}
-            >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
-                isScrolled ? 'bg-white text-primary' : 'bg-primary text-white'
-              }`}>
-                {user.name.substring(0, 2).toUpperCase()}
-              </div>
-              {user.name.split(' ')[0]}
-            </Link>
-            
-            {/* Dropdown Profile */}
-            <div className="absolute top-full right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
-              <div className="px-4 py-2 border-b border-gray-100 mb-1">
-                <p className="text-xs text-gray-500">Masuk sebagai</p>
-                <p className="text-sm font-bold text-gray-800 truncate">{user.name}</p>
-              </div>
-              
+        {/* TENGAH - Menu */}
+        <nav className="flex items-center gap-8">
+          {menuItems.map((item, idx) => (
+            <div key={idx} className="relative group shrink-0 h-20 flex items-center">
               <Link 
-                href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-                className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
+                href={item.href} 
+                className={`flex items-center gap-1.5 font-semibold transition-colors text-[14px] whitespace-nowrap ${
+                  isScrolled ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-primary'
+                }`}
               >
-                <i className="fa-solid fa-house w-4 text-center"></i> Dashboard
+                {item.name}
+                {item.dropdown && (
+                  <i className={`fa-solid fa-chevron-down text-[10px] transition-colors mt-0.5 ${
+                    isScrolled ? 'text-white/80 group-hover:text-white' : 'text-gray-400 group-hover:text-primary'
+                  }`}></i>
+                )}
               </Link>
               
-              {user.role !== 'admin' && (
-                <Link 
-                  href="/user/dashboard/riwayat" 
-                  className="px-4 py-2 text-[13px] font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 transition-colors flex items-center gap-2"
-                >
-                  <i className="fa-solid fa-file-invoice w-4 text-center"></i> Riwayat Pengajuan
-                </Link>
-              )}
+              <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-t-full ${
+                isScrolled ? 'bg-white shadow-none' : 'bg-[#fbbf24]'
+              }`}></div>
               
-              <button 
-                onClick={() => {
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('user');
-                  window.location.href = '/login';
-                }}
-                className="w-full text-left px-4 py-2 text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 border-t border-gray-100 mt-1 pt-2"
-              >
-                <i className="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Logout
-              </button>
+              {/* Dropdown Menu */}
+              {item.dropdown && item.subItems && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-56 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
+                  {item.subItems.map((sub, sIdx) => (
+                    <Link 
+                      key={sIdx} 
+                      href={sub.href}
+                      className="px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors flex items-center"
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ) : (
-          <Link 
-            href="/login" 
-            className={`flex-shrink-0 px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-              isScrolled
-                ? 'bg-[#fbbf24] text-white hover:bg-yellow-500 shadow-md hover:-translate-y-0.5'
-                : 'bg-white/90 backdrop-blur-md shadow-lg border border-white/50 text-gray-800 hover:text-primary hover:shadow-xl hover:-translate-y-0.5'
+          ))}
+        </nav>
+
+        {/* KANAN - Actions */}
+        <div className="flex items-center gap-5 shrink-0">
+          <button 
+            onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
+            className={`flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80 ${
+              isScrolled ? 'text-white' : 'text-gray-700'
             }`}
           >
-            <i className={`fa-solid fa-user-lock drop-shadow-md ${isScrolled ? 'text-white' : 'text-[#fbbf24]'}`}></i> Log In
-          </Link>
-        )}
+            <div className="w-5 h-5 rounded-full overflow-hidden relative shadow-sm shrink-0">
+              <Image 
+                src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
+                alt={`Bendera ${lang}`}
+                fill
+                sizes="20px"
+                className="object-cover"
+              />
+            </div>
+            <span>{lang}</span>
+          </button>
+
+          <div className={`w-px h-6 mx-1 ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
+
+          {user ? (
+            <div className="relative group shrink-0 h-20 flex items-center">
+              <Link 
+                href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
+                className={`flex-shrink-0 px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all border ${
+                  isScrolled
+                    ? 'bg-white text-[#fbbf24] border-transparent hover:bg-gray-50 shadow-md hover:-translate-y-0.5'
+                    : 'bg-primary text-white border-transparent hover:bg-blue-800 shadow-md hover:-translate-y-0.5'
+                }`}
+              >
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${
+                  isScrolled ? 'bg-[#fbbf24] text-white' : 'bg-white text-primary'
+                }`}>
+                  {user.name.substring(0, 2).toUpperCase()}
+                </div>
+                {user.name.split(' ')[0]}
+              </Link>
+              
+              {/* Dropdown Profile */}
+              <div className="absolute top-full right-0 mt-0 w-60 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
+                <div className="px-5 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
+                  <p className="text-xs text-gray-500 mb-1">Masuk sebagai</p>
+                  <p className="text-[15px] font-bold text-gray-800 truncate">{user.name}</p>
+                </div>
+                
+                <Link 
+                  href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
+                  className="px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors flex items-center gap-3"
+                >
+                  <i className="fa-solid fa-house w-4 text-center"></i> Dashboard
+                </Link>
+                
+                {user.role !== 'admin' && (
+                  <Link 
+                    href="/user/dashboard/riwayat" 
+                    className="px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors flex items-center gap-3"
+                  >
+                    <i className="fa-solid fa-file-invoice w-4 text-center"></i> Riwayat Pengajuan
+                  </Link>
+                )}
+                
+                <div className="border-t border-gray-100 mt-2 pt-2">
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('token');
+                      localStorage.removeItem('user');
+                      window.location.href = '/login';
+                    }}
+                    className="w-full text-left px-5 py-2.5 text-[14px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"
+                  >
+                    <i className="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link 
+              href="/login" 
+              className={`flex-shrink-0 px-8 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap border ${
+                isScrolled
+                  ? 'bg-white text-[#fbbf24] border-transparent hover:bg-gray-50 shadow-md hover:-translate-y-0.5'
+                  : 'bg-primary text-white border-transparent hover:bg-blue-800 shadow-md hover:-translate-y-0.5'
+              }`}
+            >
+              <i className="fa-solid fa-user-lock"></i> Log In
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* ================================== */}
