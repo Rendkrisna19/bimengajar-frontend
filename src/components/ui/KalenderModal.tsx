@@ -11,8 +11,8 @@ export default function KalenderModal({ isOpen, onClose }: KalenderModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 py-6 bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#f0f4f8] w-full max-w-6xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-white/40">
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center px-4 py-8 pt-24 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-[#f0f4f8] w-full max-w-6xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-white/40 my-auto">
         
         {/* Motif Background (Subtle Songket) */}
         <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none overflow-hidden mix-blend-multiply">
