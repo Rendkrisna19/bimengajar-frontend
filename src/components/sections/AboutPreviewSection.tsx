@@ -53,7 +53,7 @@ export default function AboutPreviewSection() {
     <section className="bg-white py-16 md:py-24 overflow-hidden relative border-y border-gray-100">
       {/* Subtle Texture Background */}
       <div 
-        className="absolute inset-0 w-full h-full opacity-[0.03] bg-no-repeat bg-center bg-cover pointer-events-none"
+        className="absolute inset-0 w-full h-full opacity-[0.01] bg-no-repeat bg-center bg-cover pointer-events-none"
         style={{ backgroundImage: 'url(/images/element/2.png)' }}
       ></div>
 
