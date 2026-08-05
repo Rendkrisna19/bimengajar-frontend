@@ -160,7 +160,7 @@ export default function TentangKamiPage() {
                     href="https://www.bi.go.id" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#fbbf24] text-white hover:bg-yellow-500 font-bold px-8 py-3.5 rounded-xl shadow-[0_4px_14px_rgba(251,191,36,0.3)] hover:shadow-[0_10px_20px_rgba(251,191,36,0.4)] hover:-translate-y-1 transition-all duration-300 text-sm"
+                    className="inline-flex items-center justify-center gap-2 bg-accent-yellow text-primary hover:brightness-110 font-bold px-8 py-3.5 rounded transition-all duration-300 text-sm border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1"
                   >
                     Selengkapnya <i className="fa-solid fa-arrow-right"></i>
                   </a>

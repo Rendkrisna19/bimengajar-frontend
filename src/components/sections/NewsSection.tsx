@@ -122,7 +122,7 @@ export default function NewsSection() {
                   
                   {/* Button Baca Selengkapnya */}
                   <div className="mt-auto">
-                    <span className="inline-flex items-center gap-2 bg-[#fbbf24] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    <span className="inline-flex items-center gap-2 bg-accent-red text-white text-sm font-bold px-4 py-2 rounded hover:brightness-110 transition-all border-b-4 border-accent-red-dark active:border-b-0 active:translate-y-1">
                       Baca Selengkapnya <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>
@@ -201,7 +201,7 @@ export default function NewsSection() {
                   
                   {/* Button Baca Selengkapnya */}
                   <div className="mt-auto">
-                    <span className="inline-flex items-center gap-2 bg-[#fbbf24] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    <span className="inline-flex items-center gap-2 bg-accent-red text-white text-sm font-bold px-4 py-2 rounded hover:brightness-110 transition-all border-b-4 border-accent-red-dark active:border-b-0 active:translate-y-1">
                       Baca Selengkapnya <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>
