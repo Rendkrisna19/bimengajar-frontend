@@ -43,17 +43,23 @@ export default function StatsSection() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, idx) => {
-            const isYellow = idx % 2 !== 0;
-            const bgClass = isYellow ? 'bg-[#fbbf24]' : 'bg-primary';
-            const shadowHoverClass = isYellow ? 'hover:shadow-[0_20px_40px_rgba(251,191,36,0.4)]' : 'hover:shadow-[0_20px_40px_rgba(0,51,102,0.3)]';
-            const iconBg = isYellow ? 'bg-white/30 group-hover:bg-white/40' : 'bg-white/10 group-hover:bg-white/20';
+            const isRed = idx % 2 === 0;
+            const bgClass = isRed 
+              ? 'bg-accent-red border-b-[5px] border-accent-red-dark' 
+              : 'bg-accent-yellow border-b-[5px] border-yellow-600';
+            const shadowHoverClass = isRed 
+              ? 'hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)]' 
+              : 'hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)]';
+            const iconBg = isRed 
+              ? 'bg-white/20 group-hover:bg-white/30' 
+              : 'bg-white/30 group-hover:bg-white/40';
             const textColor = 'text-white';
-            const subTextColor = isYellow ? 'text-white/90' : 'text-blue-100';
+            const subTextColor = isRed ? 'text-white/90' : 'text-white/90';
 
             return (
               <div 
                 key={idx} 
-                className={`group ${bgClass} rounded-2xl p-6 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-6 hover:-translate-y-2 ${shadowHoverClass} transition-all duration-300 cursor-default`}
+                className={`group ${bgClass} rounded-2xl p-6 flex items-center gap-6 hover:-translate-y-2 ${shadowHoverClass} transition-all duration-300 cursor-default active:translate-y-0 active:border-b-0`}
               >
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${iconBg}`}>
                   <i className={`${stat.icon} text-2xl ${textColor}`}></i>

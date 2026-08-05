@@ -61,7 +61,7 @@ export default function NewsSection() {
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 flex items-center justify-between relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Artikel Terbaru</h2>
-        <Link href="/artikel" className="bg-[#fbbf24] text-white hover:bg-yellow-500 font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
+        <Link href="/artikel" className="bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2 px-5 rounded flex items-center gap-2 border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1 mt-1">
           Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function NewsSection() {
                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=No+Image'; }}
                   />
                   {/* Badge */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-700 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider">
+                  <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900">
                     Artikel
                   </div>
                 </div>
@@ -122,7 +122,7 @@ export default function NewsSection() {
                   
                   {/* Button Baca Selengkapnya */}
                   <div className="mt-auto">
-                    <span className="inline-flex items-center gap-2 bg-[#fbbf24] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    <span className="inline-flex items-center gap-2 bg-accent-red text-white text-sm font-bold px-4 py-2 rounded hover:brightness-110 transition-all border-b-4 border-accent-red-dark active:border-b-0 active:translate-y-1">
                       Baca Selengkapnya <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>
@@ -137,7 +137,7 @@ export default function NewsSection() {
       {/* BERITA SECTION */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 mt-12 flex items-center justify-between relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Berita Terkini</h2>
-        <Link href="/berita" className="bg-[#fbbf24] text-white hover:bg-yellow-500 font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
+        <Link href="/berita" className="bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2 px-5 rounded flex items-center gap-2 border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1 mt-1">
           Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
         </Link>
       </div>
@@ -179,7 +179,7 @@ export default function NewsSection() {
                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=No+Image'; }}
                   />
                   {/* Badge */}
-                  <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider">
+                  <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900">
                     Berita
                   </div>
                 </div>
@@ -201,7 +201,7 @@ export default function NewsSection() {
                   
                   {/* Button Baca Selengkapnya */}
                   <div className="mt-auto">
-                    <span className="inline-flex items-center gap-2 bg-[#fbbf24] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    <span className="inline-flex items-center gap-2 bg-accent-red text-white text-sm font-bold px-4 py-2 rounded hover:brightness-110 transition-all border-b-4 border-accent-red-dark active:border-b-0 active:translate-y-1">
                       Baca Selengkapnya <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </span>
                   </div>

@@ -53,7 +53,7 @@ export default function AboutPreviewSection() {
     <section className="bg-white py-16 md:py-24 overflow-hidden relative border-y border-gray-100">
       {/* Subtle Texture Background */}
       <div 
-        className="absolute inset-0 w-full h-full opacity-[0.03] bg-no-repeat bg-center bg-cover pointer-events-none"
+        className="absolute inset-0 w-full h-full opacity-[0.01] bg-no-repeat bg-center bg-cover pointer-events-none"
         style={{ backgroundImage: 'url(/images/element/2.png)' }}
       ></div>
 
@@ -92,7 +92,7 @@ export default function AboutPreviewSection() {
           <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 text-justify md:text-left">
             {createPreviewText(data.content)}
           </p>
-          <Link href="/tentang-kami" className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-900 transition-all shadow-[0_4px_14px_rgba(0,51,102,0.2)] hover:shadow-[0_10px_20px_rgba(0,51,102,0.3)] hover:-translate-y-1 gap-2">
+          <Link href="/tentang-kami" className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-white font-bold rounded hover:brightness-110 transition-all border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 gap-2">
             Selengkapnya <i className="fa-solid fa-arrow-right text-sm"></i>
           </Link>
         </div>

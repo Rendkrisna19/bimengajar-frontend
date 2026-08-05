@@ -85,7 +85,7 @@ export default function TentangKamiPage() {
     <main className="min-h-screen bg-gray-50 flex flex-col relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
       {/* Overall Background Texture (Grid area) */}
       <div 
-        className="fixed inset-0 w-full h-full opacity-[0.05] pointer-events-none z-0 mix-blend-multiply bg-repeat"
+        className="fixed inset-0 w-full h-full opacity-[0.02] pointer-events-none z-0 mix-blend-multiply bg-repeat"
         style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '400px' }}
       ></div>
 
@@ -95,7 +95,7 @@ export default function TentangKamiPage() {
       <div className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden" ref={headerRef}>
         {/* Header Background Element 1.png */}
         <div 
-          className="absolute inset-0 w-full h-full opacity-10 pointer-events-none mix-blend-overlay"
+          className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-overlay"
           style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
         ></div>
 
@@ -110,7 +110,7 @@ export default function TentangKamiPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 max-w-[220px] text-center py-3 px-4 font-bold text-sm md:text-base border-b-4 transition-all duration-300 rounded-t-xl ${
                 activeTab === tab.id
-                  ? 'border-[#fbbf24] text-[#fbbf24] bg-white/20'
+                  ? 'border-accent-yellow text-white bg-accent-red'
                   : 'border-white/20 text-white/90 bg-white/10 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -160,7 +160,7 @@ export default function TentangKamiPage() {
                     href="https://www.bi.go.id" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#fbbf24] text-white hover:bg-yellow-500 font-bold px-8 py-3.5 rounded-xl shadow-[0_4px_14px_rgba(251,191,36,0.3)] hover:shadow-[0_10px_20px_rgba(251,191,36,0.4)] hover:-translate-y-1 transition-all duration-300 text-sm"
+                    className="inline-flex items-center justify-center gap-2 bg-accent-yellow text-primary hover:brightness-110 font-bold px-8 py-3.5 rounded transition-all duration-300 text-sm border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1"
                   >
                     Selengkapnya <i className="fa-solid fa-arrow-right"></i>
                   </a>
@@ -175,7 +175,7 @@ export default function TentangKamiPage() {
           {statItems.map((item, idx) => (
             <div 
               key={idx} 
-              className="relative overflow-hidden group bg-white border border-gray-100 rounded-3xl p-8 flex flex-col items-center justify-center text-center hover:bg-primary transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,51,102,0.2)] cursor-default"
+              className="relative overflow-hidden group bg-accent-red border border-accent-red-dark rounded-3xl p-8 flex flex-col items-center justify-center text-center hover:bg-primary transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,51,102,0.2)] cursor-default"
             >
               {/* Background Element 1.png for each grid item, visible only on hover */}
               <div 
@@ -183,10 +183,10 @@ export default function TentangKamiPage() {
                 style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
               ></div>
               
-              <div className="relative z-10 w-20 h-20 rounded-2xl bg-blue-50 group-hover:bg-white/20 flex items-center justify-center mb-6 transition-colors duration-500 shadow-sm group-hover:shadow-none">
-                <i className={`${item.icon} text-3xl text-primary group-hover:text-white transition-colors duration-500`}></i>
+              <div className="relative z-10 w-20 h-20 rounded-2xl bg-white/20 group-hover:bg-white/30 flex items-center justify-center mb-6 transition-colors duration-500 shadow-sm group-hover:shadow-none">
+                <i className={`${item.icon} text-3xl text-white transition-colors duration-500`}></i>
               </div>
-              <p className="font-extrabold text-[#1a365d] group-hover:text-white transition-colors duration-500 text-base leading-snug relative z-10">{item.text}</p>
+              <p className="font-extrabold text-white transition-colors duration-500 text-base leading-snug relative z-10">{item.text}</p>
             </div>
           ))}
         </div>

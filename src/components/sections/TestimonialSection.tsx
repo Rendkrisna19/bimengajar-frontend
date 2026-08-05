@@ -61,7 +61,7 @@ export default function TestimonialSection() {
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1a365d] mb-2">Ulasan</h2>
             <p className="text-gray-500 text-sm md:text-base">Apa kata mereka tentang edukasi BI Mengajar</p>
           </div>
-          <Link href="/ulasan" className="mt-4 md:mt-0 bg-[#fbbf24] text-white hover:bg-yellow-500 font-semibold text-sm transition-colors py-2 px-5 rounded-lg shadow-sm flex items-center gap-2">
+          <Link href="/ulasan" className="mt-4 md:mt-0 bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2 px-5 rounded flex items-center gap-2 border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1">
             Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
           </Link>
         </div>

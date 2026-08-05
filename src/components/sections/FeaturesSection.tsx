@@ -13,32 +13,32 @@ export default function FeaturesSection() {
   const features = [
     {
       title: lang === 'ID' ? 'Materi Edukasi' : 'Education Materials',
-      image: '/images/menu-cepat/1.png',
+      image: '/images/menu-cepat/1.jpeg',
       link: '/edukasi/materi-edukasi'
     },
     {
       title: lang === 'ID' ? 'Game & Kuis' : 'Games & Quizzes',
-      image: '/images/menu-cepat/2.png',
+      image: '/images/menu-cepat/2.jpeg',
       link: '/game'
     },
     {
       title: lang === 'ID' ? 'Ajukan Kegiatan' : 'Request Activity',
-      image: '/images/menu-cepat/3.png',
+      image: '/images/menu-cepat/3.jpeg',
       link: '/edukasi/pengajuan'
     },
     {
       title: lang === 'ID' ? 'Mitra Edukasi' : 'Education Partners',
-      image: '/images/menu-cepat/4.png',
+      image: '/images/menu-cepat/4.jpeg',
       link: '/edukasi/mitra'
     },
     {
       title: lang === 'ID' ? 'Titik Temu' : 'Coin Corner',
-      image: '/images/menu-cepat/5.png',
+      image: '/images/menu-cepat/5.jpeg',
       link: '/titik-temu'
     },
     {
       title: lang === 'ID' ? 'Kalender Kegiatan' : 'Activity Calendar',
-      image: '/images/menu-cepat/6.png',
+      image: '/images/menu-cepat/6.jpeg',
       link: '/kalender'
     }
   ];

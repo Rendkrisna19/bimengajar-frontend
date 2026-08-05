@@ -126,10 +126,10 @@ export default function HeroSection() {
                   </p>
                   
                   <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
-                    <Link href="/edukasi/pengajuan" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-[#fbbf24] text-primary font-bold rounded-xl hover:bg-white hover:text-primary transition-all text-center shadow-[0_4px_15px_rgba(251,191,36,0.4)] hover:shadow-xl hover:-translate-y-1">
+                    <Link href="/edukasi/pengajuan" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-yellow text-primary font-bold rounded transition-all text-center border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1">
                       {lang === 'ID' ? 'Ajukan Edukasi' : 'Request Education'}
                     </Link>
-                    <Link href="/edukasi/materi-edukasi" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-white/50 text-white font-bold rounded-xl hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white">
+                    <Link href="/edukasi/materi-edukasi" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-b-4 border-white/50 text-white font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
                       {lang === 'ID' ? 'Jelajahi Materi' : 'Explore Materials'}
                     </Link>
                   </div>

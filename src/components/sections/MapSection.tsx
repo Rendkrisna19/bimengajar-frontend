@@ -124,32 +124,25 @@ export default function MapSection() {
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <Link 
-                  href="/peta"
-                  className="w-full lg:w-auto px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-blue-900 hover:shadow-lg hover:-translate-y-1 transition-all text-center shrink-0 flex items-center justify-center gap-2 text-sm"
-                >
-                  Lihat Peta Lengkap <i className="fa-solid fa-arrow-right"></i>
-                </Link>
               </div>
             </div>
           </div>
 
           {/* RIGHT: Stats Grid (4 columns) */}
           <div className="xl:col-span-4 flex flex-col gap-4 map-container-anim opacity-0">
-            {/* Sekolah Teredukasi - Blue */}
-            <div className="bg-primary rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-white/10">
+            {/* Sekolah Teredukasi - Red */}
+            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark active:translate-y-0 active:border-b-0">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-graduation-cap"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">128+</h4>
-                <p className="text-sm font-medium mt-0.5 text-blue-100">Sekolah Teredukasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">Sekolah Teredukasi</p>
               </div>
             </div>
             
             {/* Peserta Edukasi - Yellow */}
-            <div className="bg-[#fbbf24] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-[#fbbf24]/50">
+            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600 active:translate-y-0 active:border-b-0">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-users"></i>
               </div>
@@ -159,19 +152,19 @@ export default function MapSection() {
               </div>
             </div>
 
-            {/* Kegiatan Terlaksana - Blue */}
-            <div className="bg-primary rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-white/10">
+            {/* Kegiatan Terlaksana - Red */}
+            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark active:translate-y-0 active:border-b-0">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-calendar-check"></i>
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">85+</h4>
-                <p className="text-sm font-medium mt-0.5 text-blue-100">Kegiatan Terlaksana</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">Kegiatan Terlaksana</p>
               </div>
             </div>
 
             {/* Program Inovasi - Yellow */}
-            <div className="bg-[#fbbf24] rounded-xl p-5 shadow-lg flex items-center gap-4 h-full min-h-[100px] transform hover:scale-[1.02] transition-transform duration-300 border border-[#fbbf24]/50">
+            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600 active:translate-y-0 active:border-b-0">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-lightbulb"></i>
               </div>
