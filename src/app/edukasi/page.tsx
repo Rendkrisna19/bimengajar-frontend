@@ -144,7 +144,7 @@ export default function EdukasiPage() {
               
               <Link 
                 href={menu.link}
-                className="w-full py-3.5 rounded-xl border-2 border-gray-100 text-gray-700 font-bold group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300"
+                className="w-full flex items-center justify-center py-3.5 rounded-xl bg-accent-red text-white font-bold border-b-4 border-accent-red-dark hover:brightness-110 active:border-b-0 active:translate-y-1 transition-all shadow-sm"
               >
                 {menu.buttonText}
               </Link>

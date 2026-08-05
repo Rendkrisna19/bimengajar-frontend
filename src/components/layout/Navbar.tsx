@@ -67,7 +67,7 @@ export default function Navbar() {
   return (
     <header 
       ref={navbarRef}
-      className={`fixed top-0 left-0 right-0 z-50 font-sans w-full transition-all duration-300 border-b-[3px] ${
+      className={`fixed top-0 left-0 right-0 z-[9999] font-sans w-full transition-all duration-300 border-b-[3px] ${
         isScrolled
           ? 'bg-accent-red shadow-md border-yellow-600 text-white'
           : 'bg-white/95 backdrop-blur-md shadow-sm border-yellow-600 text-gray-800'
