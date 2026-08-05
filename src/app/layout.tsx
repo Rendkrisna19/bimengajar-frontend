@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
-const geist = Geist({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-geist",
+  variable: "--font-plus-jakarta",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className={`${geist.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${plusJakartaSans.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>
