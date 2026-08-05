@@ -21,6 +21,7 @@ export default function PengajuanEdukasiPage() {
   }, []);
 
   const [formData, setFormData] = useState<PengajuanForm>({
+    jenis_pengajuan: 'mengunjungi',
     jenis_instansi: '',
     nama_instansi: '',
     alamat_instansi: '',
@@ -72,11 +73,6 @@ export default function PengajuanEdukasiPage() {
     } else if (step === 3) {
       if (!formData.tanggal_kegiatan || !formData.waktu_mulai || !formData.waktu_selesai || !formData.lokasi_kegiatan) {
         Swal.fire('Data Belum Lengkap', 'Harap isi tanggal, waktu, dan lokasi kegiatan.', 'warning');
-        return;
-      }
-    } else if (step === 4) {
-      if (!formData.dokumen_proposal) {
-        Swal.fire('Dokumen Diperlukan', 'Harap unggah proposal kegiatan sebelum melanjutkan.', 'warning');
         return;
       }
     }
@@ -172,8 +168,31 @@ export default function PengajuanEdukasiPage() {
             <div className="flex-1 bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-8 md:p-10 w-full relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/4"></div>
             
-            <h2 className="text-[17px] font-bold text-primary mb-8 border-b border-gray-100 pb-4">
-              {steps[step - 1].label}
+            {/* Tab Jenis Pengajuan */}
+            <div className="flex bg-gray-100 rounded-xl p-1.5 mb-8 w-full max-w-md">
+              <button 
+                onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'mengunjungi' }))}
+                className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                  formData.jenis_pengajuan === 'mengunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Ingin Mengunjungi BI
+              </button>
+              <button 
+                onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'dikunjungi' }))}
+                className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                  formData.jenis_pengajuan === 'dikunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Ingin Dikunjungi BI
+              </button>
+            </div>
+
+            <h2 className="text-[17px] font-bold text-primary mb-8 border-b border-gray-100 pb-4 flex items-center justify-between">
+              <span>{steps[step - 1].label}</span>
+              <span className="text-xs font-semibold bg-blue-50 text-primary px-3 py-1 rounded-full border border-blue-100">
+                {formData.jenis_pengajuan === 'mengunjungi' ? 'Mengunjungi Bank Indonesia' : 'BI Mengunjungi Instansi Anda'}
+              </span>
             </h2>
             
             <div className="flex flex-col gap-10 min-h-[350px]">
@@ -284,11 +303,11 @@ export default function PengajuanEdukasiPage() {
                 <div className="flex flex-col gap-6 animate-fade-in max-w-2xl mx-auto w-full">
                   <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-sm text-gray-700">
                     <i className="fa-solid fa-circle-info text-primary mt-0.5"></i>
-                    <p>Silakan unggah dokumen proposal kegiatan atau surat permohonan resmi dari instansi Anda. Pastikan format file adalah <strong>PDF</strong> dan ukuran maksimal <strong>5MB</strong>.</p>
+                    <p>Opsional: Silakan unggah dokumen proposal kegiatan atau surat permohonan resmi dari instansi Anda jika ada. Format file <strong>PDF</strong> dan maksimal <strong>10MB</strong>.</p>
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    <label className="text-[13px] font-bold text-gray-800 ml-1">Dokumen Proposal (PDF) <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold text-gray-800 ml-1">Dokumen Proposal (PDF) <span className="text-gray-400 font-normal ml-1">(Opsional)</span></label>
                     <div className="relative">
                       <input 
                         type="file" 
@@ -423,7 +442,7 @@ export default function PengajuanEdukasiPage() {
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${step >= 4 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
                     <i className="fa-solid fa-check"></i>
                   </div>
-                  Proposal kegiatan (PDF)
+                  Proposal kegiatan (Opsional)
                 </li>
                 <li className="flex items-center gap-3 text-[13px] font-medium text-gray-600">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${step >= 1 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>

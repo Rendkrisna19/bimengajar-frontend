@@ -12,6 +12,7 @@ interface User {
 interface Pengajuan {
   id: number;
   user_id: number;
+  jenis_pengajuan: string;
   jenis_instansi: string;
   nama_instansi: string;
   alamat_instansi: string;
@@ -37,6 +38,7 @@ interface Pengajuan {
 export default function AdminPengajuanEdukasiPage() {
   const [data, setData] = useState<Pengajuan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'mengunjungi' | 'dikunjungi'>('mengunjungi');
   
   // Modal state
   const [selectedItem, setSelectedItem] = useState<Pengajuan | null>(null);
@@ -138,6 +140,30 @@ export default function AdminPengajuanEdukasiPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+        <button
+          onClick={() => setActiveTab('mengunjungi')}
+          className={`py-3 px-6 text-sm font-bold border-b-2 transition-colors ${
+            activeTab === 'mengunjungi' 
+              ? 'border-primary text-primary dark:text-blue-400 dark:border-blue-400' 
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }`}
+        >
+          <i className="fa-solid fa-building mr-2"></i> Mengunjungi BI
+        </button>
+        <button
+          onClick={() => setActiveTab('dikunjungi')}
+          className={`py-3 px-6 text-sm font-bold border-b-2 transition-colors ${
+            activeTab === 'dikunjungi' 
+              ? 'border-primary text-primary dark:text-blue-400 dark:border-blue-400' 
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }`}
+        >
+          <i className="fa-solid fa-users mr-2"></i> Dikunjungi BI
+        </button>
+      </div>
+
       {/* Filter / Search Bar (Visual matching reference) */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap items-center gap-3">
@@ -187,17 +213,17 @@ export default function AdminPengajuanEdukasiPage() {
                     <p>Memuat data...</p>
                   </td>
                 </tr>
-              ) : data.length === 0 ? (
+              ) : data.filter(item => item.jenis_pengajuan === activeTab).length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-gray-500">
+                  <td colSpan={6} className="py-12 text-center text-gray-500">
                     <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
                       <i className="fa-solid fa-folder-open text-2xl text-gray-400"></i>
                     </div>
-                    <p>Belum ada data pengajuan.</p>
+                    <p>Belum ada data pengajuan untuk kategori ini.</p>
                   </td>
                 </tr>
               ) : (
-                data.map((item, index) => (
+                data.filter(item => item.jenis_pengajuan === activeTab).map((item, index) => (
                   <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors text-gray-700 dark:text-gray-300">
                     <td className="py-4 px-5 align-top text-center font-medium text-gray-500">
                       {index + 1}
@@ -366,23 +392,31 @@ export default function AdminPengajuanEdukasiPage() {
                       <i className="fa-solid fa-file-pdf mr-2"></i> Dokumen & Catatan
                     </h4>
                     <div className="flex flex-col gap-4 text-sm">
-                      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <i className="fa-solid fa-file-pdf text-3xl text-red-500"></i>
-                          <div>
-                            <p className="font-bold text-gray-800 dark:text-gray-200">Proposal Kegiatan</p>
-                            <p className="text-xs text-gray-500">PDF / Word Document</p>
+                      {selectedItem.dokumen_proposal ? (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <i className="fa-solid fa-file-pdf text-3xl text-red-500"></i>
+                            <div>
+                              <p className="font-bold text-gray-800 dark:text-gray-200">Proposal Kegiatan</p>
+                              <p className="text-xs text-gray-500">PDF Document</p>
+                            </div>
                           </div>
+                          <a 
+                            href={`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/storage/${selectedItem.dokumen_proposal}`} 
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors text-xs flex items-center gap-2"
+                          >
+                            <i className="fa-solid fa-download"></i> Unduh
+                          </a>
                         </div>
-                        <a 
-                          href={`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/storage/${selectedItem.dokumen_proposal}`} 
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors text-xs flex items-center gap-2"
-                        >
-                          <i className="fa-solid fa-download"></i> Unduh
-                        </a>
-                      </div>
+                      ) : (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center text-center py-6">
+                          <i className="fa-regular fa-file-excel text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                          <p className="font-bold text-gray-500 dark:text-gray-400">Tidak ada dokumen proposal</p>
+                          <p className="text-xs text-gray-400 mt-1">Pengaju tidak mengunggah file pada saat pengisian form.</p>
+                        </div>
+                      )}
                       
                       {selectedItem.catatan_tambahan && (
                         <div>

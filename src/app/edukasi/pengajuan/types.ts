@@ -1,4 +1,5 @@
 export interface PengajuanForm {
+  jenis_pengajuan: 'mengunjungi' | 'dikunjungi';
   jenis_instansi: string;
   nama_instansi: string;
   alamat_instansi: string;
