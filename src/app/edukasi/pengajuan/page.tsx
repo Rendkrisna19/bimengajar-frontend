@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import { useState, useEffect } from "react";
-import Header from "./components/Header";
+import PageHeader from "@/components/ui/PageHeader";
 import Footer from "@/components/layout/Footer";
 import { PengajuanForm } from "./types";
 import { submitPengajuanEdukasi } from "./api";
@@ -116,7 +116,15 @@ export default function PengajuanEdukasiPage() {
   return (
     <main className="min-h-screen bg-[#f2f6fa] font-sans flex flex-col">
       <Navbar />
-      <Header />
+      <PageHeader
+        title="Ajukan Kegiatan Edukasi"
+        description="Ajukan permintaan kegiatan edukasi atau sosialisasi yang akan diadakan oleh Bank Indonesia di instansi Anda."
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Edukasi', href: '/edukasi' },
+          { label: 'Pengajuan Kegiatan' }
+        ]}
+      />
       
       <div className="px-4 md:px-8 max-w-7xl mx-auto pt-12 relative z-20 pb-20 flex-1 w-full">
         {/* Stepper Section */}

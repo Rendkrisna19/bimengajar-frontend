@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
 import gsap from 'gsap';
+import PageHeader from '@/components/ui/PageHeader';
 
 export default function TentangKamiPage() {
   const [activeTab, setActiveTab] = useState('tentang_bi');
@@ -13,7 +14,6 @@ export default function TentangKamiPage() {
   const [loading, setLoading] = useState(true);
 
   // GSAP Refs
-  const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const gridsRef = useRef<HTMLDivElement>(null);
 
@@ -38,16 +38,6 @@ export default function TentangKamiPage() {
       }
     };
     fetchAbouts();
-  }, []);
-
-  // GSAP Initial Animations
-  useEffect(() => {
-    if (headerRef.current) {
-      gsap.fromTo(headerRef.current.children, 
-        { y: 30, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: 'power3.out' }
-      );
-    }
   }, []);
 
   useEffect(() => {
@@ -91,20 +81,17 @@ export default function TentangKamiPage() {
 
       <Navbar />
       
-      {/* Header Section with Navy Background */}
-      <div className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden" ref={headerRef}>
-        {/* Header Background Element 1.png */}
-        <div 
-          className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-overlay"
-          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-        ></div>
-
-        <div className="relative z-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-center mb-10 drop-shadow-md">Tentang Kami</h1>
-
-          {/* Tabs */}
-          <div className="flex justify-center max-w-[1200px] mx-auto gap-2">
-            {tabs.map((tab) => (
+      {/* Header Section with PageHeader */}
+      <PageHeader
+        title="Tentang Kami"
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Tentang Kami' }
+        ]}
+      >
+        {/* Tabs */}
+        <div className="flex justify-center max-w-[1200px] mx-auto gap-2">
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -117,9 +104,8 @@ export default function TentangKamiPage() {
               {tab.label}
             </button>
           ))}
-          </div>
         </div>
-      </div>
+      </PageHeader>
 
       <div className="max-w-[1200px] mx-auto w-full px-4 md:px-8 -mt-24 relative z-10 pb-20 flex-1">
         {/* Content Area */}

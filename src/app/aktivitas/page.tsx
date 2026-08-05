@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { gsap } from 'gsap';
+import PageHeader from '@/components/ui/PageHeader';
 import KalenderView from '@/components/ui/KalenderView';
 
 interface Article {
@@ -58,6 +58,7 @@ export default function AktivitasPage() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [artPage, setArtPage] = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const getImageUrl = (url: string) => {
@@ -67,32 +68,26 @@ export default function AktivitasPage() {
   };
 
   // Reset page when tab changes
-  useEffect(() => { setPage(1); }, [activeTab]);
+  useEffect(() => { setPage(1); setArtPage(1); }, [activeTab]);
 
   useEffect(() => {
-    let isInitialLoad = true;
+    let isMounted = true;
+    setLoading(true);
 
     const fetchData = async () => {
-      if (isInitialLoad) setLoading(true); // Only show loading spinner on first load
       try {
         if (activeTab === 'artikel') {
           const res = await fetch(`${API}/articles?page=${page}&per_page=${PER_PAGE}`);
           const data = await res.json();
-          if (data.status === 'success') {
-            setArticles(data.data.data || []);
-            setTotalPages(data.data.last_page || 1);
-          }
+          if (data.status === 'success') setArticles(data.data);
         } else if (activeTab === 'berita') {
           const res = await fetch(`${API}/news?category=berita&page=${page}&per_page=${PER_PAGE}`);
           const data = await res.json();
-          if (data.status === 'success') {
-            setNews(data.data.data || []);
-            setTotalPages(data.data.last_page || 1);
-          }
+          if (data.status === 'success') setNews(data.data);
         } else if (activeTab === 'dokumentasi') {
           const res = await fetch(`${API}/dokumentasi?per_page=${PER_PAGE}&page=${page}`);
           const data = await res.json();
-          if (data.status === 'success') {
+          if (data.status === 'success' && isMounted) {
             setDokumentasi(data.data.data || []);
             setTotalPages(data.data.last_page || 1);
           }
@@ -100,35 +95,26 @@ export default function AktivitasPage() {
       } catch (error) {
         console.error(error);
       } finally {
-        if (isInitialLoad) {
-          setLoading(false);
-          isInitialLoad = false;
-        }
+        if (isMounted) setLoading(false);
       }
     };
     
-    // Fetch immediately
     fetchData();
 
-    // Auto update (polling) every 15 seconds in the background
-    const interval = setInterval(fetchData, 15000);
-
-    return () => clearInterval(interval); // Cleanup on unmount or tab change
+    return () => {
+      isMounted = false;
+    };
   }, [activeTab, page]);
 
-  useEffect(() => {
-    if (!loading && gridRef.current) {
-      const cards = gridRef.current.querySelectorAll('.aktivitas-card');
-      if (cards.length > 0) {
-        gsap.fromTo(cards,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }
-        );
-      }
-    }
-  }, [loading, activeTab, page]);
-
-  // Client-side code completely removed. We use standard server-side page and totalPages.
+  // Artikel client-side pagination
+  const artPerPage = 8;
+  const artTotalPages = Math.ceil(articles.length / artPerPage);
+  const artItems = articles.slice((artPage - 1) * artPerPage, artPage * artPerPage);
+  const newsPerPage = 8;
+  const newsTotalPages = Math.ceil(news.length / newsPerPage);
+  const [newsPage, setNewsPage] = useState(1);
+  useEffect(() => { setNewsPage(1); }, [activeTab]);
+  const newsItems = news.slice((newsPage - 1) * newsPerPage, newsPage * newsPerPage);
 
   const renderPagination = (cur: number, total: number, onSet: any) =>
     total > 1 ? (
@@ -151,14 +137,14 @@ export default function AktivitasPage() {
   const renderArtikel = () => (
     <>
       <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {articles.length === 0 ? (
+        {artItems.length === 0 ? (
           <div className="col-span-4 text-center text-gray-400 py-20 bg-white rounded-2xl border border-gray-100">
             <i className="fa-regular fa-newspaper text-5xl mb-4 block"></i>
             <p>Belum ada artikel yang diterbitkan.</p>
           </div>
-        ) : articles.map((article) => (
-          <Link key={article.id} href={`/artikel/${article.slug}`}
-            className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]"
+        ) : artItems.map((article) => (
+          <Link key={article.id} href={`/berita/${article.slug}`}
+            className="aktivitas-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100"
           >
             <div className="relative h-48 w-full overflow-hidden">
               <Image src={(article.image && article.image.length > 0) ? article.image[0] : 'https://via.placeholder.com/400x300?text=No+Image'}
@@ -182,13 +168,13 @@ export default function AktivitasPage() {
   const renderBerita = () => (
     <>
       <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {news.length === 0 ? (
+        {newsItems.length === 0 ? (
           <div className="col-span-4 text-center text-gray-400 py-20 bg-white rounded-2xl border border-gray-100">
             <i className="fa-solid fa-bullhorn text-5xl mb-4 block"></i>
             <p>Belum ada berita yang diterbitkan.</p>
           </div>
-        ) : news.map((item) => (
-          <Link href={`/berita/${item.slug}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
+        ) : newsItems.map((item) => (
+          <Link href={`/berita/${item.slug}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
             <div className="relative h-48 w-full overflow-hidden bg-gray-100">
               {item.image && item.image.length > 0 ? (
                 <img src={getImageUrl(item.image[0])} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
@@ -214,14 +200,14 @@ export default function AktivitasPage() {
 
   const renderDokumentasi = () => (
     <>
-      <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {dokumentasi.length === 0 ? (
-          <div className="col-span-3 text-center text-gray-400 py-20 bg-white rounded-2xl border border-gray-100">
+          <div className="col-span-3 text-center text-gray-400 py-20 bg-white rounded-2xl border border-gray-100 animate-fade-in-up">
             <i className="fa-regular fa-images text-5xl mb-4 block"></i>
             <p>Belum ada dokumentasi kegiatan.</p>
           </div>
         ) : dokumentasi.map((item) => (
-          <Link href={`/aktivitas/dokumentasi/${item.id}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
+          <Link href={`/aktivitas/dokumentasi/${item.id}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
             <div className="relative h-52 w-full overflow-hidden bg-gray-100">
               {item.images && item.images.length > 0 ? (
                 <img src={getImageUrl(item.images[0])} alt={item.nama_kegiatan} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -286,7 +272,7 @@ export default function AktivitasPage() {
           <div className="flex gap-2 mt-10 flex-wrap">
             {TABS.map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`py-2.5 px-6 rounded-xl font-bold text-sm transition-all duration-300 ${activeTab === tab.id ? 'bg-white text-primary shadow-[4px_4px_0_#003366]' : 'text-white bg-white/10 hover:bg-white/20 border border-white/20'}`}
+                className={`py-2.5 px-6 rounded-xl font-bold text-sm transition-all duration-300 ${activeTab === tab.id ? 'bg-white text-primary shadow-lg' : 'text-white bg-white/10 hover:bg-white/20 border border-white/20'}`}
               >{tab.label}</button>
             ))}
           </div>

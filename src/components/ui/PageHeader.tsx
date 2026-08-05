@@ -14,7 +14,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, description, breadcrumbs, children }: PageHeaderProps) {
   return (
-    <section className="bg-primary text-white pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden">
+    <section className="bg-primary text-white pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden border-t-4 border-b-4 border-[#fbbf24]">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 text-center">
         {/* Breadcrumbs */}
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-blue-200 mb-6 font-medium">
