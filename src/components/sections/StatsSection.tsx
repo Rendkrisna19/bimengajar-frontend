@@ -43,12 +43,12 @@ export default function StatsSection() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, idx) => {
-            const isYellow = idx % 2 !== 0;
-            const bgClass = isYellow ? 'bg-[#fbbf24]' : 'bg-primary';
-            const shadowHoverClass = isYellow ? 'hover:shadow-[0_20px_40px_rgba(251,191,36,0.4)]' : 'hover:shadow-[0_20px_40px_rgba(0,51,102,0.3)]';
-            const iconBg = isYellow ? 'bg-white/30 group-hover:bg-white/40' : 'bg-white/10 group-hover:bg-white/20';
+            const isRed = idx % 2 !== 0;
+            const bgClass = isRed ? 'bg-[#A70038]' : 'bg-primary';
+            const shadowHoverClass = isRed ? 'hover:shadow-[0_20px_40px_rgba(167,0,56,0.4)]' : 'hover:shadow-[0_20px_40px_rgba(0,51,102,0.3)]';
+            const iconBg = isRed ? 'bg-white/30 group-hover:bg-white/40' : 'bg-white/10 group-hover:bg-white/20';
             const textColor = 'text-white';
-            const subTextColor = isYellow ? 'text-white/90' : 'text-blue-100';
+            const subTextColor = isRed ? 'text-white/90' : 'text-blue-100';
 
             return (
               <div 
