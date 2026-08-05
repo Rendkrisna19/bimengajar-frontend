@@ -6,17 +6,21 @@
   --font-sans: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
   
   /* Primary Colors */
-  --color-primary: #0054a7;
+  --color-primary: #1C3281; /* BI Blue */
+  --color-primary-red: #CF1A25; /* BI Red */
+  
+  /* Secondary / Accent Colors */
+  --color-secondary: #800080; /* BI Purple */
   
   /* Background / Base Colors */
-  --color-base-white: #ffffff;
+  --color-base-white: #ffffff; /* BI White */
   --color-base-gray: #f3f4f6; /* Soft light gray */
   
-  /* Accent Colors */
+  /* Other Accent Colors */
   --color-accent-warning: #eab308; /* Yellow */
-  --color-accent-yellow: #fbbf24; /* Primary Yellow BI */
+  --color-accent-yellow: #fbbf24; /* Primary Yellow */
   --color-accent-cta: #f97316; /* Orange */
-  --color-accent-highlight: #a855f7; /* Purple */
+  --color-accent-highlight: #800080; /* BI Purple */
 
   --animate-marquee: marquee 30s linear infinite;
   --animate-fade-in-up: fadeInUp 0.25s ease-out forwards;
