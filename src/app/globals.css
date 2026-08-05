@@ -17,6 +17,8 @@
   --color-accent-yellow: #fbbf24; /* Primary Yellow BI */
   --color-accent-cta: #f97316; /* Orange */
   --color-accent-highlight: #a855f7; /* Purple */
+  --color-accent-red: #A70038; /* Red BI */
+  --color-accent-red-dark: #80002a; /* Dark Red BI */
 
   --animate-marquee: marquee 30s linear infinite;
   --animate-fade-in-up: fadeInUp 0.25s ease-out forwards;

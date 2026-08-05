@@ -67,10 +67,10 @@ export default function Navbar() {
   return (
     <header 
       ref={navbarRef}
-      className={`fixed top-0 left-0 right-0 z-50 font-sans w-full transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 font-sans w-full transition-all duration-300 border-b-[3px] ${
         isScrolled
-          ? 'bg-[#fbbf24] shadow-md text-white'
-          : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 text-gray-800'
+          ? 'bg-accent-red shadow-md border-yellow-600 text-white'
+          : 'bg-white/95 backdrop-blur-md shadow-sm border-yellow-600 text-gray-800'
       }`}
     >
       {/* ======================= */}
@@ -116,7 +116,7 @@ export default function Navbar() {
               </Link>
               
               <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-t-full ${
-                isScrolled ? 'bg-white shadow-none' : 'bg-[#fbbf24]'
+                isScrolled ? 'bg-white shadow-none' : 'bg-primary'
               }`}></div>
               
               {/* Dropdown Menu */}
@@ -163,15 +163,9 @@ export default function Navbar() {
             <div className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-                className={`flex-shrink-0 px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all border ${
-                  isScrolled
-                    ? 'bg-white text-[#fbbf24] border-transparent hover:bg-gray-50 shadow-md hover:-translate-y-0.5'
-                    : 'bg-primary text-white border-transparent hover:bg-blue-800 shadow-md hover:-translate-y-0.5'
-                }`}
+                className="flex-shrink-0 px-6 py-2 rounded text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all text-primary bg-accent-yellow border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1"
               >
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${
-                  isScrolled ? 'bg-[#fbbf24] text-white' : 'bg-white text-primary'
-                }`}>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] bg-primary text-white">
                   {user.name.substring(0, 2).toUpperCase()}
                 </div>
                 {user.name.split(' ')[0]}
@@ -217,13 +211,9 @@ export default function Navbar() {
           ) : (
             <Link 
               href="/login" 
-              className={`flex-shrink-0 px-8 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap border ${
-                isScrolled
-                  ? 'bg-white text-[#fbbf24] border-transparent hover:bg-gray-50 shadow-md hover:-translate-y-0.5'
-                  : 'bg-primary text-white border-transparent hover:bg-blue-800 shadow-md hover:-translate-y-0.5'
-              }`}
+              className="flex-shrink-0 px-8 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-primary bg-accent-yellow border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1"
             >
-              <i className="fa-solid fa-user-lock"></i> Log In
+              <i className="fa-solid fa-user-lock"></i> Masuk
             </Link>
           )}
         </div>
@@ -235,7 +225,7 @@ export default function Navbar() {
       <div className="flex xl:hidden items-center justify-between w-full">
         {/* Mobile Logo Pill */}
         <Link href="/" className={`px-4 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
-          isScrolled ? 'bg-[#fbbf24] shadow-md' : 'bg-white/95 backdrop-blur-md shadow-lg border border-white/50'
+          isScrolled ? 'bg-accent-red shadow-md border border-white/20' : 'bg-white/95 backdrop-blur-md shadow-lg border border-gray-100'
         }`}>
           {!imgError ? (
             <Image 
@@ -243,7 +233,7 @@ export default function Navbar() {
               alt="Logo BI Mengajar" 
               width={100} 
               height={32} 
-              className="h-7 w-auto object-contain"
+              className={`h-7 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
               priority
               onError={() => setImgError(true)}
             />
@@ -256,7 +246,7 @@ export default function Navbar() {
 
         {/* Mobile Actions Pill */}
         <div className={`flex items-center gap-3 px-3 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
-          isScrolled ? 'bg-[#fbbf24] text-white shadow-md' : 'bg-white/95 backdrop-blur-md shadow-lg border border-white/50 text-gray-800'
+          isScrolled ? 'bg-accent-red text-white shadow-md border border-white/20' : 'bg-white/95 backdrop-blur-md text-gray-800 shadow-lg border border-gray-100'
         }`}>
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
