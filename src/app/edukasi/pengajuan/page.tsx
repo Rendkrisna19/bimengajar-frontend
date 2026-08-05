@@ -180,17 +180,21 @@ export default function PengajuanEdukasiPage() {
             <div className="flex bg-gray-100 rounded-xl p-1.5 mb-8 w-full max-w-md">
               <button 
                 onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'mengunjungi' }))}
+                disabled={step > 1}
+                title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
                   formData.jenis_pengajuan === 'mengunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
               >
                 Ingin Mengunjungi BI
               </button>
               <button 
                 onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'dikunjungi' }))}
+                disabled={step > 1}
+                title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
                   formData.jenis_pengajuan === 'dikunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
               >
                 Ingin Dikunjungi BI
               </button>
