@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import PageHeader from '@/components/ui/PageHeader';
 
 interface Article {
   id: number;
@@ -95,37 +96,26 @@ export default function ArticleDetailPage() {
       <Navbar />
       
       {/* Header Section */}
-      <section className="bg-primary text-white pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="max-w-[1000px] mx-auto px-4 md:px-8 relative z-10 text-center">
-          <div className="flex items-center justify-center gap-2 text-sm text-blue-200 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
-            <span>&gt;</span>
-            <Link href="/aktivitas" className="hover:text-white transition-colors">Aktivitas</Link>
-            <span>&gt;</span>
-            <span className="text-white font-medium capitalize">Detail Artikel</span>
-          </div>
-          
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight max-w-4xl mx-auto">{article.title}</h1>
-          
-          <div className="flex items-center justify-center gap-4 text-blue-100 text-sm md:text-base font-medium">
-            <span className="flex items-center gap-2">
-              <i className="fa-regular fa-calendar"></i>
-              {new Date(article.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-            </span>
-            <span>|</span>
-            <span className="flex items-center gap-2">
-              <i className="fa-solid fa-user-pen"></i>
-              Oleh {article.author}
-            </span>
-          </div>
+      <PageHeader 
+        title={article.title}
+        breadcrumbs={[
+          { label: 'Beranda', href: '/' },
+          { label: 'Aktivitas', href: '/aktivitas' },
+          { label: 'Detail Artikel' }
+        ]}
+      >
+        <div className="flex justify-center items-center gap-4 text-blue-100 text-sm md:text-base font-medium mt-2">
+          <span className="flex items-center gap-2">
+            <i className="fa-regular fa-calendar"></i>
+            {new Date(article.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </span>
+          <span>|</span>
+          <span className="flex items-center gap-2">
+            <i className="fa-solid fa-user-pen"></i>
+            Oleh {article.author}
+          </span>
         </div>
-        
-        {/* Background Elements */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[120px] translate-x-1/3 translate-y-1/3"></div>
-        </div>
-      </section>
+      </PageHeader>
 
       {/* Main Content */}
       <section className="py-12 md:py-16">

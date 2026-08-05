@@ -171,7 +171,7 @@ export default function MitraEdukasiPage() {
                 
                 <button 
                   onClick={() => setSelectedMitra(mitra)}
-                  className="mt-auto w-full py-3 rounded-xl border-2 border-gray-100 text-gray-700 font-bold hover:bg-primary hover:border-primary hover:text-white transition-all duration-300"
+                  className="mt-auto w-full py-3 rounded-xl border-2 border-gray-100 text-gray-700 font-bold hover:bg-[#ef4444] hover:border-[#ef4444] hover:text-white transition-all duration-300"
                 >
                   Lihat Profil
                 </button>
@@ -209,7 +209,7 @@ export default function MitraEdukasiPage() {
           <div className="relative z-10 shrink-0">
             <button 
               onClick={() => setShowCollabModal(true)}
-              className="px-8 py-4 bg-white text-primary font-extrabold rounded-2xl hover:scale-105 hover:shadow-lg transition-all duration-300 shadow-md flex items-center gap-3"
+              className="px-8 py-4 bg-[#fbbf24] text-white font-extrabold rounded-2xl hover:bg-yellow-500 hover:-translate-y-1 transition-all duration-300 shadow-[0_6px_20px_rgba(251,191,36,0.4)] flex items-center gap-3"
             >
               <i className="fa-solid fa-paper-plane"></i> Ajukan Kolaborasi
             </button>
@@ -223,7 +223,7 @@ export default function MitraEdukasiPage() {
 
       {/* Profil Modal */}
       {selectedMitra && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden relative animate-[fadeIn_0.2s_ease-out]">
             <button onClick={() => setSelectedMitra(null)} className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/10 hover:bg-black/20 rounded-full flex items-center justify-center text-gray-800 transition-colors backdrop-blur-md">
               <i className="fa-solid fa-times text-lg"></i>
@@ -269,7 +269,7 @@ export default function MitraEdukasiPage() {
                 href={`https://wa.me/${selectedMitra.no_wa.replace(/[^0-9]/g, '')}`} 
                 target="_blank" 
                 rel="noreferrer"
-                className="w-full py-4 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-extrabold text-lg rounded-xl shadow-lg shadow-green-200 transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1"
+                className="w-full py-4 bg-[#fbbf24] hover:bg-yellow-500 text-white font-extrabold text-lg rounded-xl shadow-[0_6px_20px_rgba(251,191,36,0.4)] transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1"
               >
                 <i className="fa-brands fa-whatsapp text-2xl"></i> Hubungi via WhatsApp
               </a>
@@ -280,7 +280,7 @@ export default function MitraEdukasiPage() {
 
       {/* Ajukan Kolaborasi Modal */}
       {showCollabModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
               <h2 className="text-xl font-bold text-gray-800">Form Pengajuan Kolaborasi</h2>
@@ -350,7 +350,7 @@ export default function MitraEdukasiPage() {
                   className="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
                 >Batal</button>
                 <button type="submit" disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-blue-800 transition-colors disabled:opacity-50 shadow-md"
+                  className="px-6 py-2.5 rounded-xl bg-[#ef4444] text-white font-bold hover:bg-red-600 transition-colors disabled:opacity-50 shadow-md"
                 >
                   {submitting ? 'Mengirim...' : 'Kirim Pengajuan'}
                 </button>

@@ -124,7 +124,7 @@ export default function PojokKoinPage() {
                   <label className="text-xs font-bold text-gray-600 mb-1 block">{t('pk.search.location')}</label>
                   <div className="flex gap-2">
                     <input type="text" readOnly value={searchAddress || (searchLat && searchLng ? `${searchLat}, ${searchLng}` : '')} placeholder={t('pk.search.locationPlaceholder')} className={`${inputCls} flex-1 bg-gray-50 cursor-default`} />
-                    <button onClick={handleUseMyLocation} className="bg-primary text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-800 transition-colors flex items-center gap-2 whitespace-nowrap">
+                    <button onClick={handleUseMyLocation} className="bg-primary text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-800 hover:-translate-y-0.5 hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap">
                       <i className="fa-solid fa-location-crosshairs"></i> {t('pk.search.gps')}
                     </button>
                   </div>
@@ -136,7 +136,7 @@ export default function PojokKoinPage() {
                   </select>
                 </div>
               </div>
-              <button onClick={handleSearch} disabled={isSearching} className="mt-4 w-full bg-primary hover:bg-blue-800 text-white font-bold py-3.5 rounded-xl transition-all shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-70">
+              <button onClick={handleSearch} disabled={isSearching} className="mt-4 w-full bg-accent-red hover:brightness-110 text-white font-bold py-3.5 rounded-xl transition-all shadow-[0_6px_20px_rgba(237,27,36,0.4)] hover:-translate-y-1 flex items-center justify-center gap-2 disabled:opacity-70">
                 {isSearching
                   ? <><i className="fa-solid fa-spinner fa-spin"></i> {t('pk.search.searching')}</>
                   : <><i className="fa-solid fa-magnifying-glass"></i> {t('pk.search.button')}</>}

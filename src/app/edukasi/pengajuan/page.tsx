@@ -175,7 +175,7 @@ export default function PengajuanEdukasiPage() {
                 disabled={step > 1}
                 title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  formData.jenis_pengajuan === 'mengunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  formData.jenis_pengajuan === 'mengunjungi' ? 'bg-[#fbbf24] text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
                 } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
               >
                 Ingin Mengunjungi BI
@@ -185,7 +185,7 @@ export default function PengajuanEdukasiPage() {
                 disabled={step > 1}
                 title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  formData.jenis_pengajuan === 'dikunjungi' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  formData.jenis_pengajuan === 'dikunjungi' ? 'bg-accent-red text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
                 } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
               >
                 Ingin Dikunjungi BI
@@ -203,7 +203,7 @@ export default function PengajuanEdukasiPage() {
               
               {/* STEP 1: Data Instansi */}
               {step === 1 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in">
+                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
                   <div className="flex-1 flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Jenis Instansi <span className="text-red-500">*</span></label>
@@ -222,9 +222,9 @@ export default function PengajuanEdukasiPage() {
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Nama Instansi <span className="text-red-500">*</span></label>
                       <input type="text" name="nama_instansi" value={formData.nama_instansi} onChange={handleInputChange} placeholder="Masukkan nama instansi" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 flex-1">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Alamat Instansi <span className="text-red-500">*</span></label>
-                      <textarea name="alamat_instansi" value={formData.alamat_instansi} onChange={handleInputChange} placeholder="Masukkan alamat lengkap" rows={5} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
+                      <textarea name="alamat_instansi" value={formData.alamat_instansi} onChange={handleInputChange} placeholder="Masukkan alamat lengkap" className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col gap-6">
@@ -254,7 +254,7 @@ export default function PengajuanEdukasiPage() {
 
               {/* STEP 2: Tema & Kegiatan */}
               {step === 2 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in">
+                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
                   <div className="flex-1 flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Tema Kegiatan <span className="text-red-500">*</span></label>
@@ -266,9 +266,9 @@ export default function PengajuanEdukasiPage() {
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 flex-1">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Deskripsi Kegiatan <span className="text-red-500">*</span></label>
-                      <textarea name="deskripsi_kegiatan" value={formData.deskripsi_kegiatan} onChange={handleInputChange} placeholder="Jelaskan secara singkat tujuan dan rincian kegiatan..." rows={5} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
+                      <textarea name="deskripsi_kegiatan" value={formData.deskripsi_kegiatan} onChange={handleInputChange} placeholder="Jelaskan secara singkat tujuan dan rincian kegiatan..." className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
                     </div>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function PengajuanEdukasiPage() {
 
               {/* STEP 3: Waktu & Lokasi */}
               {step === 3 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in">
+                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
                   <div className="flex-1 flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Tanggal Kegiatan <span className="text-red-500">*</span></label>
@@ -294,9 +294,9 @@ export default function PengajuanEdukasiPage() {
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 flex-1">
                       <label className="text-[13px] font-bold text-gray-800 ml-1">Lokasi Kegiatan <span className="text-red-500">*</span></label>
-                      <textarea name="lokasi_kegiatan" value={formData.lokasi_kegiatan} onChange={handleInputChange} placeholder="Nama gedung, ruangan, alamat lengkap..." rows={5} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
+                      <textarea name="lokasi_kegiatan" value={formData.lokasi_kegiatan} onChange={handleInputChange} placeholder="Nama gedung, ruangan, alamat lengkap..." className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
                     </div>
                   </div>
                 </div>
@@ -409,11 +409,11 @@ export default function PengajuanEdukasiPage() {
               )}
               
               {step < 5 ? (
-                <button type="button" onClick={nextStep} className="px-10 py-3.5 rounded-xl bg-[#fbbf24] text-white font-bold shadow-lg hover:shadow-xl hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5 w-full md:w-auto">
+                <button type="button" onClick={nextStep} className="px-10 py-3.5 rounded-xl bg-[#fbbf24] text-white font-bold shadow-[0_6px_20px_rgba(251,191,36,0.4)] hover:shadow-[0_8px_25px_rgba(251,191,36,0.5)] hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-1 w-full md:w-auto">
                   Selanjutnya <i className="fa-solid fa-arrow-right"></i>
                 </button>
               ) : (
-                <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-3.5 rounded-xl bg-green-600 text-white font-bold shadow-lg hover:shadow-xl hover:bg-green-700 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5 w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed">
+                <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-3.5 rounded-xl bg-accent-red text-white font-bold shadow-[0_6px_20px_rgba(237,27,36,0.4)] hover:shadow-[0_8px_25px_rgba(237,27,36,0.5)] hover:brightness-110 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-1 w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed">
                   {isSubmitting ? <i className="fa-solid fa-circle-notch animate-spin"></i> : <i className="fa-solid fa-paper-plane"></i>}
                   Kirim Pengajuan
                 </button>
