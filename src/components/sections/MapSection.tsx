@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dynamically import Leaflet Map to avoid SSR errors
 const LeafletMap = dynamic(() => import('@/components/ui/LeafletMap'), {
@@ -16,6 +17,7 @@ const LeafletMap = dynamic(() => import('@/components/ui/LeafletMap'), {
 });
 
 export default function MapSection() {
+  const { t, lang } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,10 +61,10 @@ export default function MapSection() {
         {/* Intro Text / Rupiah Content */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
           <h2 className="map-text-anim text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight opacity-0">
-            Cinta, Bangga, Paham <span className="bg-[#fbbf24] text-primary px-4 py-1 inline-block mt-2 shadow-[0_4px_15px_rgba(251,191,36,0.3)] rounded-lg">Rupiah</span>
+            {t('hero.slide1.title')}
           </h2>
           <p className="map-text-anim text-gray-300 text-lg md:text-xl leading-relaxed opacity-0 max-w-3xl mx-auto">
-            Uang Rupiah bukan sekadar alat pembayaran, melainkan simbol kedaulatan negara. Bersama BI Mengajar Siantar, kita sebarkan semangat kebanksentralan ke seluruh penjuru daerah.
+            {t('hero.slide1.subtitle')}
           </p>
         </div>
 
@@ -73,12 +75,12 @@ export default function MapSection() {
           <div className="xl:col-span-8 map-container-anim opacity-0">
             <div className="bg-white rounded-[2rem] p-4 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 ml-2">
-                <h3 className="text-2xl md:text-3xl font-bold text-primary">Peta Edukasi BI Mengajar</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-primary">{t('map.title')}</h3>
                 
                 {/* Year Filter for Map */}
                 <select className="bg-gray-50 border border-gray-200 text-gray-700 font-bold rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
-                  <option value="2026">Tahun 2026</option>
-                  <option value="2025">Tahun 2025</option>
+                  <option value="2026">{t('map.year2026')}</option>
+                  <option value="2025">{t('map.year2025')}</option>
                 </select>
               </div>
               
@@ -96,31 +98,31 @@ export default function MapSection() {
                     <div className="w-5 h-5 rounded-md bg-[#2563eb] flex items-center justify-center shadow-sm">
                       <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div> 
-                    SD
+                    {t('map.legend.sd')}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#16a34a] flex items-center justify-center shadow-sm">
                       <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div> 
-                    SMP
+                    {t('map.legend.smp')}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#f97316] flex items-center justify-center shadow-sm">
                       <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div> 
-                    SMA/SMK
+                    {t('map.legend.sma')}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#9333ea] flex items-center justify-center shadow-sm">
                       <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div> 
-                    PT
+                    {t('map.legend.pt')}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#e11d48] flex items-center justify-center shadow-sm">
                       <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div> 
-                    Komunitas
+                    {t('map.legend.komunitas')}
                   </div>
                 </div>
 
@@ -137,7 +139,7 @@ export default function MapSection() {
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">128+</h4>
-                <p className="text-sm font-medium mt-0.5 text-white/90">Sekolah Teredukasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">{t('map.stat.schools')}</p>
               </div>
             </div>
             
@@ -148,7 +150,7 @@ export default function MapSection() {
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">25.000+</h4>
-                <p className="text-sm font-medium mt-0.5 text-white/90">Peserta Edukasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">{t('map.stat.participants')}</p>
               </div>
             </div>
 
@@ -159,7 +161,7 @@ export default function MapSection() {
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">85+</h4>
-                <p className="text-sm font-medium mt-0.5 text-white/90">Kegiatan Terlaksana</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">{t('map.stat.events')}</p>
               </div>
             </div>
 
@@ -170,7 +172,7 @@ export default function MapSection() {
               </div>
               <div className="text-white">
                 <h4 className="text-2xl font-bold leading-tight">10+</h4>
-                <p className="text-sm font-medium mt-0.5 text-white/90">Program Inovasi</p>
+                <p className="text-sm font-medium mt-0.5 text-white/90">{t('map.stat.innovations')}</p>
               </div>
             </div>
           </div>

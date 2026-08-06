@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function Navbar() {
   const navbarRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
@@ -47,21 +47,21 @@ export default function Navbar() {
   }, [isMobileOpen]);
 
   const menuItems = [
-    { name: 'Beranda', icon: 'fa-solid fa-house', href: '/' },
-    { name: 'Tentang Kami', icon: 'fa-solid fa-circle-info', href: '/tentang-kami' },
+    { name: t('nav.home'), icon: 'fa-solid fa-house', href: '/' },
+    { name: t('nav.about'), icon: 'fa-solid fa-circle-info', href: '/tentang-kami' },
     { 
-      name: 'Edukasi', 
+      name: t('nav.edukasi'), 
       icon: 'fa-solid fa-book-open', 
       href: '/edukasi',
       dropdown: true,
       subItems: [
-        { name: 'Pengajuan Kegiatan', href: '/edukasi/pengajuan' },
-        { name: 'Materi Edukasi', href: '/edukasi/materi-edukasi' },
-        { name: 'Mitra Edukasi', href: '/edukasi/mitra' }
+        { name: t('nav.pengajuan'), href: '/edukasi/pengajuan' },
+        { name: t('nav.materi'), href: '/edukasi/materi-edukasi' },
+        { name: t('nav.mitra'), href: '/edukasi/mitra' }
       ]
     },
-    { name: 'Titik Temu', icon: 'fa-solid fa-coins', href: '/titik-temu' },
-    { name: 'Aktivitas', icon: 'fa-solid fa-chart-line', href: '/aktivitas' },
+    { name: t('nav.titikTemu'), icon: 'fa-solid fa-coins', href: '/titik-temu' },
+    { name: t('nav.aktivitas'), icon: 'fa-solid fa-chart-line', href: '/aktivitas' },
   ];
 
   return (
@@ -141,7 +141,7 @@ export default function Navbar() {
         <div className="flex items-center gap-5 shrink-0">
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
-            className={`flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80 ${
+            className={`flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80 cursor-pointer ${
               isScrolled ? 'text-white' : 'text-gray-700'
             }`}
           >
@@ -174,7 +174,7 @@ export default function Navbar() {
               {/* Dropdown Profile */}
               <div className="absolute top-full right-0 mt-0 w-60 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
                 <div className="px-5 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
-                  <p className="text-xs text-gray-500 mb-1">Masuk sebagai</p>
+                  <p className="text-xs text-gray-500 mb-1">{t('nav.loggedInAs')}</p>
                   <p className="text-[15px] font-bold text-gray-800 truncate">{user.name}</p>
                 </div>
                 
@@ -182,7 +182,7 @@ export default function Navbar() {
                   href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
                   className="px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors flex items-center gap-3"
                 >
-                  <i className="fa-solid fa-house w-4 text-center"></i> Dashboard
+                  <i className="fa-solid fa-house w-4 text-center"></i> {t('nav.dashboard')}
                 </Link>
                 
                 {user.role !== 'admin' && (
@@ -190,7 +190,7 @@ export default function Navbar() {
                     href="/user/dashboard/riwayat" 
                     className="px-5 py-2.5 text-[14px] font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors flex items-center gap-3"
                   >
-                    <i className="fa-solid fa-file-invoice w-4 text-center"></i> Riwayat Pengajuan
+                    <i className="fa-solid fa-file-invoice w-4 text-center"></i> {t('nav.history')}
                   </Link>
                 )}
                 
@@ -201,9 +201,9 @@ export default function Navbar() {
                       localStorage.removeItem('user');
                       window.location.href = '/login';
                     }}
-                    className="w-full text-left px-5 py-2.5 text-[14px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"
+                    className="w-full text-left px-5 py-2.5 text-[14px] font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3 cursor-pointer"
                   >
-                    <i className="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Logout
+                    <i className="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> {t('nav.logout')}
                   </button>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function Navbar() {
               href="/login" 
               className="flex-shrink-0 px-8 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-primary bg-accent-yellow border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1"
             >
-              <i className="fa-solid fa-user-lock"></i> Masuk
+              <i className="fa-solid fa-user-lock"></i> {t('nav.login')}
             </Link>
           )}
         </div>
@@ -222,7 +222,7 @@ export default function Navbar() {
       {/* ================================== */}
       {/* MOBILE / TABLET LAYOUT (< xl)      */}
       {/* ================================== */}
-      <div className="flex xl:hidden items-center justify-between w-full">
+      <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
         {/* Mobile Logo Pill */}
         <Link href="/" className={`px-4 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
           isScrolled ? 'bg-accent-red shadow-md border border-white/20' : 'bg-white/95 backdrop-blur-md shadow-lg border border-gray-100'
@@ -250,7 +250,7 @@ export default function Navbar() {
         }`}>
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
-            className="w-6 h-6 rounded-full overflow-hidden relative shadow-sm border border-gray-200 shrink-0 hover:opacity-80 transition-opacity"
+            className="w-6 h-6 rounded-full overflow-hidden relative shadow-sm border border-gray-200 shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
           >
             <Image 
               src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
@@ -265,7 +265,7 @@ export default function Navbar() {
           
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className={`w-8 h-8 flex items-center justify-center transition-colors ${
+            className={`w-8 h-8 flex items-center justify-center transition-colors cursor-pointer ${
               isScrolled ? 'text-white hover:text-white/80' : 'text-gray-800 hover:text-primary'
             }`}
           >
@@ -308,7 +308,7 @@ export default function Navbar() {
                   {item.dropdown && (
                     <button 
                       onClick={() => setOpenMobileDropdown(openMobileDropdown === item.name ? null : item.name)}
-                      className="p-2 text-gray-400 hover:text-primary transition-colors"
+                      className="p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer"
                     >
                       <i className={`fa-solid fa-chevron-down transition-transform duration-300 ${openMobileDropdown === item.name ? 'rotate-180 text-primary' : ''}`}></i>
                     </button>
@@ -343,7 +343,7 @@ export default function Navbar() {
                   {user.name.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Masuk sebagai</span>
+                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t('nav.loggedInAs')}</span>
                   <span className="text-sm font-bold text-gray-800 line-clamp-1">{user.name}</span>
                 </div>
               </div>
@@ -354,7 +354,7 @@ export default function Navbar() {
                   className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
                 >
                   <i className="fa-solid fa-house text-[16px]"></i>
-                  <span className="text-[11px]">Dashboard</span>
+                  <span className="text-[11px]">{t('nav.dashboard')}</span>
                 </Link>
                 {user.role !== 'admin' && (
                   <Link 
@@ -363,7 +363,7 @@ export default function Navbar() {
                     className="w-full py-2.5 bg-blue-50/50 text-blue-700 text-center font-semibold rounded-xl hover:bg-blue-100 transition-colors flex flex-col items-center justify-center gap-1 border border-blue-100/50"
                   >
                     <i className="fa-solid fa-file-invoice text-[16px]"></i>
-                    <span className="text-[11px]">Riwayat</span>
+                    <span className="text-[11px]">{t('nav.history')}</span>
                   </Link>
                 )}
               </div>
@@ -373,9 +373,9 @@ export default function Navbar() {
                   localStorage.removeItem('user');
                   window.location.href = '/login';
                 }}
-                className="w-full py-2.5 mt-1 bg-red-50 text-red-600 text-center font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 mt-1 bg-red-50 text-red-600 text-center font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                <i className="fa-solid fa-arrow-right-from-bracket"></i> {t('nav.logout')}
               </button>
             </div>
           ) : (
@@ -384,7 +384,7 @@ export default function Navbar() {
               onClick={() => setIsMobileOpen(false)}
               className="w-full py-3.5 bg-primary text-white text-center font-bold rounded-xl shadow-md hover:bg-blue-900 transition-colors flex items-center justify-center gap-2"
             >
-              <i className="fa-solid fa-user-lock"></i> Log In ke Dashboard
+              <i className="fa-solid fa-user-lock"></i> {t('nav.login')}
             </Link>
           )}
         </div>

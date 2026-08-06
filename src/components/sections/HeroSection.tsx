@@ -130,11 +130,9 @@ export default function HeroSection() {
     >
       {/* Decorative background elements & Scattered Motif Songket */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Soft glowing blobs */}
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px] opacity-10"></div>
         <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-300 rounded-full blur-[100px] opacity-10"></div>
 
-        {/* Texture Motif Background */}
         <div 
           className="absolute inset-0 w-full h-full opacity-5 bg-no-repeat bg-center bg-cover"
           style={{ backgroundImage: 'url(/images/element/1.png)' }}

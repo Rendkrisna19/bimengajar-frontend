@@ -7,8 +7,10 @@ import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
 import gsap from 'gsap';
 import PageHeader from '@/components/ui/PageHeader';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function TentangKamiPage() {
+  const { t, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState('tentang_bi');
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -18,9 +20,9 @@ export default function TentangKamiPage() {
   const gridsRef = useRef<HTMLDivElement>(null);
 
   const tabs = [
-    { id: 'tentang_bi', label: 'Tentang BI' },
-    { id: 'tujuan', label: 'Tujuan' },
-    { id: 'visi_misi', label: 'Visi & Misi' },
+    { id: 'tentang_bi', label: t('about.tab.tentang_bi') },
+    { id: 'tujuan', label: t('about.tab.tujuan') },
+    { id: 'visi_misi', label: t('about.tab.visi_misi') },
   ];
 
   useEffect(() => {
@@ -58,17 +60,21 @@ export default function TentangKamiPage() {
     }
   }, [loading, activeTab]);
 
-  const currentData = data[activeTab] || {
-    title: 'Data belum tersedia',
-    content: 'Admin belum mengisi konten untuk bagian ini.',
+  const rawData = data[activeTab] || {
+    title: t('about.noDataTitle'),
+    content: t('about.noDataContent'),
     image: null
   };
 
+  // Baca title_en & content_en dari DB jika lang === 'EN'
+  const displayTitle = (lang === 'EN' && rawData.title_en) ? rawData.title_en : rawData.title;
+  const displayContent = (lang === 'EN' && rawData.content_en) ? rawData.content_en : rawData.content;
+
   const statItems = [
-    { icon: 'fa-solid fa-building-columns', text: 'Bank Sentral Republik Indonesia' },
-    { icon: 'fa-regular fa-calendar', text: 'Berdiri Sejak 1 Juli 1953' },
-    { icon: 'fa-solid fa-shield-halved', text: 'Independen dalam Menjalankan Tugas' },
-    { icon: 'fa-solid fa-users-viewfinder', text: 'Untuk Stabilitas dan Kesejahteraan Bangsa' },
+    { icon: 'fa-solid fa-building-columns', text: t('about.stat1') },
+    { icon: 'fa-regular fa-calendar', text: t('about.stat2') },
+    { icon: 'fa-solid fa-shield-halved', text: t('about.stat3') },
+    { icon: 'fa-solid fa-users-viewfinder', text: t('about.stat4') },
   ];
 
   return (
@@ -83,10 +89,10 @@ export default function TentangKamiPage() {
       
       {/* Header Section with PageHeader */}
       <PageHeader
-        title="Tentang Kami"
+        title={t('about.badge')}
         breadcrumbs={[
-          { label: 'Beranda', href: '/' },
-          { label: 'Tentang Kami' }
+          { label: t('nav.home'), href: '/' },
+          { label: t('about.badge') }
         ]}
       >
         {/* Tabs */}
@@ -95,7 +101,7 @@ export default function TentangKamiPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 max-w-[220px] text-center py-3 px-4 font-bold text-sm md:text-base border-b-4 transition-all duration-300 rounded-t-xl ${
+              className={`flex-1 max-w-[220px] text-center py-3 px-4 font-bold text-sm md:text-base border-b-4 transition-all duration-300 rounded-t-xl cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-accent-yellow text-white bg-accent-red'
                   : 'border-white/20 text-white/90 bg-white/10 hover:text-white hover:bg-white/20'
@@ -118,27 +124,27 @@ export default function TentangKamiPage() {
             <>
               {/* Image Left */}
               <div className="w-full md:w-1/2 relative h-[250px] md:h-[400px] rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 flex shrink-0 shadow-inner group">
-                {currentData.image ? (
+                {rawData.image ? (
                   <img 
-                    src={currentData.image} 
-                    alt={currentData.title} 
+                    src={rawData.image} 
+                    alt={displayTitle} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 flex-col gap-3">
                     <i className="fa-regular fa-image text-4xl"></i>
-                    <p className="text-sm">Tidak ada gambar</p>
+                    <p className="text-sm">{t('about.noImage')}</p>
                   </div>
                 )}
               </div>
 
               {/* Text Right */}
               <div className="w-full md:w-1/2 flex flex-col justify-center">
-                <h2 className="text-3xl font-extrabold text-[#1a365d] mb-6">{currentData.title}</h2>
+                <h2 className="text-3xl font-extrabold text-[#1a365d] mb-6">{displayTitle}</h2>
                 <div 
                   className="text-gray-600 leading-relaxed space-y-4 mb-8 whitespace-pre-line text-lg"
                 >
-                  {currentData.content}
+                  {displayContent}
                 </div>
                 
                 <div className="mt-auto">
@@ -148,7 +154,7 @@ export default function TentangKamiPage() {
                     rel="noreferrer"
                     className="inline-flex items-center justify-center gap-2 bg-accent-yellow text-primary hover:brightness-110 font-bold px-8 py-3.5 rounded transition-all duration-300 text-sm border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1"
                   >
-                    Selengkapnya <i className="fa-solid fa-arrow-right"></i>
+                    {t('about.readMore')} <i className="fa-solid fa-arrow-right"></i>
                   </a>
                 </div>
               </div>
