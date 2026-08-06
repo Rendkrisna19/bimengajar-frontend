@@ -129,8 +129,8 @@ export default function TestimonialSection() {
           <div className="hidden md:block absolute right-[-5%] lg:right-0 bottom-0 z-20 w-[40%] lg:w-[35%] h-[120%] pointer-events-none flex items-end">
             <div className="relative w-full h-[500px]">
               <Image 
-                src="/images/maskot-ulasan.png" 
-                alt="Mascot" 
+                src="/images/ulasan/vektor.png" 
+                alt="Vektor Ulasan" 
                 fill
                 className="object-contain object-bottom drop-shadow-2xl"
               />
