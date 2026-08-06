@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AboutPreviewSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,6 +50,11 @@ export default function AboutPreviewSection() {
 
   if (!data) return null;
 
+  // Baca kolom Bahasa Inggris (title_en & content_en) jika lang === 'EN'
+  const displayTitle = (lang === 'EN' && data.title_en) ? data.title_en : (data.title || t('about.defaultTitle'));
+  const rawContent = (lang === 'EN' && data.content_en) ? data.content_en : data.content;
+  const displayContent = createPreviewText(rawContent);
+
   return (
     <section className="bg-white py-16 md:py-24 overflow-hidden relative border-y border-gray-100">
       <div 
@@ -58,14 +63,13 @@ export default function AboutPreviewSection() {
       ></div>
 
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
-        
         {/* Left Side: Graphic / Image */}
         <div className="flex-1 w-full max-w-lg flex justify-center relative order-2 md:order-1">
           <div className="relative w-full aspect-[4/3] bg-[#f2f6fa] rounded-3xl overflow-hidden shadow-lg border border-gray-100">
             {data.image ? (
               <img 
                 src={getImageUrl(data.image)!} 
-                alt={data.title}
+                alt={displayTitle}
                 className="w-full h-full object-cover"
                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/600x450?text=Gambar+tidak+tersedia'; }}
               />
@@ -86,16 +90,15 @@ export default function AboutPreviewSection() {
             <i className="fa-solid fa-circle-info"></i> {t('about.badge')}
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-            {data.title || t('about.defaultTitle')}
+            {displayTitle}
           </h2>
           <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 text-justify md:text-left">
-            {createPreviewText(data.content)}
+            {displayContent}
           </p>
           <Link href="/tentang-kami" className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-white font-bold rounded hover:brightness-110 transition-all border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 gap-2">
             {t('about.readMore')} <i className="fa-solid fa-arrow-right text-sm"></i>
           </Link>
         </div>
-
       </div>
     </section>
   );

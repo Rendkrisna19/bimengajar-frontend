@@ -56,10 +56,20 @@ const translations: Record<string, Record<Lang, string>> = {
   'features.titikTemu': { ID: 'Titik Temu', EN: 'Coin Corner' },
   'features.kalender': { ID: 'Kalender Kegiatan', EN: 'Activity Calendar' },
 
-  // --- About Preview Section ---
+  // --- About Section & Page ---
   'about.badge': { ID: 'Tentang Kami', EN: 'About Us' },
   'about.defaultTitle': { ID: 'Tentang Bank Indonesia', EN: 'About Bank Indonesia' },
   'about.readMore': { ID: 'Selengkapnya', EN: 'Read More' },
+  'about.tab.tentang_bi': { ID: 'Tentang BI', EN: 'About BI' },
+  'about.tab.tujuan': { ID: 'Tujuan', EN: 'Objectives' },
+  'about.tab.visi_misi': { ID: 'Visi & Misi', EN: 'Vision & Mission' },
+  'about.stat1': { ID: 'Bank Sentral Republik Indonesia', EN: 'Central Bank of the Republic of Indonesia' },
+  'about.stat2': { ID: 'Berdiri Sejak 1 Juli 1953', EN: 'Established Since July 1, 1953' },
+  'about.stat3': { ID: 'Independen dalam Menjalankan Tugas', EN: 'Independent in Executing Duties' },
+  'about.stat4': { ID: 'Untuk Stabilitas dan Kesejahteraan Bangsa', EN: 'For National Stability and Prosperity' },
+  'about.noImage': { ID: 'Tidak ada gambar', EN: 'No image available' },
+  'about.noDataTitle': { ID: 'Data belum tersedia', EN: 'Data not available yet' },
+  'about.noDataContent': { ID: 'Admin belum mengisi konten untuk bagian ini.', EN: 'Admin has not filled in content for this section yet.' },
 
   // --- Map Section ---
   'map.title': { ID: 'Peta Edukasi BI Mengajar', EN: 'BI Mengajar Educational Map' },
