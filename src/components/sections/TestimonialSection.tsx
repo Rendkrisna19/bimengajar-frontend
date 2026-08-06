@@ -126,13 +126,13 @@ export default function TestimonialSection() {
           </div>
 
           {/* Mascot Image (Right side, overlaying carousel) */}
-          <div className="hidden md:block absolute right-[-5%] lg:right-0 bottom-0 z-20 w-[40%] lg:w-[35%] h-[120%] pointer-events-none flex items-end">
-            <div className="relative w-full h-[500px]">
+          <div className="hidden md:block absolute right-[-4%] lg:right-2 -top-16 bottom-0 z-20 w-[48%] lg:w-[44%] pointer-events-none flex items-center">
+            <div className="relative w-full h-[550px] lg:h-[620px] scale-110 lg:scale-125 -translate-y-6">
               <Image 
                 src="/images/ulasan/vektor.png" 
                 alt="Vektor Ulasan" 
                 fill
-                className="object-contain object-bottom drop-shadow-2xl"
+                className="object-contain object-center drop-shadow-2xl"
               />
             </div>
           </div>
