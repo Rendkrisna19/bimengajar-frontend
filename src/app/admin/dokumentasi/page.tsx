@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Swal from 'sweetalert2';
+import API, { getImageUrl } from '@/lib/api';
 
 interface DokItem {
   id: number;
@@ -26,8 +27,6 @@ const KATEGORI_LIST = [
   'Sosialisasi', 'Seminar', 'Workshop', 'Pameran',
   'Kunjungan', 'Pelatihan', 'Forum Diskusi', 'Lainnya',
 ];
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 function getEmbedUrl(url: string): string | null {
   try {
@@ -60,16 +59,30 @@ export default function AdminDokumentasiPage() {
   const [saving, setSaving] = useState(false);
   const [previewItem, setPreviewItem] = useState<DokItem | null>(null);
 
+  // Form states
   const [form, setForm] = useState({
     nama_kegiatan: '',
     kategori: '',
     deskripsi: '',
     tanggal_kegiatan: '',
     posted_by: '',
-    images: [] as File[],
     video_url_input: '',
     video_urls: [] as string[],
   });
+
+  // Multi-image management state
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [removedImageIndices, setRemovedImageIndices] = useState<number[]>([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+
+  const clearImageState = () => {
+    newImagePreviews.forEach(url => URL.revokeObjectURL(url));
+    setExistingImages([]);
+    setRemovedImageIndices([]);
+    setNewImages([]);
+    setNewImagePreviews([]);
+  };
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
@@ -94,23 +107,49 @@ export default function AdminDokumentasiPage() {
 
   const openCreate = () => {
     setEditItem(null);
-    setForm({ nama_kegiatan: '', kategori: '', deskripsi: '', tanggal_kegiatan: '', posted_by: '', images: [], video_url_input: '', video_urls: [] });
+    clearImageState();
+    setForm({ nama_kegiatan: '', kategori: '', deskripsi: '', tanggal_kegiatan: '', posted_by: '', video_url_input: '', video_urls: [] });
     setIsModalOpen(true);
   };
 
   const openEdit = (item: DokItem) => {
     setEditItem(item);
+    clearImageState();
+    setExistingImages(item.images || []);
     setForm({
       nama_kegiatan: item.nama_kegiatan,
       kategori: item.kategori,
       deskripsi: item.deskripsi || '',
       tanggal_kegiatan: item.tanggal_kegiatan,
       posted_by: item.posted_by,
-      images: [],
       video_url_input: '',
       video_urls: item.video_urls || [],
     });
     setIsModalOpen(true);
+  };
+
+  const handleSelectFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (fileArray.length === 0) return;
+
+    setNewImages(prev => [...prev, ...fileArray]);
+    const previews = fileArray.map(f => URL.createObjectURL(f));
+    setNewImagePreviews(prev => [...prev, ...previews]);
+  };
+
+  const handleRemoveNewImage = (idx: number) => {
+    if (newImagePreviews[idx]) {
+      URL.revokeObjectURL(newImagePreviews[idx]);
+    }
+    setNewImages(prev => prev.filter((_, i) => i !== idx));
+    setNewImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleToggleRemoveExisting = (idx: number) => {
+    setRemovedImageIndices(prev =>
+      prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
+    );
   };
 
   const addVideoUrl = () => {
@@ -142,7 +181,12 @@ export default function AdminDokumentasiPage() {
     fd.append('tanggal_kegiatan', form.tanggal_kegiatan);
     fd.append('posted_by', form.posted_by || 'Admin BI');
     fd.append('video_urls', JSON.stringify(form.video_urls));
-    form.images.forEach(img => fd.append('images[]', img));
+
+    if (editItem && removedImageIndices.length > 0) {
+      fd.append('remove_images', JSON.stringify(removedImageIndices));
+    }
+
+    newImages.forEach(img => fd.append('images[]', img));
 
     const url = editItem ? `${API}/dokumentasi/${editItem.id}` : `${API}/dokumentasi`;
     try {
@@ -213,7 +257,12 @@ export default function AdminDokumentasiPage() {
               {/* Thumbnail */}
               <div className="relative h-44 bg-gray-100 overflow-hidden">
                 {item.images && item.images.length > 0 ? (
-                  <img src={item.images[0]} alt={item.nama_kegiatan} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img
+                    src={getImageUrl(item.images[0])}
+                    alt={item.nama_kegiatan}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                  />
                 ) : item.video_urls && item.video_urls.length > 0 ? (
                   <div className="w-full h-full flex items-center justify-center bg-gray-800">
                     <i className="fa-brands fa-youtube text-5xl text-red-500"></i>
@@ -337,24 +386,80 @@ export default function AdminDokumentasiPage() {
                 />
               </div>
 
-              {/* Upload Foto */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Upload Foto</label>
-                <input type="file" multiple accept="image/*"
-                  onChange={e => setForm(f => ({...f, images: Array.from(e.target.files || [])}))}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white rounded-xl outline-none text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 cursor-pointer"
-                />
-                {form.images.length > 0 && (
-                  <p className="text-xs text-green-600 mt-1"><i className="fa-solid fa-check-circle"></i> {form.images.length} foto dipilih</p>
-                )}
-                {editItem?.images && editItem.images.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {editItem.images.map((img, i) => (
-                      <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
-                        <img src={img} alt="" className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                    <p className="text-xs text-gray-400 w-full mt-1">Foto lama akan tetap ada. Foto baru akan ditambahkan.</p>
+              {/* Upload Multi Foto */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Upload Foto <span className="text-xs text-gray-400">(Bisa pilih beberapa gambar sekaligus)</span>
+                  </label>
+                  <span className="text-xs text-primary font-semibold">
+                    Total: {existingImages.length - removedImageIndices.length + newImages.length} foto
+                  </span>
+                </div>
+
+                {/* File picker button area */}
+                <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primary rounded-xl p-4 text-center bg-blue-50/50 dark:bg-gray-900/50 transition-colors cursor-pointer group">
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={e => { handleSelectFiles(e.target.files); e.target.value = ''; }}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex flex-col items-center justify-center gap-1 pointer-events-none">
+                    <i className="fa-solid fa-cloud-arrow-up text-2xl text-primary group-hover:scale-110 transition-transform"></i>
+                    <p className="text-xs font-bold text-gray-700 dark:text-gray-200">Klik di sini untuk memilih / menambah foto</p>
+                    <p className="text-[11px] text-gray-400">Format JPG, PNG, WEBP max 5MB/foto</p>
+                  </div>
+                </div>
+
+                {/* Photo Previews Grid */}
+                {(existingImages.length > 0 || newImagePreviews.length > 0) && (
+                  <div className="space-y-2 mt-3">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">Daftar Foto:</p>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-56 overflow-y-auto p-1 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+
+                      {/* Existing Images */}
+                      {existingImages.map((img, i) => {
+                        const isRemoved = removedImageIndices.includes(i);
+                        return (
+                          <div key={`existing-${i}`} className={`relative h-20 rounded-lg overflow-hidden border transition-all group ${isRemoved ? 'border-red-400 opacity-40 grayscale' : 'border-gray-200 dark:border-gray-700'}`}>
+                            <img src={getImageUrl(img)} alt={`foto-lama-${i+1}`} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }} />
+                            <span className="absolute top-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">{i + 1}</span>
+                            {isRemoved && (
+                              <span className="absolute inset-0 flex items-center justify-center bg-red-900/60 text-white font-bold text-[10px]">
+                                Dihapus
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleToggleRemoveExisting(i)}
+                              title={isRemoved ? "Batal Hapus" : "Hapus Foto Ini"}
+                              className={`absolute top-1 right-1 w-5 h-5 rounded-full text-[10px] flex items-center justify-center transition-all ${isRemoved ? 'bg-green-600 text-white' : 'bg-red-500/80 text-white hover:bg-red-600'}`}
+                            >
+                              <i className={`fa-solid ${isRemoved ? 'fa-undo' : 'fa-times'}`}></i>
+                            </button>
+                          </div>
+                        );
+                      })}
+
+                      {/* New Images */}
+                      {newImagePreviews.map((preview, i) => (
+                        <div key={`new-${i}`} className="relative h-20 rounded-lg overflow-hidden border-2 border-green-400 dark:border-green-500 group">
+                          <img src={preview} alt={`foto-baru-${i+1}`} className="w-full h-full object-cover" />
+                          <span className="absolute top-1 left-1 bg-green-600 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">Baru</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveNewImage(i)}
+                            title="Hapus foto baru ini"
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center hover:bg-red-600 transition-all shadow"
+                          >
+                            <i className="fa-solid fa-times"></i>
+                          </button>
+                        </div>
+                      ))}
+
+                    </div>
                   </div>
                 )}
               </div>
@@ -375,9 +480,9 @@ export default function AdminDokumentasiPage() {
                 {form.video_urls.length > 0 && (
                   <div className="mt-3 space-y-2">
                     {form.video_urls.map((url, i) => (
-                      <div key={i} className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
+                      <div key={i} className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-3 py-2">
                         <i className={`${url.includes('youtube') || url.includes('youtu.be') ? 'fa-brands fa-youtube text-red-500' : 'fa-brands fa-google-drive text-blue-500'} text-sm`}></i>
-                        <span className="text-xs text-gray-600 flex-1 truncate">{url}</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-300 flex-1 truncate">{url}</span>
                         <button type="button" onClick={() => removeVideoUrl(i)} className="text-red-400 hover:text-red-600 text-xs shrink-0"><i className="fa-solid fa-times"></i></button>
                       </div>
                     ))}
@@ -421,8 +526,8 @@ export default function AdminDokumentasiPage() {
                   <h3 className="font-semibold text-gray-700 mb-3 text-sm"><i className="fa-regular fa-images mr-2 text-primary"></i>Foto ({previewItem.images.length})</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {previewItem.images.map((img, i) => (
-                      <a key={i} href={img} target="_blank" rel="noreferrer" className="relative h-32 rounded-xl overflow-hidden border border-gray-100 block hover:opacity-90 transition-opacity">
-                        <img src={img} alt={`foto-${i+1}`} className="w-full h-full object-cover" />
+                      <a key={i} href={getImageUrl(img)} target="_blank" rel="noreferrer" className="relative h-32 rounded-xl overflow-hidden border border-gray-100 block hover:opacity-90 transition-opacity">
+                        <img src={getImageUrl(img)} alt={`foto-${i+1}`} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }} />
                       </a>
                     ))}
                   </div>
@@ -454,3 +559,4 @@ export default function AdminDokumentasiPage() {
     </div>
   );
 }
+

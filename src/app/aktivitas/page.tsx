@@ -7,6 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { gsap } from 'gsap';
 import KalenderView from '@/components/ui/KalenderView';
+import { getImageUrl } from '@/lib/api';
 
 interface Article {
   id: number;
@@ -60,11 +61,7 @@ export default function AktivitasPage() {
   const [totalPages, setTotalPages] = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const getImageUrl = (url: string) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    return API.replace('/api', '') + url;
-  };
+
 
   // Reset page when tab changes
   useEffect(() => { setPage(1); }, [activeTab]);

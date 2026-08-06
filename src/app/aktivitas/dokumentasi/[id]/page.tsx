@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { getImageUrl } from '@/lib/api';
 
 interface DokItem {
   id: number;
@@ -153,10 +152,10 @@ export default function DokumentasiDetailPage() {
                 {/* Main Photo */}
                 <div className="relative w-full rounded-xl overflow-hidden bg-gray-100 mb-4" style={{paddingTop: '56.25%'}}>
                   <img
-                    src={dok.images[activePhoto]}
+                    src={getImageUrl(dok.images[activePhoto])}
                     alt={`${dok.nama_kegiatan} - foto ${activePhoto + 1}`}
                     className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x450?text=Gambar+tidak+tersedia'; }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
                   {dok.images.length > 1 && (
                     <>
@@ -191,10 +190,10 @@ export default function DokumentasiDetailPage() {
                         className={`relative shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${activePhoto === i ? 'border-primary shadow-md scale-105' : 'border-gray-200 hover:border-gray-400'}`}
                       >
                         <img
-                          src={img}
+                          src={getImageUrl(img)}
                           alt={`thumb-${i}`}
                           className="w-full h-full object-cover"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                         />
                       </button>
                     ))}

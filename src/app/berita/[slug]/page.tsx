@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import PageHeader from '@/components/ui/PageHeader';
+import { getImageUrl } from '@/lib/api';
 
 interface Article {
   id: number;
@@ -23,15 +24,9 @@ interface Article {
 export default function ArticleDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-  const getImageUrl = (url: string) => {
-    if (!url) return 'https://via.placeholder.com/800x450?text=Gambar+tidak+tersedia';
-    if (url.startsWith('http')) return url;
-    return API.replace('/api', '') + url;
-  };
-  
   const [article, setArticle] = useState<Article | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [otherArticles, setOtherArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +46,7 @@ export default function ArticleDetailPage() {
 
         if (data && data.status === 'success') {
           setArticle(data.data);
+          setSelectedImageIndex(0);
           
           // Fetch related items for sidebar
           const otherRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/news?category=berita`);
@@ -125,26 +121,68 @@ export default function ArticleDetailPage() {
             {/* Left: Article Content */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-3xl shadow-sm p-6 md:p-10 border border-gray-100">
-                {/* Images */}
+                {/* Interactive Images Gallery */}
                 {article.image && article.image.length > 0 && (
                   <div className="mb-8">
-                    {/* Main Image */}
-                    <div className="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100">
-                      <Image 
-                        src={getImageUrl(article.image[0])} 
+                    {/* Main Image Banner */}
+                    <div className="relative w-full h-[300px] md:h-[480px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 group">
+                      <img 
+                        src={getImageUrl(article.image[selectedImageIndex] || article.image[0])} 
                         alt={article.title}
-                        fill
-                        className="object-cover"
-                        unoptimized
+                        className="w-full h-full object-cover transition-all duration-300"
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                       />
-                    </div>
-                    {/* Thumbnail Gallery (if more than 1 image) */}
-                    {article.image.length > 1 && (
-                      <div className="flex gap-3 overflow-x-auto pb-2">
-                        {article.image.slice(1).map((img, idx) => (
-                          <div key={idx} className="relative min-w-[120px] h-[80px] rounded-lg overflow-hidden shadow-sm bg-gray-100">
-                            <Image src={getImageUrl(img)} alt={`Gallery ${idx+1}`} fill className="object-cover" unoptimized />
+
+                      {/* Arrow Navigation (if multiple images) */}
+                      {article.image.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedImageIndex(prev => (prev === 0 ? article.image.length - 1 : prev - 1))}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md"
+                            title="Gambar Sebelumnya"
+                          >
+                            <i className="fa-solid fa-chevron-left"></i>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedImageIndex(prev => (prev === article.image.length - 1 ? 0 : prev + 1))}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md"
+                            title="Gambar Selanjutnya"
+                          >
+                            <i className="fa-solid fa-chevron-right"></i>
+                          </button>
+                          <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                            {selectedImageIndex + 1} / {article.image.length} Foto
                           </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Clickable Thumbnail Gallery */}
+                    {article.image.length > 1 && (
+                      <div className="flex gap-3 overflow-x-auto pb-2 pt-1">
+                        {article.image.map((img, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedImageIndex(idx)}
+                            className={`relative shrink-0 w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden shadow-sm transition-all duration-200 cursor-pointer ${
+                              selectedImageIndex === idx
+                                ? 'ring-4 ring-primary scale-105 opacity-100 shadow-md'
+                                : 'opacity-70 hover:opacity-100 hover:scale-102 border-2 border-transparent'
+                            }`}
+                          >
+                            <img 
+                              src={getImageUrl(img)} 
+                              alt={`Galeri ${idx + 1}`} 
+                              className="w-full h-full object-cover" 
+                              onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                            />
+                            {selectedImageIndex === idx && (
+                              <div className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none"></div>
+                            )}
+                          </button>
                         ))}
                       </div>
                     )}
@@ -153,13 +191,23 @@ export default function ArticleDetailPage() {
 
                 {/* Content */}
                 <div className="prose max-w-none prose-lg prose-headings:text-primary prose-a:text-blue-600">
-                  <p className="text-xl font-medium text-gray-700 leading-relaxed mb-6 italic border-l-4 border-primary pl-4">
-                    {article.description}
-                  </p>
+                  {article.description && (
+                    <div 
+                      className="text-xl font-medium text-gray-700 leading-relaxed mb-6 italic border-l-4 border-primary pl-4"
+                      dangerouslySetInnerHTML={{ __html: article.description }}
+                    />
+                  )}
                   
-                  <div className="text-gray-600 leading-relaxed whitespace-pre-line text-justify">
-                    {article.content || "Konten artikel ini sedang dalam tahap penyusunan."}
-                  </div>
+                  {article.content ? (
+                    <div 
+                      className="text-gray-600 leading-relaxed text-justify space-y-4"
+                      dangerouslySetInnerHTML={{ __html: article.content }}
+                    />
+                  ) : (
+                    <div className="text-gray-600 leading-relaxed italic text-justify">
+                      Konten artikel ini sedang dalam tahap penyusunan.
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -182,7 +230,7 @@ export default function ArticleDetailPage() {
                       >
                         <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm">
                           <Image 
-                            src={(other.image && other.image.length > 0) ? getImageUrl(other.image[0]) : 'https://via.placeholder.com/150'} 
+                            src={(other.image && other.image.length > 0) ? getImageUrl(other.image[0]) : '/images/banner/hero1.png'} 
                             alt={other.title}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
