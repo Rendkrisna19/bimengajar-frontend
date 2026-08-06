@@ -5,42 +5,77 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+const translateText = (text: string | null, lang: 'ID' | 'EN'): string => {
+  if (!text) return '';
+  if (lang === 'ID') return text;
+
+  const normalized = text.trim();
+
+  // Title Translations
+  if (normalized.includes('Edukasi untuk')) return 'Education for\nan Advanced Indonesia';
+  if (normalized.includes('Kenali & Pahami')) return 'Know & Understand\nOur Rupiah';
+  if (normalized.includes('Layanan Penukaran')) return 'Coin Exchange\nServices';
+
+  // Subtitle Translations
+  if (normalized.includes('Belajar, berkolaborasi')) {
+    return 'Learn, collaborate, and contribute with Bank Indonesia for a society that Loves, is Proud of, and Understands the Rupiah.';
+  }
+  if (normalized.includes('Tingkatkan literasi')) {
+    return 'Improve financial literacy and recognize the authenticity features of the Rupiah to maintain the nation\'s economic sovereignty.';
+  }
+  if (normalized.includes('Gunakan platform Pojok Koin')) {
+    return 'Use the Coin Corner platform to easily exchange coins and help coin circulation in the community.';
+  }
+
+  // Button Text Translations
+  if (normalized === 'Ajukan Edukasi') return 'Request Education';
+  if (normalized === 'Jelajahi Materi') return 'Explore Materials';
+  if (normalized === 'Cari Lokasi Penukaran') return 'Find Exchange Location';
+
+  return text;
+};
+
 export default function HeroSection() {
   const { t, lang } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
+  const [dynamicSlides, setDynamicSlides] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fallback text if translations aren't available for the new keys yet
-  const slides = [
-    {
-      id: 0,
-      title: lang === 'ID' ? 'Edukasi untuk\nIndonesia yang Maju' : 'Education for\nan Advanced Indonesia',
-      subtitle: lang === 'ID' 
-        ? 'Belajar, berkolaborasi, dan berkontribusi bersama Bank Indonesia untuk masyarakat yang Cinta, Bangga, dan Paham Rupiah.'
-        : 'Learn, collaborate, and contribute with Bank Indonesia for a society that Loves, is Proud of, and Understands the Rupiah.',
-      image: '/images/banner/hero1.png',
-    },
-    {
-      id: 1,
-      title: lang === 'ID' ? 'Kenali & Pahami\nRupiah Kita' : 'Know & Understand\nOur Rupiah',
-      subtitle: lang === 'ID'
-        ? 'Tingkatkan literasi keuangan dan kenali ciri keaslian Rupiah demi menjaga kedaulatan ekonomi bangsa.'
-        : 'Improve financial literacy and recognize the authenticity features of the Rupiah to maintain the nation\'s economic sovereignty.',
-      image: '/images/banner/hero2.png',
-    },
-    {
-      id: 2,
-      title: lang === 'ID' ? 'Layanan Penukaran\nUang Logam' : 'Coin Exchange\nServices',
-      subtitle: lang === 'ID'
-        ? 'Gunakan platform Pojok Koin untuk menukarkan uang logam dengan mudah dan bantu sirkulasi koin di masyarakat.'
-        : 'Use the Coin Corner platform to easily exchange coins and help coin circulation in the community.',
-      image: '/images/banner/hero3.png',
-    },
-  ];
+  useEffect(() => {
+    const fetchHeroBanners = async () => {
+      try {
+        setLoading(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        const res = await fetch(`${apiUrl}/hero-banners`);
+        const data = await res.json();
+        if (data.status === 'success' && data.data) {
+          const mapped = data.data.map((item: any) => ({
+            id: item.id,
+            title: lang === 'EN' ? (item.title_en || translateText(item.title, 'EN')) : item.title,
+            subtitle: lang === 'EN' ? (item.subtitle_en || translateText(item.subtitle, 'EN')) : item.subtitle,
+            button_primary_text: lang === 'EN' ? (item.button_primary_text_en || translateText(item.button_primary_text, 'EN')) : item.button_primary_text,
+            button_primary_url: item.button_primary_url,
+            button_secondary_text: lang === 'EN' ? (item.button_secondary_text_en || translateText(item.button_secondary_text, 'EN')) : item.button_secondary_text,
+            button_secondary_url: item.button_secondary_url,
+            image: item.image_url || item.image || '/images/banner/hero1.png',
+          }));
+          setDynamicSlides(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch hero banners', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHeroBanners();
+  }, [lang]);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  const slides = dynamicSlides;
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev >= slides.length - 1 ? 0 : prev + 1));
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
 
   const startAutoPlay = () => {
@@ -57,7 +92,7 @@ export default function HeroSection() {
   useEffect(() => {
     startAutoPlay();
     return () => stopAutoPlay();
-  }, [currentSlide]);
+  }, [currentSlide, slides.length]);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
@@ -109,46 +144,64 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-16 lg:pb-20 flex-1">
         
         <div className="relative w-full overflow-hidden flex items-center min-h-[550px] lg:min-h-[500px]">
-          <div 
-            className="flex transition-transform duration-700 ease-in-out w-full"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {slides.map((slide) => (
-              <div key={slide.id} className="w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                
-                {/* Text Content - Centered on mobile, Left on desktop */}
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 px-2 mt-4 lg:mt-0 order-2 lg:order-1 w-full overflow-hidden">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4 lg:mb-6 whitespace-pre-line drop-shadow-md">
-                    {slide.title}
-                  </h1>
-                  <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-8 lg:mb-10 leading-relaxed font-medium px-4 lg:px-0">
-                    {slide.subtitle}
-                  </p>
-                  
-                  <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
-                    <Link href="/edukasi/pengajuan" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-yellow text-primary font-bold rounded transition-all text-center border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1">
-                      {lang === 'ID' ? 'Ajukan Edukasi' : 'Request Education'}
-                    </Link>
-                    <Link href="/edukasi/materi-edukasi" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-b-4 border-white/50 text-white font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
-                      {lang === 'ID' ? 'Jelajahi Materi' : 'Explore Materials'}
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Image - Placed above text on mobile */}
-                <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] flex items-center justify-center pointer-events-none order-1 lg:order-2">
-                  <Image
-                    src={slide.image}
-                    alt="Banner Illustration"
-                    fill
-                    className="object-contain"
-                    priority={slide.id === 0}
-                    draggable={false}
-                  />
+          {loading ? (
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center animate-pulse">
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 w-full space-y-4">
+                <div className="h-12 bg-white/20 rounded-xl w-3/4"></div>
+                <div className="h-20 bg-white/10 rounded-xl w-full"></div>
+                <div className="flex gap-4 w-full pt-4">
+                  <div className="h-12 bg-white/30 rounded-xl w-40"></div>
+                  <div className="h-12 bg-white/20 rounded-xl w-40"></div>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="w-full h-[300px] lg:h-[400px] bg-white/10 rounded-2xl"></div>
+            </div>
+          ) : slides.length > 0 ? (
+            <div 
+              className="flex transition-transform duration-700 ease-in-out w-full"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {slides.map((slide, index) => (
+                <div key={slide.id || index} className="w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                  
+                  {/* Text Content - Centered on mobile, Left on desktop */}
+                  <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 px-2 mt-4 lg:mt-0 order-2 lg:order-1 w-full overflow-hidden">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4 lg:mb-6 whitespace-pre-line drop-shadow-md">
+                      {slide.title}
+                    </h1>
+                    <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-8 lg:mb-10 leading-relaxed font-medium px-4 lg:px-0">
+                      {slide.subtitle}
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
+                      {slide.button_primary_text && (
+                        <Link href={slide.button_primary_url || '/edukasi/pengajuan'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-yellow text-primary font-bold rounded transition-all text-center border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1">
+                          {slide.button_primary_text}
+                        </Link>
+                      )}
+                      {slide.button_secondary_text && (
+                        <Link href={slide.button_secondary_url || '/edukasi/materi-edukasi'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-b-4 border-white/50 text-white font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
+                          {slide.button_secondary_text}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Image - Placed above text on mobile */}
+                  <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] flex items-center justify-center pointer-events-none order-1 lg:order-2">
+                    <Image
+                      src={slide.image}
+                      alt="Banner Illustration"
+                      fill
+                      className="object-contain"
+                      priority={index === 0}
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="absolute bottom-10 left-6 lg:left-10 flex items-center gap-3 z-20">

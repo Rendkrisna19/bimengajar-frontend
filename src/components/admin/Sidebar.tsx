@@ -25,6 +25,12 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       ]
     },
     {
+      category: "Content Management System",
+      items: [
+        { name: "Hero Banner", icon: "fa-solid fa-[#1C3281] fa-sliders", href: "/admin/cms/hero-banner" },
+      ]
+    },
+    {
       category: "CMS Profil",
       items: [
         { name: "Tentang Kami", icon: "fa-solid fa-circle-info", href: "/admin/tentang-kami" },

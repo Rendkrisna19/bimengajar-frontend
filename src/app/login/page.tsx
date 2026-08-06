@@ -4,14 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Script from 'next/script';
-import ParticleBackground from '@/components/ui/ParticleBackground';
 import { useRouter } from 'next/navigation';
-
 import Swal from 'sweetalert2';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const router = useRouter();
@@ -54,7 +53,6 @@ export default function LoginPage() {
           router.push(dest);
         });
       } else if (res.status === 422) {
-        // Laravel Validation Error — parse field-level errors
         const errors = data.errors || {};
         const newErrors: { email?: string; password?: string } = {};
 
@@ -64,10 +62,7 @@ export default function LoginPage() {
         if (errors.password) {
           newErrors.password = errors.password[0];
         }
-        // "auth.failed" biasanya muncul di field email tapi artinya credentials salah
         if (!errors.email && !errors.password) {
-          // Gunakan heuristic: jika server bilang "These credentials do not match"
-          // tandai password sebagai salah karena email ditemukan tapi password salah
           newErrors.password = 'Password yang Anda masukkan salah.';
         }
 
@@ -79,7 +74,7 @@ export default function LoginPage() {
           icon: 'warning',
           showConfirmButton: true,
           confirmButtonText: 'Verifikasi Sekarang',
-          confirmButtonColor: '#003366',
+          confirmButtonColor: '#1C3281',
           background: '#ffffff',
         }).then(() => {
           router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
@@ -94,37 +89,62 @@ export default function LoginPage() {
     }
   };
 
-  const inputBase = 'w-full bg-gray-50 text-gray-800 text-sm rounded-xl pl-11 pr-4 py-3.5 outline-none transition-all placeholder:text-gray-400 shadow-sm border';
-  const inputNormal = `${inputBase} border-gray-200 focus:border-primary focus:bg-white`;
-  const inputError = `${inputBase} border-red-400 bg-red-50 focus:border-red-500 focus:bg-red-50 text-red-700`;
+  const inputBase = 'w-full bg-slate-50 text-gray-800 text-sm rounded-xl pl-11 pr-11 py-3.5 outline-none transition-all placeholder:text-gray-400 border font-medium';
+  const inputNormal = `${inputBase} border-gray-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 shadow-sm`;
+  const inputError = `${inputBase} border-red-400 bg-red-50/50 focus:border-red-500 focus:bg-white text-red-700 focus:ring-4 focus:ring-red-500/10`;
 
   const LottiePlayer = 'lottie-player' as any;
 
   return (
-    <main className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-slate-50">
+    <main className="min-h-screen relative flex items-center justify-center p-4 md:p-6 bg-[#002244] overflow-hidden font-sans">
       <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" strategy="lazyOnload" />
-      <ParticleBackground />
 
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] hidden md:block">
-         <div className="absolute top-[20%] left-0 w-[20%] h-px bg-gradient-to-r from-primary to-transparent transform -rotate-12"></div>
-         <div className="absolute top-[20%] right-0 w-[20%] h-px bg-gradient-to-l from-primary to-transparent transform rotate-12"></div>
-         <div className="absolute bottom-[20%] left-0 w-[20%] h-px bg-gradient-to-r from-accent-warning to-transparent transform rotate-12"></div>
-         <div className="absolute bottom-[20%] right-0 w-[20%] h-px bg-gradient-to-l from-accent-warning to-transparent transform -rotate-12"></div>
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Glow Spheres */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-400/20 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-1/4 -right-20 w-[30rem] h-[30rem] bg-accent-yellow/15 rounded-full blur-[140px]"></div>
+        
+        {/* Songket Motif Overlay */}
+        <div 
+          className="absolute inset-0 w-full h-full opacity-15 bg-repeat bg-center pointer-events-none"
+          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: '350px' }}
+        ></div>
       </div>
 
-      <Link href="/" className="absolute top-8 left-8 text-gray-500 hover:text-primary transition-colors flex items-center gap-2 font-medium z-20">
-        <i className="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+      {/* Back to Home Button */}
+      <Link 
+        href="/" 
+        className="absolute top-6 left-6 md:top-8 md:left-8 text-white bg-primary/90 hover:bg-primary backdrop-blur-md px-5 py-2.5 rounded-full border border-accent-yellow/50 text-xs md:text-sm font-bold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 z-30 group"
+      >
+        <i className="fa-solid fa-arrow-left text-xs text-accent-yellow group-hover:-translate-x-1 transition-transform"></i> Kembali ke Beranda
       </Link>
 
-      {/* Split Pane Card Container */}
-      <div className="w-full max-w-[920px] bg-white border border-gray-100 rounded-3xl shadow-[0_20px_50px_rgba(0,51,102,0.08)] relative z-10 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+      {/* Main Split Glass Card */}
+      <div className="w-full max-w-[960px] bg-white rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] border border-white/20 relative z-10 overflow-hidden grid grid-cols-1 md:grid-cols-12 my-auto">
         
-        {/* Left Side: Lottie Animation (hidden on mobile, flex on desktop) */}
-        <div className="hidden md:flex flex-col items-center justify-center p-10 bg-slate-50/50 border-r border-gray-100 relative">
-          <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
-               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #003366 1px, transparent 0)', backgroundSize: '16px 16px' }}>
+        {/* Left Side: Brand & Illustration (5 Columns) */}
+        <div className="hidden md:flex md:col-span-5 flex-col justify-between p-8 lg:p-10 bg-primary text-white relative overflow-hidden">
+          {/* Subtle songket background inside left panel */}
+          <div 
+            className="absolute inset-0 w-full h-full opacity-15 bg-cover bg-center pointer-events-none"
+            style={{ backgroundImage: 'url(/images/element/1.png)' }}
+          ></div>
+          
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[11px] font-bold text-yellow-300 uppercase tracking-wider mb-4">
+              <i className="fa-solid fa-shield-halved text-yellow-400"></i> Portal Resmi BI
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-extrabold text-white leading-tight tracking-tight">
+              BI - MENGAJAR
+            </h2>
+            <p className="text-xs lg:text-sm text-blue-100/80 mt-2 leading-relaxed">
+              Cinta, Bangga, Paham Rupiah bersama Bank Indonesia Kantor Perwakilan Pematangsiantar.
+            </p>
           </div>
-          <div className="w-full max-w-[360px] h-[360px] flex items-center justify-center relative z-10">
+
+          {/* Lottie Animation Container */}
+          <div className="w-full h-56 lg:h-64 flex items-center justify-center my-4 relative z-10">
             <LottiePlayer
               src="/images/lottie/login.json"
               background="transparent"
@@ -134,44 +154,45 @@ export default function LoginPage() {
               style={{ width: '100%', height: '100%' }}
             />
           </div>
-          <div className="text-center mt-4 relative z-10">
-            <h3 className="text-base font-extrabold text-primary tracking-wider uppercase">BI-MENGAJAR</h3>
-            <p className="text-xs text-slate-400 mt-1.5 max-w-[260px] leading-relaxed mx-auto">
-              Mari bersama-sama belajar dan berbagi kecintaan, kebanggaan, serta kepahaman tentang Rupiah.
+
+          {/* Footer note in left panel */}
+          <div className="relative z-10 border-t border-white/10 pt-4">
+            <p className="text-[11px] text-blue-200/70 text-center font-medium">
+              &copy; {new Date().getFullYear()} Bank Indonesia Pematangsiantar
             </p>
           </div>
         </div>
 
-        {/* Right Side: Login Form */}
-        <div className="p-8 md:p-10 flex flex-col justify-center">
-          <div className="flex flex-col items-center mb-8">
-            <div className="mb-6">
+        {/* Right Side: Login Form (7 Columns) */}
+        <div className="md:col-span-7 p-8 lg:p-12 flex flex-col justify-center bg-white">
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="mb-4">
               <Image
                 src="/images/logo.png"
                 alt="Logo BI Mengajar"
-                width={160}
-                height={50}
+                width={150}
+                height={48}
                 className="h-10 w-auto object-contain"
                 priority
               />
             </div>
-            <h1 className="text-xl font-bold text-gray-800 tracking-tight">Masuk ke Akun Anda</h1>
-            <p className="text-xs text-gray-500 mt-1.5 text-center">
-              Silakan login untuk mengakses layanan BI Mengajar.
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Masuk ke Akun Anda</h1>
+            <p className="text-xs text-gray-500 mt-1.5 max-w-sm">
+              Silakan masukkan kredensial akun Anda untuk mengakses dashboard dan layanan BI Mengajar.
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
             {/* Email Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-gray-600 px-1">Alamat Email</label>
+              <label className="text-xs font-bold text-gray-700 px-1">Alamat Email</label>
               <div className="relative group">
-                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
-                  <i className="fa-regular fa-envelope"></i>
+                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.email ? 'text-red-500' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                  <i className="fa-regular fa-envelope text-sm"></i>
                 </div>
                 <input
                   type="email"
-                  placeholder="Masukkan email admin..."
+                  placeholder="Masukkan email Anda..."
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -189,15 +210,17 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Password Field */}
+            {/* Password Field with Toggle */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-gray-600 px-1">Password</label>
+              <div className="flex justify-between items-center px-1">
+                <label className="text-xs font-bold text-gray-700">Password</label>
+              </div>
               <div className="relative group">
-                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-primary'}`}>
-                  <i className="fa-solid fa-lock"></i>
+                <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${fieldErrors.password ? 'text-red-500' : 'text-gray-400 group-focus-within:text-primary'}`}>
+                  <i className="fa-solid fa-lock text-sm"></i>
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Masukkan password..."
                   value={password}
                   onChange={(e) => {
@@ -207,6 +230,14 @@ export default function LoginPage() {
                   required
                   className={fieldErrors.password ? inputError : inputNormal}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                  tabIndex={-1}
+                >
+                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-sm`}></i>
+                </button>
               </div>
               {fieldErrors.password && (
                 <p className="text-xs text-red-500 font-medium flex items-center gap-1 pl-1">
@@ -216,20 +247,31 @@ export default function LoginPage() {
               )}
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5"
+              className="w-full bg-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0 border-b-4 border-accent-yellow active:border-b-0"
             >
-              {loading ? <i className="fa-solid fa-circle-notch animate-spin"></i> : 'Masuk ke Dashboard'}
+              {loading ? (
+                <>
+                  <i className="fa-solid fa-circle-notch animate-spin text-accent-yellow"></i>
+                  <span>Memproses...</span>
+                </>
+              ) : (
+                <>
+                  <span>Masuk ke Dashboard</span>
+                  <i className="fa-solid fa-arrow-right text-xs text-accent-yellow"></i>
+                </>
+              )}
             </button>
           </form>
 
-          <div className="mt-6 text-center border-t border-gray-100 pt-5">
+          <div className="mt-8 text-center border-t border-gray-100 pt-5">
             <p className="text-xs text-gray-500">
               Belum punya akun?{' '}
               <Link href="/register" className="text-primary font-bold hover:underline transition-all">
-                Daftar di sini
+                Daftar Akun Baru
               </Link>
             </p>
           </div>
@@ -238,3 +280,4 @@ export default function LoginPage() {
     </main>
   );
 }
+
