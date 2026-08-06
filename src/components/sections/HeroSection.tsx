@@ -12,30 +12,23 @@ export default function HeroSection() {
   const [startX, setStartX] = useState(0);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // Fallback text if translations aren't available for the new keys yet
   const slides = [
     {
       id: 0,
-      title: lang === 'ID' ? 'Edukasi untuk\nIndonesia yang Maju' : 'Education for\nan Advanced Indonesia',
-      subtitle: lang === 'ID' 
-        ? 'Belajar, berkolaborasi, dan berkontribusi bersama Bank Indonesia untuk masyarakat yang Cinta, Bangga, dan Paham Rupiah.'
-        : 'Learn, collaborate, and contribute with Bank Indonesia for a society that Loves, is Proud of, and Understands the Rupiah.',
+      title: t('hero.slide1.title'),
+      subtitle: t('hero.slide1.subtitle'),
       image: '/images/banner/hero1.png',
     },
     {
       id: 1,
-      title: lang === 'ID' ? 'Kenali & Pahami\nRupiah Kita' : 'Know & Understand\nOur Rupiah',
-      subtitle: lang === 'ID'
-        ? 'Tingkatkan literasi keuangan dan kenali ciri keaslian Rupiah demi menjaga kedaulatan ekonomi bangsa.'
-        : 'Improve financial literacy and recognize the authenticity features of the Rupiah to maintain the nation\'s economic sovereignty.',
+      title: t('hero.slide2.title'),
+      subtitle: t('hero.slide2.subtitle'),
       image: '/images/banner/hero2.png',
     },
     {
       id: 2,
-      title: lang === 'ID' ? 'Layanan Penukaran\nUang Logam' : 'Coin Exchange\nServices',
-      subtitle: lang === 'ID'
-        ? 'Gunakan platform Pojok Koin untuk menukarkan uang logam dengan mudah dan bantu sirkulasi koin di masyarakat.'
-        : 'Use the Coin Corner platform to easily exchange coins and help coin circulation in the community.',
+      title: t('hero.slide3.title'),
+      subtitle: t('hero.slide3.subtitle'),
       image: '/images/banner/hero3.png',
     },
   ];
@@ -95,11 +88,9 @@ export default function HeroSection() {
     >
       {/* Decorative background elements & Scattered Motif Songket */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Soft glowing blobs */}
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px] opacity-10"></div>
         <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-300 rounded-full blur-[100px] opacity-10"></div>
 
-        {/* Texture Motif Background */}
         <div 
           className="absolute inset-0 w-full h-full opacity-5 bg-no-repeat bg-center bg-cover"
           style={{ backgroundImage: 'url(/images/element/1.png)' }}
@@ -127,10 +118,10 @@ export default function HeroSection() {
                   
                   <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
                     <Link href="/edukasi/pengajuan" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-yellow text-primary font-bold rounded transition-all text-center border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1">
-                      {lang === 'ID' ? 'Ajukan Edukasi' : 'Request Education'}
+                      {t('hero.btnRequest')}
                     </Link>
                     <Link href="/edukasi/materi-edukasi" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-b-4 border-white/50 text-white font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
-                      {lang === 'ID' ? 'Jelajahi Materi' : 'Explore Materials'}
+                      {t('hero.btnExplore')}
                     </Link>
                   </div>
                 </div>

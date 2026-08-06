@@ -14,8 +14,84 @@ interface LanguageContextType {
 const translations: Record<string, Record<Lang, string>> = {
   // --- Navbar ---
   'nav.switchLang': { ID: 'Ganti Bahasa', EN: 'Switch Language' },
+  'nav.home': { ID: 'Beranda', EN: 'Home' },
+  'nav.about': { ID: 'Tentang Kami', EN: 'About Us' },
+  'nav.edukasi': { ID: 'Edukasi', EN: 'Education' },
+  'nav.pengajuan': { ID: 'Pengajuan Kegiatan', EN: 'Activity Request' },
+  'nav.materi': { ID: 'Materi Edukasi', EN: 'Educational Materials' },
+  'nav.mitra': { ID: 'Mitra Edukasi', EN: 'Education Partners' },
+  'nav.titikTemu': { ID: 'Titik Temu', EN: 'Coin Corner' },
+  'nav.aktivitas': { ID: 'Aktivitas', EN: 'Activities' },
+  'nav.login': { ID: 'Masuk', EN: 'Login' },
+  'nav.logout': { ID: 'Keluar', EN: 'Logout' },
+  'nav.loggedInAs': { ID: 'Masuk sebagai', EN: 'Logged in as' },
+  'nav.history': { ID: 'Riwayat Pengajuan', EN: 'Submission History' },
+  'nav.dashboard': { ID: 'Dashboard', EN: 'Dashboard' },
 
-  // --- Pojok Koin Hero ---
+  // --- Hero Section ---
+  'hero.slide1.title': { ID: 'Cinta, Bangga, Paham Rupiah', EN: 'Love, Pride, Understanding of Rupiah' },
+  'hero.slide1.subtitle': {
+    ID: 'Uang Rupiah bukan sekadar alat pembayaran, melainkan simbol kedaulatan negara. Bersama BI Mengajar Siantar, kita sebarkan semangat kebanksentralan ke seluruh penjuru daerah.',
+    EN: 'Rupiah currency is not merely a means of payment, but a symbol of national sovereignty. Together with BI Mengajar Siantar, we spread the central banking spirit across every region.'
+  },
+  'hero.slide2.title': { ID: 'Kenali & Pahami\nRupiah Kita', EN: 'Know & Understand\nOur Rupiah' },
+  'hero.slide2.subtitle': {
+    ID: 'Tingkatkan literasi keuangan dan kenali ciri keaslian Rupiah demi menjaga kedaulatan ekonomi bangsa.',
+    EN: 'Improve financial literacy and recognize the authenticity features of the Rupiah to maintain the nation\'s economic sovereignty.'
+  },
+  'hero.slide3.title': { ID: 'Layanan Penukaran\nUang Logam', EN: 'Coin Exchange\nServices' },
+  'hero.slide3.subtitle': {
+    ID: 'Gunakan platform Titik Temu untuk menukarkan uang logam dengan mudah dan bantu sirkulasi koin di masyarakat.',
+    EN: 'Use the Titik Temu platform to easily exchange coins and help coin circulation in the community.'
+  },
+  'hero.btnRequest': { ID: 'Ajukan Edukasi', EN: 'Request Education' },
+  'hero.btnExplore': { ID: 'Jelajahi Materi', EN: 'Explore Materials' },
+
+  // --- Menu Cepat / Features ---
+  'features.title': { ID: 'Menu Cepat', EN: 'Quick Actions' },
+  'features.materi': { ID: 'Materi Edukasi', EN: 'Educational Materials' },
+  'features.game': { ID: 'Game & Kuis', EN: 'Games & Quizzes' },
+  'features.pengajuan': { ID: 'Ajukan Kegiatan', EN: 'Request Activity' },
+  'features.mitra': { ID: 'Mitra Edukasi', EN: 'Education Partners' },
+  'features.titikTemu': { ID: 'Titik Temu', EN: 'Coin Corner' },
+  'features.kalender': { ID: 'Kalender Kegiatan', EN: 'Activity Calendar' },
+
+  // --- About Preview Section ---
+  'about.badge': { ID: 'Tentang Kami', EN: 'About Us' },
+  'about.defaultTitle': { ID: 'Tentang Bank Indonesia', EN: 'About Bank Indonesia' },
+  'about.readMore': { ID: 'Selengkapnya', EN: 'Read More' },
+
+  // --- Map Section ---
+  'map.title': { ID: 'Peta Edukasi BI Mengajar', EN: 'BI Mengajar Educational Map' },
+  'map.year2026': { ID: 'Tahun 2026', EN: 'Year 2026' },
+  'map.year2025': { ID: 'Tahun 2025', EN: 'Year 2025' },
+  'map.legend.sd': { ID: 'SD', EN: 'Elementary' },
+  'map.legend.smp': { ID: 'SMP', EN: 'Junior High' },
+  'map.legend.sma': { ID: 'SMA/SMK', EN: 'Senior High' },
+  'map.legend.pt': { ID: 'PT', EN: 'University' },
+  'map.legend.komunitas': { ID: 'Komunitas', EN: 'Community' },
+  'map.stat.schools': { ID: 'Sekolah Teredukasi', EN: 'Educated Schools' },
+  'map.stat.participants': { ID: 'Peserta Edukasi', EN: 'Education Participants' },
+  'map.stat.events': { ID: 'Kegiatan Terlaksana', EN: 'Completed Activities' },
+  'map.stat.innovations': { ID: 'Program Inovasi', EN: 'Innovation Programs' },
+
+  // --- News & Articles Section ---
+  'news.articlesTitle': { ID: 'Artikel Terbaru', EN: 'Latest Articles' },
+  'news.newsTitle': { ID: 'Berita Terkini', EN: 'Latest News' },
+  'news.viewAll': { ID: 'Lihat Semua', EN: 'View All' },
+  'news.readMore': { ID: 'Baca Selengkapnya', EN: 'Read More' },
+  'news.articleBadge': { ID: 'Artikel', EN: 'Article' },
+  'news.newsBadge': { ID: 'Berita', EN: 'News' },
+  'news.noArticles': { ID: 'Belum ada artikel.', EN: 'No articles available yet.' },
+  'news.noNews': { ID: 'Belum ada berita.', EN: 'No news available yet.' },
+
+  // --- Testimonial Section ---
+  'testi.title': { ID: 'Ulasan', EN: 'Testimonials' },
+  'testi.subtitle': { ID: 'Apa kata mereka tentang edukasi BI Mengajar', EN: 'What they say about BI Mengajar education' },
+  'testi.viewAll': { ID: 'Lihat Semua', EN: 'View All' },
+  'testi.noUlasan': { ID: 'Belum ada ulasan.', EN: 'No testimonials available yet.' },
+
+  // --- Titik Temu ---
   'pk.badge': { ID: 'Platform Sirkulasi Uang Logam', EN: 'Coin Circulation Platform' },
   'pk.title': { ID: 'Titik', EN: 'Meeting' },
   'pk.titleAccent': { ID: 'Temu', EN: 'Point' },
@@ -23,12 +99,8 @@ const translations: Record<string, Record<Lang, string>> = {
     ID: 'Platform matching antara pihak yang membutuhkan dan memiliki uang logam, untuk meningkatkan sirkulasi koin di masyarakat.',
     EN: 'A matching platform between those who need and those who have coins, to improve coin circulation in the community.',
   },
-
-  // --- Tabs ---
   'pk.tab.need': { ID: 'Saya Membutuhkan', EN: 'I Need Coins' },
   'pk.tab.have': { ID: 'Saya Memiliki', EN: 'I Have Coins' },
-
-  // --- Search Tab ---
   'pk.search.title': { ID: 'Filter Pencarian', EN: 'Search Filter' },
   'pk.search.location': { ID: 'LOKASI ANDA', EN: 'YOUR LOCATION' },
   'pk.search.locationPlaceholder': {
@@ -50,7 +122,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
   'pk.search.notFoundDesc2': {
     ID: 'KM dari lokasi Anda. Coba perluas radius pencarian.',
-    EN: 'KM from   your location. Try expanding the search radius.',
+    EN: 'KM from your location. Try expanding the search radius.',
   },
   'pk.search.contact': { ID: 'Hubungi via WhatsApp', EN: 'Contact via WhatsApp' },
   'pk.search.distance': { ID: 'KM dari lokasi Anda', EN: 'KM from your location' },

@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AboutPreviewSection() {
+  const { t } = useLanguage();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +26,6 @@ export default function AboutPreviewSection() {
     fetchAbouts();
   }, []);
 
-  // Helper to strip HTML tags for the preview text, and truncate to roughly ~250 chars
   const createPreviewText = (html: string) => {
     if (!html) return '';
     const tempDiv = document.createElement('div');
@@ -47,11 +48,10 @@ export default function AboutPreviewSection() {
     );
   }
 
-  if (!data) return null; // Don't show if no data
+  if (!data) return null;
 
   return (
     <section className="bg-white py-16 md:py-24 overflow-hidden relative border-y border-gray-100">
-      {/* Subtle Texture Background */}
       <div 
         className="absolute inset-0 w-full h-full opacity-[0.01] bg-no-repeat bg-center bg-cover pointer-events-none"
         style={{ backgroundImage: 'url(/images/element/2.png)' }}
@@ -76,7 +76,6 @@ export default function AboutPreviewSection() {
             )}
           </div>
           
-          {/* Floating Glows */}
           <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply opacity-20 blur-3xl z-[-1]"></div>
           <div className="absolute -top-8 -right-8 w-40 h-40 bg-primary rounded-full mix-blend-multiply opacity-20 blur-3xl z-[-1]"></div>
         </div>
@@ -84,16 +83,16 @@ export default function AboutPreviewSection() {
         {/* Right Side: Text */}
         <div className="flex-1 text-center md:text-left max-w-xl order-1 md:order-2">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-primary text-sm font-bold mb-6 border border-blue-100">
-            <i className="fa-solid fa-circle-info"></i> Tentang Kami
+            <i className="fa-solid fa-circle-info"></i> {t('about.badge')}
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-            {data.title || 'Tentang Bank Indonesia'}
+            {data.title || t('about.defaultTitle')}
           </h2>
           <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 text-justify md:text-left">
             {createPreviewText(data.content)}
           </p>
           <Link href="/tentang-kami" className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-white font-bold rounded hover:brightness-110 transition-all border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 gap-2">
-            Selengkapnya <i className="fa-solid fa-arrow-right text-sm"></i>
+            {t('about.readMore')} <i className="fa-solid fa-arrow-right text-sm"></i>
           </Link>
         </div>
 

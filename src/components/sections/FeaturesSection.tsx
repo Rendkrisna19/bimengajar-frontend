@@ -7,37 +7,37 @@ import { useState } from 'react';
 import KalenderModal from '@/components/ui/KalenderModal';
 
 export default function FeaturesSection() {
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
   const [isKalenderOpen, setIsKalenderOpen] = useState(false);
 
   const features = [
     {
-      title: lang === 'ID' ? 'Materi Edukasi' : 'Education Materials',
+      title: t('features.materi'),
       image: '/images/menu-cepat/1.jpeg',
       link: '/edukasi/materi-edukasi'
     },
     {
-      title: lang === 'ID' ? 'Game & Kuis' : 'Games & Quizzes',
+      title: t('features.game'),
       image: '/images/menu-cepat/2.jpeg',
       link: '/game'
     },
     {
-      title: lang === 'ID' ? 'Ajukan Kegiatan' : 'Request Activity',
+      title: t('features.pengajuan'),
       image: '/images/menu-cepat/3.jpeg',
       link: '/edukasi/pengajuan'
     },
     {
-      title: lang === 'ID' ? 'Mitra Edukasi' : 'Education Partners',
+      title: t('features.mitra'),
       image: '/images/menu-cepat/4.jpeg',
       link: '/edukasi/mitra'
     },
     {
-      title: lang === 'ID' ? 'Titik Temu' : 'Coin Corner',
+      title: t('features.titikTemu'),
       image: '/images/menu-cepat/5.jpeg',
       link: '/titik-temu'
     },
     {
-      title: lang === 'ID' ? 'Kalender Kegiatan' : 'Activity Calendar',
+      title: t('features.kalender'),
       image: '/images/menu-cepat/6.jpeg',
       link: '/kalender'
     }
@@ -47,7 +47,7 @@ export default function FeaturesSection() {
     <section className="relative z-20 -mt-24 md:-mt-28 pb-20 px-4 md:px-8">
       <div className="max-w-[1400px] mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-100 mb-8 drop-shadow-sm">
-          {lang === 'ID' ? 'Menu Cepat' : 'Quick Actions'}
+          {t('features.title')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
           {features.map((feature, idx) => (
