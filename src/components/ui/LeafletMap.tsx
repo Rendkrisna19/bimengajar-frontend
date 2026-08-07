@@ -302,8 +302,9 @@ export default function LeafletMap() {
             <Marker
               position={[externalSearchPin.lat, externalSearchPin.lng]}
               icon={createCustomIcon('SMA/SMK', true)}
+              ref={(ref) => { ref?.openPopup(); }}
             >
-              <Popup defaultOpen>
+              <Popup>
                 <div className="font-bold text-gray-800 text-sm">{externalSearchPin.name}</div>
                 <div className="text-[11px] text-orange-600 font-bold mt-1">📌 Hasil Pencarian Lokasi</div>
                 <div className="text-[10px] text-gray-400 mt-1">Koordinat: {externalSearchPin.lat.toFixed(5)}, {externalSearchPin.lng.toFixed(5)}</div>
