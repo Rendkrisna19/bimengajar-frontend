@@ -7,20 +7,22 @@ const groq = createOpenAI({
 });
 
 export async function POST(req: Request) {
+  let reqText = '';
   try {
-    const { text, targetLang = 'EN' } = await req.json();
+    const body = await req.json();
+    reqText = body.text || '';
 
-    if (!text || typeof text !== 'string' || !text.trim()) {
-      return new Response(JSON.stringify({ translatedText: text || '' }), { status: 200 });
+    if (!reqText || typeof reqText !== 'string' || !reqText.trim()) {
+      return new Response(JSON.stringify({ translatedText: reqText }), { status: 200 });
     }
 
     if (!process.env.GROQ_API_KEY) {
-      return new Response(JSON.stringify({ translatedText: text }), { status: 200 });
+      return new Response(JSON.stringify({ translatedText: reqText }), { status: 200 });
     }
 
     const { text: result } = await generateText({
       model: groq('llama-3.3-70b-versatile'),
-      prompt: `Translate the following Indonesian text into natural, professional English. Output ONLY the translated English text, without quotes or additional commentary:\n\n${text}`,
+      prompt: `Translate the following Indonesian text into natural, professional English. Output ONLY the translated English text, without quotes or additional commentary:\n\n${reqText}`,
     });
 
     return new Response(JSON.stringify({ translatedText: result.trim() }), {
@@ -28,6 +30,6 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error('Translate API error:', error);
-    return new Response(JSON.stringify({ translatedText: text }), { status: 500 });
+    return new Response(JSON.stringify({ translatedText: reqText }), { status: 500 });
   }
 }
