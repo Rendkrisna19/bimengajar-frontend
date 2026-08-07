@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getImageUrl } from '@/lib/api';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 interface DokItem {
   id: number;
