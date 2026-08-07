@@ -142,19 +142,7 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-16 lg:pb-20 flex-1">
         
         <div className="relative w-full overflow-hidden flex items-center min-h-[550px] lg:min-h-[500px]">
-          {loading ? (
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center animate-pulse">
-              <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 w-full space-y-4">
-                <div className="h-12 bg-white/20 rounded-xl w-3/4"></div>
-                <div className="h-20 bg-white/10 rounded-xl w-full"></div>
-                <div className="flex gap-4 w-full pt-4">
-                  <div className="h-12 bg-white/30 rounded-xl w-40"></div>
-                  <div className="h-12 bg-white/20 rounded-xl w-40"></div>
-                </div>
-              </div>
-              <div className="w-full h-[300px] lg:h-[400px] bg-white/10 rounded-2xl"></div>
-            </div>
-          ) : slides.length > 0 ? (
+          {slides.length > 0 ? (
             <div 
               className="flex transition-transform duration-700 ease-in-out w-full"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
