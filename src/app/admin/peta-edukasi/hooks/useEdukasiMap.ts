@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
 import { EdukasiLocation, LocationFormData, ActivityForm, SortConfig } from '../types';
 import { fetchLocationsApi, saveLocationApi, deleteLocationApi, searchExternalLocationsApi } from '../services/edukasi.service';
@@ -29,23 +29,37 @@ export const useEdukasiMap = () => {
 
   // Filters, Sort, Pagination
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('Semua');
   const [filterYear, setFilterYear] = useState('Semua');
   const [filterProvince, setFilterProvince] = useState('Semua');
   
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [summaryCounts, setSummaryCounts] = useState<any>({
     SD: 0, SMP: 0, SMA_SMK: 0, PT: 0, Komunitas: 0
   });
   const [totalItems, setTotalItems] = useState(0);
 
+  // Fast 150ms debounce for responsive instant searching
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Reset to page 1 whenever search query or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, filterCategory, filterYear, filterProvince]);
+
   useEffect(() => {
     fetchLocations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, filterCategory, filterYear, filterProvince, itemsPerPage, currentPage, sortConfig]);
+  }, [debouncedSearch, filterCategory, filterYear, filterProvince, itemsPerPage, currentPage, sortConfig]);
 
   useEffect(() => {
     if (position) {
@@ -54,13 +68,14 @@ export const useEdukasiMap = () => {
   }, [position]);
 
   const fetchLocations = async () => {
+    setIsLoading(true);
     try {
       const params: any = {
         per_page: itemsPerPage,
         page: currentPage,
       };
 
-      if (searchQuery) params.search = searchQuery;
+      if (debouncedSearch) params.search = debouncedSearch;
       if (filterCategory && filterCategory !== 'Semua') params.category = filterCategory;
       if (filterYear && filterYear !== 'Semua') params.year = filterYear;
       if (filterProvince && filterProvince !== 'Semua') params.province = filterProvince;
@@ -85,7 +100,9 @@ export const useEdukasiMap = () => {
         setTotalItems(Array.isArray(resultData) ? resultData.length : 0);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch locations', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 

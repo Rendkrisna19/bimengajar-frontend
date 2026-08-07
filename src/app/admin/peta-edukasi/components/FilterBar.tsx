@@ -22,7 +22,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-      <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+      <div className="flex flex-wrap gap-3 w-full lg:w-auto">
         <div className="relative">
           <input
             type="text"
@@ -35,7 +35,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
         
         <select
-          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium cursor-pointer"
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
         >
@@ -48,7 +48,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </select>
 
         <select
-          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium cursor-pointer"
           value={filterProvince}
           onChange={(e) => setFilterProvince(e.target.value)}
         >
@@ -66,7 +66,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </select>
 
         <select
-          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium cursor-pointer"
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
         >
@@ -77,17 +77,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </select>
       </div>
 
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
-        <span>Tampilkan</span>
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400 font-medium">
+        <span>Tampilkan:</span>
         <select
-          className="px-2 py-1 border border-slate-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-1.5 border border-slate-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-slate-700 dark:text-white cursor-pointer"
           value={itemsPerPage}
           onChange={(e) => setItemsPerPage(Number(e.target.value))}
         >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
+          <option value={10}>10 Data</option>
+          <option value={20}>20 Data</option>
+          <option value={50}>50 Data</option>
+          <option value={100}>100 Data</option>
         </select>
       </div>
     </div>
