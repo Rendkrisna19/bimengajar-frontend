@@ -62,9 +62,16 @@ export default function LeafletMap() {
     setMounted(true);
     const fetchLocations = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/locations`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/locations`, {
+          params: { per_page: 1000 }
+        });
         if (res.data && res.data.data) {
-          setLocations(res.data.data);
+          const resultData = res.data.data;
+          if (resultData && Array.isArray(resultData.data)) {
+            setLocations(resultData.data);
+          } else if (Array.isArray(resultData)) {
+            setLocations(resultData);
+          }
         }
       } catch (err) {
         console.error("Failed to load map locations", err);
