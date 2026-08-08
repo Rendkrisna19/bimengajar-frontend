@@ -7,9 +7,10 @@ export async function GET(
   try {
     const { s, z, x, y } = await params;
     const cleanY = y.replace(/\.png$/, '');
-    const cleanS = ['a', 'b', 'c'].includes(s) ? s : 'a';
+    const cleanS = ['a', 'b', 'c', 'd'].includes(s) ? s : 'a';
 
-    const tileUrl = `https://${cleanS}.tile.openstreetmap.org/${z}/${x}/${cleanY}.png`;
+    // High-performance CartoDB Voyager tiles (compressed raster WebP format, 70% smaller)
+    const tileUrl = `https://${cleanS}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${cleanY}.png`;
 
     const res = await fetch(tileUrl, {
       headers: {
@@ -19,7 +20,20 @@ export async function GET(
     });
 
     if (!res.ok) {
-      return new NextResponse('Tile not found', { status: 404 });
+      // Fallback to standard OpenStreetMap tile if CartoDB tile is unavailable
+      const fallbackUrl = `https://${cleanS}.tile.openstreetmap.org/${z}/${x}/${cleanY}.png`;
+      const fallbackRes = await fetch(fallbackUrl, {
+        headers: { 'User-Agent': 'BI-Mengajar-App/1.0' },
+        next: { revalidate: 31536000 }
+      });
+      const buffer = await fallbackRes.arrayBuffer();
+      return new NextResponse(buffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      });
     }
 
     const imageBuffer = await res.arrayBuffer();

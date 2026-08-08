@@ -77,19 +77,19 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-6 text-white tracking-wide">Ikuti Kami</h3>
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
+              <a href="#" aria-label="Kunjungi Instagram Bank Indonesia" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
                 <i className="fa-brands fa-instagram"></i>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
+              <a href="#" aria-label="Kunjungi YouTube Bank Indonesia" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
                 <i className="fa-brands fa-youtube"></i>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
+              <a href="#" aria-label="Kunjungi Facebook Bank Indonesia" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
                 <i className="fa-brands fa-facebook-f"></i>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
+              <a href="#" aria-label="Kunjungi Twitter Bank Indonesia" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
                 <i className="fa-brands fa-x-twitter"></i>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
+              <a href="#" aria-label="Kunjungi TikTok Bank Indonesia" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300 text-lg">
                 <i className="fa-brands fa-tiktok"></i>
               </a>
             </div>

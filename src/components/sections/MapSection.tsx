@@ -78,7 +78,12 @@ export default function MapSection() {
                 <h3 className="text-2xl md:text-3xl font-bold text-primary">{t('map.title')}</h3>
                 
                 {/* Year Filter for Map */}
-                <select className="bg-gray-50 border border-gray-200 text-gray-700 font-bold rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+                <label htmlFor="year-select-map" className="sr-only">Pilih Tahun Peta Edukasi</label>
+                <select 
+                  id="year-select-map"
+                  aria-label="Pilih Tahun Peta Edukasi"
+                  className="bg-gray-50 border border-gray-200 text-gray-700 font-bold rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer"
+                >
                   <option value="2026">{t('map.year2026')}</option>
                   <option value="2025">{t('map.year2025')}</option>
                 </select>

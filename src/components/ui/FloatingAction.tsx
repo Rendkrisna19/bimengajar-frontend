@@ -51,6 +51,7 @@ export default function FloatingAction() {
                   setIsKalenderOpen(true);
                   setIsOpen(false);
                 }}
+                aria-label="Kalender Kegiatan"
                 className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-regular fa-calendar-days text-lg"></i>
@@ -66,6 +67,7 @@ export default function FloatingAction() {
               </div>
               <button
                 onClick={handleCollabClick}
+                aria-label="Ajukan Kegiatan Edukasi"
                 className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-file-invoice text-lg"></i>
@@ -84,6 +86,7 @@ export default function FloatingAction() {
                   router.push('/edukasi/materi-edukasi');
                   setIsOpen(false);
                 }}
+                aria-label="Materi Edukasi"
                 className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-book-open text-lg"></i>
@@ -101,6 +104,7 @@ export default function FloatingAction() {
                   setIsChatbotOpen(true);
                   setIsOpen(false);
                 }}
+                aria-label="AI Assistant"
                 className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-robot text-lg"></i>

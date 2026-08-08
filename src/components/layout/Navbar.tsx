@@ -142,6 +142,7 @@ export default function Navbar() {
         <div className="flex items-center gap-5 shrink-0">
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
+            aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
             className={`flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80 cursor-pointer ${
               isScrolled ? 'text-white' : 'text-gray-700'
             }`}
@@ -252,6 +253,7 @@ export default function Navbar() {
         }`}>
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
+            aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
             className="w-6 h-6 rounded-full overflow-hidden relative shadow-sm border border-gray-200 shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
           >
             <Image 
@@ -267,6 +269,7 @@ export default function Navbar() {
           
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}
+            aria-label={isMobileOpen ? "Tutup Menu Navigasi" : "Buka Menu Navigasi"}
             className={`w-8 h-8 flex items-center justify-center transition-colors cursor-pointer ${
               isScrolled ? 'text-white hover:text-white/80' : 'text-gray-800 hover:text-primary'
             }`}
