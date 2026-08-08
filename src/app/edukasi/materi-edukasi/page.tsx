@@ -239,7 +239,7 @@ export default function MateriEdukasiUserPage() {
                   <div key={item.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all flex flex-col group h-full">
                     <div className="h-48 bg-gray-100 relative overflow-hidden shrink-0">
                       {item.thumbnail ? (
-                        <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${item.thumbnail}`} alt={item.judul} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                        <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${item.thumbnail}`} alt={item.judul} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-300 bg-gray-200">
                           <i className="fa-solid fa-image text-4xl"></i>

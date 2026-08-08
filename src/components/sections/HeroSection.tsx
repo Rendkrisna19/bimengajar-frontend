@@ -179,6 +179,7 @@ export default function HeroSection() {
                       src={slide.image}
                       alt="Banner Illustration"
                       fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-contain"
                       priority={index === 0}
                       draggable={false}

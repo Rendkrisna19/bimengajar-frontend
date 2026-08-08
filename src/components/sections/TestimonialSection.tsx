@@ -125,6 +125,7 @@ export default function TestimonialSection() {
                 src="/images/ulasan/vektor.png" 
                 alt="Vektor Ulasan" 
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 className="object-contain object-center drop-shadow-2xl"
               />
             </div>

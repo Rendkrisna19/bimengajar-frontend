@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
       },
       {
         protocol: 'http',
@@ -27,6 +31,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'mediumaquamarine-panther-356087.hostingersite.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.hostingersite.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.tile.openstreetmap.org',
       }
     ],
   },

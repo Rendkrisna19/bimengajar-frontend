@@ -239,8 +239,8 @@ export default function AdminBeritaPage() {
                           src={(item.image && item.image.length > 0) ? item.image[0] : 'https://via.placeholder.com/150'} 
                           alt={item.title} 
                           fill 
+                          sizes="64px"
                           className="object-cover"
-                          unoptimized 
                         />
                       </div>
                     </td>
@@ -414,7 +414,7 @@ export default function AdminBeritaPage() {
                     {/* Existing Images */}
                     {formData.existing_images.map((img, idx) => (
                       <div key={`existing-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden group shadow-sm border border-slate-200">
-                        <Image src={img} alt={`Gambar ${idx}`} fill className="object-cover" unoptimized />
+                        <Image src={img} alt={`Gambar ${idx}`} fill sizes="96px" className="object-cover" />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
                           <button 
                             type="button" 

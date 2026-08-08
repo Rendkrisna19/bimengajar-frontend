@@ -233,8 +233,8 @@ export default function ArticleDetailPage() {
                             src={(other.image && other.image.length > 0) ? getImageUrl(other.image[0]) : '/images/banner/hero1.png'} 
                             alt={other.title}
                             fill
+                            sizes="96px"
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
-                            unoptimized
                           />
                         </div>
                         <div className="flex flex-col justify-center">

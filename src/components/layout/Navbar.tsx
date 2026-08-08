@@ -86,6 +86,7 @@ export default function Navbar() {
               alt="Logo BI Mengajar" 
               width={140} 
               height={45} 
+              sizes="140px"
               className={`h-10 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
               priority
               onError={() => setImgError(true)}
@@ -233,6 +234,7 @@ export default function Navbar() {
               alt="Logo BI Mengajar" 
               width={100} 
               height={32} 
+              sizes="100px"
               className={`h-7 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
               priority
               onError={() => setImgError(true)}

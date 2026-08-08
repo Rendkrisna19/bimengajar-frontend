@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -67,11 +68,12 @@ export default function AboutPreviewSection() {
         <div className="flex-1 w-full max-w-lg flex justify-center relative order-2 md:order-1">
           <div className="relative w-full aspect-[4/3] bg-[#f2f6fa] rounded-3xl overflow-hidden shadow-lg border border-gray-100">
             {data.image ? (
-              <img 
+              <Image 
                 src={getImageUrl(data.image)!} 
                 alt={displayTitle}
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/600x450?text=Gambar+tidak+tersedia'; }}
+                fill
+                sizes="(max-width: 768px) 100vw, 600px"
+                className="object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">

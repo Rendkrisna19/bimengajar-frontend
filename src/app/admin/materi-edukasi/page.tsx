@@ -169,7 +169,7 @@ export default function MateriEdukasiPage() {
                       <div className="flex items-center gap-3">
                         {item.thumbnail ? (
                           <div className="w-12 h-12 rounded-lg overflow-hidden relative shrink-0">
-                            <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${item.thumbnail}`} alt={item.judul} fill className="object-cover" unoptimized />
+                            <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${item.thumbnail}`} alt={item.judul} fill sizes="48px" className="object-cover" />
                           </div>
                         ) : (
                           <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 shrink-0">

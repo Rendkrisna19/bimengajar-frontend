@@ -116,6 +116,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
             src="/images/logo.png" 
             alt="Logo" 
             fill
+            sizes="40px"
             className="transition-all duration-300 object-contain p-1"
             priority 
           />

@@ -66,7 +66,7 @@ export default function FeaturesSection() {
                 <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">
-                    <Image src={feature.image} alt={feature.title} fill className="object-contain drop-shadow-md" />
+                    <Image src={feature.image} alt={feature.title} fill sizes="96px" className="object-contain drop-shadow-md" />
                   </div>
                   
                   {/* Title */}
@@ -90,7 +90,7 @@ export default function FeaturesSection() {
                 <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">
-                    <Image src={feature.image} alt={feature.title} fill className="object-contain drop-shadow-md" />
+                    <Image src={feature.image} alt={feature.title} fill sizes="96px" className="object-contain drop-shadow-md" />
                   </div>
                   
                   {/* Title */}

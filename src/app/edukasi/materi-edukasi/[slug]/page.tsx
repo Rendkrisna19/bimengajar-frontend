@@ -228,10 +228,10 @@ export default function MateriEdukasiDetailPage() {
                             src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`} 
                             alt={`${materi.judul} - Slide ${idx + 1}`} 
                             fill 
+                            sizes="(max-width: 768px) 100vw, 800px"
                             className="object-cover cursor-pointer"
                             onClick={() => window.open(`${process.env.NEXT_PUBLIC_BACKEND_URL}/storage/${img}`, '_blank')}
                             priority={idx === 0}
-                            unoptimized
                           />
                         </div>
                       ))}

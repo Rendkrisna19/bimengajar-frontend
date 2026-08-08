@@ -21,6 +21,7 @@ export default function Footer() {
                   src="/images/logo.png" 
                   alt="Bank Indonesia" 
                   fill 
+                  sizes="220px"
                   className="object-contain object-left" 
                 />
               </div>
