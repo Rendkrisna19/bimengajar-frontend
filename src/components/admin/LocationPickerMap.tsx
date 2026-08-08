@@ -39,7 +39,7 @@ export default function LocationPickerMap({ position, setPosition }: LocationPic
         scrollWheelZoom={true} 
         style={{ height: '100%', width: '100%', zIndex: 0 }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer url="/api/tiles/{s}/{z}/{x}/{y}.png" />
         <LocationMarker position={position} setPosition={setPosition} />
       </MapContainer>
     </div>

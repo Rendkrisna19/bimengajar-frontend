@@ -56,10 +56,7 @@ export default function Home() {
     <main ref={containerRef} className="min-h-screen bg-gray-50 relative" style={{ scrollBehavior: 'smooth' }}>
       <Navbar />
       
-      {/* We wrap each section with a div class to target it for animation */}
-      <div className="animate-on-scroll">
-        <HeroSection />
-      </div>
+      <HeroSection />
       <div className="animate-on-scroll">
         <FeaturesSection />
       </div>
