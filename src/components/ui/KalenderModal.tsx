@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import KalenderView from './KalenderView';
 
 interface KalenderModalProps {
@@ -11,8 +12,8 @@ export default function KalenderModal({ isOpen, onClose }: KalenderModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100000] flex items-center justify-center px-4 py-8 pt-24 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#f0f4f8] w-full max-w-6xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-white/40 my-auto">
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center p-3 md:p-6 bg-black/70 backdrop-blur-md overflow-y-auto">
+      <div className="bg-[#f0f4f8] w-full max-w-6xl max-h-[92vh] md:max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-white/40 my-auto animate-fade-in-up">
         
         {/* Motif Background (Subtle Songket) */}
         <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none overflow-hidden mix-blend-multiply">
@@ -27,15 +28,29 @@ export default function KalenderModal({ isOpen, onClose }: KalenderModalProps) {
         </div>
 
         {/* Header */}
-        <div className="px-8 py-5 flex items-center justify-between border-b border-gray-200/60 bg-white/50 backdrop-blur-md z-10 relative">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#003366] tracking-tight">Jadwal Kegiatan BI</h2>
-          <button onClick={onClose} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors shadow-sm border border-gray-100">
-            <i className="fa-solid fa-xmark text-lg"></i>
+        <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200/60 bg-white/80 backdrop-blur-md z-10 relative shrink-0">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[#003366] tracking-tight">Jadwal Kegiatan BI</h2>
+            <Link 
+              href="/kalender" 
+              onClick={onClose} 
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-200 hover:bg-blue-100 transition-colors"
+            >
+              <span>Halaman Penuh</span>
+              <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </Link>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors shadow-sm border border-gray-200"
+            aria-label="Tutup Modal Kalender"
+          >
+            <i className="fa-solid fa-xmark text-base"></i>
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-4 md:p-6 flex-1 overflow-y-auto z-10">
+        <div className="p-3 md:p-5 flex-1 overflow-y-auto z-10">
           <KalenderView />
         </div>
       </div>

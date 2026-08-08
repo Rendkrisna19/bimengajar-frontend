@@ -89,7 +89,7 @@ export default function KalenderView() {
       days.push(
         <div
           key={day.toString()}
-          className={`min-h-[100px] border-b border-r border-gray-200 dark:border-gray-800 p-2 transition-all ${
+          className={`min-h-[72px] md:min-h-[85px] border-b border-r border-gray-200 dark:border-gray-800 p-1.5 transition-all ${
             !isSameMonth(day, monthStart)
               ? 'bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600'
               : isSameDay(day, new Date())
@@ -98,16 +98,16 @@ export default function KalenderView() {
           }`}
         >
           <div className="flex justify-end">
-            <span className={`text-sm ${isSameDay(day, new Date()) ? 'bg-[#fbbf24] text-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm' : ''}`}>
+            <span className={`text-xs md:text-sm ${isSameDay(day, new Date()) ? 'bg-[#fbbf24] text-white w-6 h-6 md:w-7 md:h-7 flex items-center justify-center rounded-full shadow-sm font-bold' : ''}`}>
               {formattedDate}
             </span>
           </div>
           
-          <div className="mt-2 flex flex-col gap-1 max-h-[80px] overflow-y-auto no-scrollbar">
+          <div className="mt-1 flex flex-col gap-1 max-h-[50px] md:max-h-[65px] overflow-y-auto no-scrollbar">
             {dayEvents.map((evt, idx) => (
               <div 
                 key={idx} 
-                className={`text-[10px] p-1.5 rounded-md leading-tight border-l-2 shadow-sm truncate ${
+                className={`text-[9px] md:text-[10px] p-1 rounded leading-tight border-l-2 shadow-sm truncate ${
                   evt.status === 'Terlaksana' 
                     ? 'bg-green-50 dark:bg-green-900/30 border-green-500 text-green-700 dark:text-green-400' 
                     : 'bg-orange-50 dark:bg-orange-900/30 border-orange-500 text-orange-700 dark:text-orange-400'
@@ -115,7 +115,7 @@ export default function KalenderView() {
                 title={`${evt.judul}\n${evt.lokasi || ''}`}
               >
                 <div className="font-bold truncate">{evt.judul}</div>
-                <div className="truncate text-[9px] opacity-80">{evt.lokasi}</div>
+                <div className="truncate text-[8px] md:text-[9px] opacity-80">{evt.lokasi}</div>
               </div>
             ))}
           </div>
@@ -132,7 +132,7 @@ export default function KalenderView() {
   }
 
   return (
-    <div className="w-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 relative">
+    <div className="w-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 md:p-6 relative">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center bg-primary text-white rounded-lg shadow-sm hover:bg-[#004080] transition-colors">
