@@ -284,6 +284,8 @@ export default function LeafletMap() {
               key={m.id} 
               position={[parseFloat(m.latitude), parseFloat(m.longitude)]} 
               icon={createCustomIcon(m.category, activeMarkerId === m.id)}
+              title={m.name}
+              alt={m.name}
               ref={(ref) => { markerRefs.current[m.id] = ref; }}
             >
               <Popup>
@@ -302,6 +304,8 @@ export default function LeafletMap() {
             <Marker
               position={[externalSearchPin.lat, externalSearchPin.lng]}
               icon={createCustomIcon('SMA/SMK', true)}
+              title={externalSearchPin.name}
+              alt={externalSearchPin.name}
               ref={(ref) => { ref?.openPopup(); }}
             >
               <Popup>

@@ -108,7 +108,7 @@ export default function TestimonialSection() {
                     </p>
                     
                     <div className="mt-auto pt-4 border-t border-gray-50 relative z-10">
-                      <h4 className="font-bold text-[#1a365d] text-sm md:text-base truncate">{ulasan.nama}</h4>
+                      <h3 className="font-bold text-[#1a365d] text-sm md:text-base truncate">{ulasan.nama}</h3>
                       <p className="text-xs text-gray-500 mt-1 truncate">
                         {ulasan.kategori} - {ulasan.instansi}
                       </p>
