@@ -30,7 +30,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
         
-        {/* Preload LCP Background Element with high priority */}
+        {/* Preload LCP Background Element & Banner Illustration with high priority */}
+        <link
+          rel="preload"
+          href="/images/banner/hero1.png"
+          as="image"
+          fetchPriority="high"
+        />
         <link
           rel="preload"
           href="/images/element/1.png"

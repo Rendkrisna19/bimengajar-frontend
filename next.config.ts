@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
+  experimental: {
+    optimizePackageImports: ['gsap', 'axios', 'sweetalert2', 'leaflet'],
+  },
   images: {
     minimumCacheTTL: 31536000, // 1 Year Cache Duration for all images
     formats: ['image/avif', 'image/webp'],

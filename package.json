@@ -39,10 +39,10 @@
     "typescript": "^5"
   },
   "browserslist": [
-    "chrome >= 92",
-    "firefox >= 90",
-    "safari >= 15",
-    "edge >= 92",
-    "not dead"
+    "chrome >= 100",
+    "firefox >= 100",
+    "safari >= 15.4",
+    "edge >= 100",
+    "not IE 11"
   ]
 }

@@ -36,12 +36,13 @@ export async function GET(
       });
     }
 
+    const contentType = res.headers.get('content-type') || 'image/png';
     const imageBuffer = await res.arrayBuffer();
 
     return new NextResponse(imageBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'image/png',
+        'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });

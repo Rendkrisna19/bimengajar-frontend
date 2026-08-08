@@ -35,14 +35,27 @@ const translateText = (text: string | null, lang: 'ID' | 'EN'): string => {
   return text;
 };
 
+const DEFAULT_SLIDES = [
+  {
+    id: 1,
+    title: 'Edukasi untuk\nIndonesia Maju',
+    subtitle: 'Belajar, berkolaborasi, dan berkontribusi bersama Bank Indonesia untuk masyarakat yang Cinta, Bangga, dan Paham Rupiah.',
+    button_primary_text: 'Ajukan Edukasi',
+    button_primary_url: '/edukasi/pengajuan',
+    button_secondary_text: 'Jelajahi Materi',
+    button_secondary_url: '/edukasi/materi-edukasi',
+    image: '/images/banner/hero1.png',
+  }
+];
+
 export default function HeroSection() {
   const { t, lang } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
-  const [dynamicSlides, setDynamicSlides] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dynamicSlides, setDynamicSlides] = useState<any[]>(DEFAULT_SLIDES);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchHeroBanners = async () => {
