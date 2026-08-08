@@ -155,7 +155,7 @@ export default function AktivitasPage() {
           >
             <div className="relative h-48 w-full overflow-hidden">
               <Image src={(article.image && article.image.length > 0) ? getImageUrl(article.image[0]) : 'https://via.placeholder.com/400x300?text=No+Image'}
-                alt={article.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" unoptimized />
+                alt={article.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">ARTIKEL</div>
             </div>
             <div className="p-5">
@@ -184,8 +184,7 @@ export default function AktivitasPage() {
           <Link href={`/berita/${item.slug}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
             <div className="relative h-48 w-full overflow-hidden bg-gray-100">
               {item.image && item.image.length > 0 ? (
-                <img src={getImageUrl(item.image[0])} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Gambar+tidak+tersedia'; }} />
+                <Image src={getImageUrl(item.image[0])} alt={item.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-300"><i className="fa-regular fa-image text-5xl"></i></div>
               )}
@@ -217,8 +216,7 @@ export default function AktivitasPage() {
           <Link href={`/aktivitas/dokumentasi/${item.id}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
             <div className="relative h-52 w-full overflow-hidden bg-gray-100">
               {item.images && item.images.length > 0 ? (
-                <img src={getImageUrl(item.images[0])} alt={item.nama_kegiatan} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Gambar+tidak+tersedia'; }} />
+                <Image src={getImageUrl(item.images[0])} alt={item.nama_kegiatan} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
               ) : item.video_urls && item.video_urls.length > 0 ? (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white gap-2">
                   <i className="fa-brands fa-youtube text-5xl text-red-500"></i>

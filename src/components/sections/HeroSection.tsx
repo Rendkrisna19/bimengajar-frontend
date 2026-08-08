@@ -182,6 +182,7 @@ export default function HeroSection() {
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-contain"
                       priority={index === 0}
+                      fetchPriority={index === 0 ? "high" : "auto"}
                       draggable={false}
                     />
                   </div>
