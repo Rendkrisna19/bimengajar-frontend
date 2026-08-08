@@ -1,14 +1,17 @@
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: boolean, toggleSidebar: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { pendingCount } = useNotifications();
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
   const toggleSubMenu = (name: string) => {
@@ -54,7 +57,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
         { 
           name: "Materi Edukasi", 
           icon: "fa-solid fa-book-open", 
-          href: "#", // Menggunakan hash agar tidak route directly jika di klik
+          href: "#",
           subItems: [
             { name: "Daftar Materi", href: "/admin/materi-edukasi" },
             { name: "Kategori Materi", href: "/admin/materi-edukasi/kategori" }
@@ -110,7 +113,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
       {/* Logo Area */}
       <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">
-        {/* Logo tetap menggunakan logo.png baik ditarik maupun dilebarkan */}
         <div className="relative w-10 h-10 transition-all duration-300 flex items-center justify-center shrink-0 bg-white rounded-full p-1 shadow-sm">
           <Image 
             src="/images/logo.png" 
@@ -144,7 +146,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                 const isActive = pathname === item.href || isSubItemActive;
                 const isOpen = openMenus.includes(item.name) || (isSubItemActive && !isCollapsed);
 
-                // Desain Inset Curve Keren untuk item aktif
                 const activeClasses = `
                   bg-white dark:bg-[#121212] text-primary dark:text-blue-400
                   rounded-l-3xl ml-4 pl-4 pr-0
@@ -158,7 +159,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                 const itemClasses = isActive ? activeClasses : inactiveClasses;
                 const iconClasses = isActive ? 'text-primary dark:text-blue-400' : 'text-white/50 group-hover:text-white';
 
-                // Jika collapse, tidak bisa buka dropdown
+                const isKunjungan = item.href === '/admin/kunjungan';
+
                 return (
                   <li key={itemIdx}>
                     {hasSubItems ? (
@@ -206,11 +208,24 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
                     ) : (
                       <Link 
                         href={item.href}
-                        className={`flex items-center ${isCollapsed ? 'justify-center ml-0 px-0 rounded-xl' : 'justify-start'} gap-3 py-2.5 transition-colors group ${itemClasses}`}
+                        className={`flex items-center ${isCollapsed ? 'justify-center ml-0 px-0 rounded-xl' : 'justify-between'} gap-3 py-2.5 transition-colors group ${itemClasses} relative`}
                         title={isCollapsed ? item.name : ""}
                       >
-                        <i className={`${item.icon} text-lg w-6 text-center ${iconClasses}`}></i>
-                        {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
+                        <div className="flex items-center gap-3">
+                          <i className={`${item.icon} text-lg w-6 text-center ${iconClasses}`}></i>
+                          {!isCollapsed && <span className="text-[13px] font-medium">{item.name}</span>}
+                        </div>
+
+                        {/* Red Notification Badge for Kunjungan */}
+                        {isKunjungan && pendingCount > 0 && (
+                          isCollapsed ? (
+                            <span className="absolute top-1 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
+                          ) : (
+                            <span className="mr-3 px-2 py-0.5 text-[10px] font-extrabold bg-red-500 text-white rounded-full animate-pulse shadow-sm min-w-[20px] text-center leading-none">
+                              {pendingCount}
+                            </span>
+                          )
+                        )}
                       </Link>
                     )}
                   </li>
@@ -228,19 +243,10 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
           className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} gap-3 w-full px-3 py-2.5 rounded-xl text-red-400 hover:bg-white/10 transition-colors group`}
           title={isCollapsed ? "Log Out" : ""}
         >
-          {/* Ikon Logout */}
-          <i className="fa-solid fa-arrow-right-from-bracket text-lg w-6 text-center group-hover:scale-110 transition-transform"></i>
-          {!isCollapsed && <span className="text-[13px] font-bold">Log Out</span>}
+          <i className="fa-solid fa-right-from-bracket text-lg w-6 text-center group-hover:scale-110 transition-transform"></i>
+          {!isCollapsed && <span className="text-[13px] font-medium">Keluar</span>}
         </button>
       </div>
-
-      {/* Sidebar Bottom Ornament (5.png) */}
-      {!isCollapsed && (
-        <div 
-          className="absolute -bottom-10 -right-10 w-[220px] h-[220px] opacity-[0.25] dark:opacity-[0.15] pointer-events-none bg-no-repeat bg-right-bottom z-0 mix-blend-multiply dark:mix-blend-normal"
-          style={{ backgroundImage: 'url(/images/element/5.png)', backgroundSize: '160px auto' }}
-        ></div>
-      )}
     </aside>
   );
 }
