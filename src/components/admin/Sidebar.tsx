@@ -115,7 +115,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">
         <div className="relative w-10 h-10 transition-all duration-300 flex items-center justify-center shrink-0 bg-white rounded-full p-1 shadow-sm">
           <Image 
-            src="/images/logo.png" 
+            src="/images/logo.png?v=2" 
             alt="Logo" 
             fill
             sizes="40px"

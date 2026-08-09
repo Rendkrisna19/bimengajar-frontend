@@ -81,7 +81,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center shrink-0">
           <div className="h-14 w-48 flex items-center justify-start overflow-hidden">
             <Image 
-              src="/images/logo.png" 
+              src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
               width={200} 
               height={150} 
@@ -223,7 +223,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center flex-shrink-0 z-50">
           <div className="h-10 w-36 flex items-center justify-start overflow-hidden">
             <Image 
-              src="/images/logo.png" 
+              src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
               width={160} 
               height={160} 

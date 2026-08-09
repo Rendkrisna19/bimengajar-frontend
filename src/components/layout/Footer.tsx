@@ -18,7 +18,7 @@ export default function Footer() {
             <Link href="/" className="inline-block">
               <div className="h-14 w-52 flex items-center justify-start overflow-hidden">
                 <Image 
-                  src="/images/logo.png" 
+                  src="/images/logo.png?v=2" 
                   alt="Logo BI Mengajar" 
                   width={220} 
                   height={220} 

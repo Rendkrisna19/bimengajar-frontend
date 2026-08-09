@@ -226,7 +226,7 @@ function VerifyOtpContent() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="h-12 w-44 flex items-center justify-center overflow-hidden mb-2">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.png?v=2"
                 alt="Logo Bank Indonesia"
                 width={180}
                 height={180}

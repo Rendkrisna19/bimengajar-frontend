@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "Home Page | PLAT-BK",
   description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematang Siantar",
   icons: {
-    icon: "/images/logo.png",
+    icon: "/images/logo.png?v=2",
   },
 };
 
