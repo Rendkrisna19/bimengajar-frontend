@@ -166,14 +166,15 @@ export default function LoginPage() {
         {/* Right Side: Login Form (7 Columns) */}
         <div className="md:col-span-7 p-8 lg:p-12 flex flex-col justify-center bg-white">
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="mb-4">
+            <div className="h-12 w-44 flex items-center justify-center overflow-hidden mb-2">
               <Image
                 src="/images/logo.png"
                 alt="Logo BI Mengajar"
-                width={150}
-                height={48}
-                className="h-10 w-auto object-contain"
+                width={180}
+                height={180}
+                className="w-full h-auto object-contain scale-[1.1] origin-center"
                 priority
+                unoptimized
               />
             </div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Masuk ke Akun Anda</h1>

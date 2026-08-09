@@ -15,14 +15,16 @@ export default function Footer() {
           
           {/* Logo & Tagline */}
           <div className="lg:col-span-1 flex flex-col gap-6">
-            <Link href="/">
-              <div className="relative w-[220px] h-[60px]">
+            <Link href="/" className="inline-block">
+              <div className="h-14 w-52 flex items-center justify-start overflow-hidden">
                 <Image 
                   src="/images/logo.png" 
-                  alt="Bank Indonesia" 
-                  fill 
-                  sizes="220px"
-                  className="object-contain object-left" 
+                  alt="Logo BI Mengajar" 
+                  width={220} 
+                  height={220} 
+                  className="w-full h-auto object-contain scale-[1.1] origin-center transition-all" 
+                  priority
+                  unoptimized
                 />
               </div>
             </Link>

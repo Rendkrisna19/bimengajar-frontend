@@ -121,6 +121,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
             sizes="40px"
             className="transition-all duration-300 object-contain p-1"
             priority 
+            unoptimized
           />
         </div>
         {!isCollapsed && (

@@ -10,7 +10,6 @@ export default function Navbar() {
   const navbarRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { lang, setLang, t } = useLanguage();
-  const [imgError, setImgError] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<{name: string, role: string} | null>(null);
@@ -80,22 +79,17 @@ export default function Navbar() {
         
         {/* KIRI - Logo */}
         <Link href="/" className="flex items-center shrink-0">
-          {!imgError ? (
+          <div className="h-14 w-48 flex items-center justify-start overflow-hidden">
             <Image 
               src="/images/logo.png" 
               alt="Logo BI Mengajar" 
-              width={140} 
-              height={45} 
-              sizes="140px"
-              className={`h-10 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
+              width={200} 
+              height={150} 
+              className="w-full h-auto object-contain scale-[1.1] origin-center transition-all"
               priority
-              onError={() => setImgError(true)}
+              unoptimized
             />
-          ) : (
-            <div className="flex items-center gap-2 px-3 py-1 bg-primary text-white font-bold rounded-full text-xs">
-              <i className="fa-solid fa-building-columns"></i> BI
-            </div>
-          )}
+          </div>
         </Link>
 
         {/* TENGAH - Menu */}
@@ -225,26 +219,19 @@ export default function Navbar() {
       {/* MOBILE / TABLET LAYOUT (< xl)      */}
       {/* ================================== */}
       <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
-        {/* Mobile Logo Pill */}
-        <Link href="/" className={`px-4 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
-          isScrolled ? 'bg-accent-red shadow-md border border-white/20' : 'bg-white/95 backdrop-blur-md shadow-lg border border-gray-100'
-        }`}>
-          {!imgError ? (
+        {/* Mobile Logo */}
+        <Link href="/" className="flex items-center flex-shrink-0 z-50">
+          <div className="h-10 w-36 flex items-center justify-start overflow-hidden">
             <Image 
               src="/images/logo.png" 
               alt="Logo BI Mengajar" 
-              width={100} 
-              height={32} 
-              sizes="100px"
-              className={`h-7 w-auto object-contain transition-all ${isScrolled ? 'brightness-0 invert' : ''}`}
+              width={160} 
+              height={160} 
+              className="w-full h-auto object-contain scale-[1.1] origin-center transition-all"
               priority
-              onError={() => setImgError(true)}
+              unoptimized
             />
-          ) : (
-            <div className="flex items-center gap-2 px-3 py-1 bg-primary text-white font-bold rounded-full text-xs">
-              <i className="fa-solid fa-building-columns"></i> BI
-            </div>
-          )}
+          </div>
         </Link>
 
         {/* Mobile Actions Pill */}

@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['gsap', 'axios', 'sweetalert2', 'leaflet'],
   },
   images: {
-    minimumCacheTTL: 31536000, // 1 Year Cache Duration for all images
+    minimumCacheTTL: 60,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -53,19 +53,6 @@ const nextConfig: NextConfig = {
         hostname: '*.basemaps.cartocdn.com',
       }
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: '/images/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
   },
 };
 
