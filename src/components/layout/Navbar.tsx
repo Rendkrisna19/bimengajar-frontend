@@ -66,10 +66,11 @@ export default function Navbar() {
   return (
     <header 
       ref={navbarRef}
-      className={`fixed top-0 left-0 right-0 z-[9999] font-sans w-full transition-all duration-300 border-b-[3px] ${
+      style={{ fontFamily: 'var(--font-montserrat)' }}
+      className={`fixed top-0 left-0 right-0 z-[9999] font-bold w-full transition-all duration-300 border-b-[3px] border-yellow-600 ${
         isScrolled
-          ? 'bg-accent-red shadow-md border-yellow-600 text-white'
-          : 'bg-white/95 backdrop-blur-md shadow-sm border-yellow-600 text-gray-800'
+          ? 'bg-white/95 backdrop-blur-md shadow-md text-gray-800'
+          : 'bg-white/95 backdrop-blur-md shadow-sm text-gray-800'
       }`}
     >
       {/* ======================= */}
@@ -78,18 +79,21 @@ export default function Navbar() {
       <div className="hidden xl:flex items-center justify-between w-full max-w-7xl mx-auto px-4 lg:px-8 h-20">
         
         {/* KIRI - Logo */}
-        <Link href="/" className="flex items-center shrink-0">
-          <div className="h-14 w-48 flex items-center justify-start overflow-hidden">
+        <Link href="/" className="flex flex-col items-start shrink-0 py-1">
+          <div className="h-10 w-36 flex items-center justify-start overflow-hidden">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={200} 
-              height={150} 
-              className="w-full h-auto object-contain scale-[1.1] origin-center transition-all"
+              width={160} 
+              height={120} 
+              className="w-full h-auto object-contain origin-left transition-all"
               priority
               unoptimized
             />
           </div>
+          <span className="text-[9px] font-extrabold text-gray-800 tracking-tight mt-0.5" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+            by Kantor Perwakilan Bank Indonesia Pematangsiantar
+          </span>
         </Link>
 
         {/* TENGAH - Menu */}
@@ -98,21 +102,15 @@ export default function Navbar() {
             <div key={idx} className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={item.href} 
-                className={`flex items-center gap-1.5 font-semibold transition-colors text-[14px] whitespace-nowrap ${
-                  isScrolled ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-primary'
-                }`}
+                className={`flex items-center gap-1.5 transition-colors text-[14px] whitespace-nowrap text-gray-700 hover:text-primary`}
               >
                 {item.name}
                 {item.dropdown && (
-                  <i className={`fa-solid fa-chevron-down text-[10px] transition-colors mt-0.5 ${
-                    isScrolled ? 'text-white/80 group-hover:text-white' : 'text-gray-400 group-hover:text-primary'
-                  }`}></i>
+                  <i className={`fa-solid fa-chevron-down text-[10px] transition-colors mt-0.5 text-gray-400 group-hover:text-primary`}></i>
                 )}
               </Link>
               
-              <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-t-full ${
-                isScrolled ? 'bg-white shadow-none' : 'bg-primary'
-              }`}></div>
+              <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-t-full bg-primary`}></div>
               
               {/* Dropdown Menu */}
               {item.dropdown && item.subItems && (
@@ -137,9 +135,7 @@ export default function Navbar() {
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
             aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
-            className={`flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80 cursor-pointer ${
-              isScrolled ? 'text-white' : 'text-gray-700'
-            }`}
+            className={`flex items-center gap-2 text-sm transition-colors hover:opacity-80 cursor-pointer text-gray-700`}
           >
             <div className="w-5 h-5 rounded-full overflow-hidden relative shadow-sm shrink-0">
               <Image 
@@ -153,19 +149,19 @@ export default function Navbar() {
             <span>{lang}</span>
           </button>
 
-          <div className={`w-px h-6 mx-1 ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
+          <div className={`w-px h-6 mx-1 bg-gray-200`}></div>
 
           {user ? (
             <div className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-                className="flex-shrink-0 px-6 py-2 rounded text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all text-primary bg-accent-yellow border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1"
+                className="flex-shrink-0 px-6 py-2 rounded text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1"
               >
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] bg-primary text-white">
                   {user.name.substring(0, 2).toUpperCase()}
-                </div>
-                {user.name.split(' ')[0]}
-              </Link>
+                 </div>
+                 {user.name.split(' ')[0]}
+               </Link>
               
               {/* Dropdown Profile */}
               <div className="absolute top-full right-0 mt-0 w-60 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
@@ -206,8 +202,8 @@ export default function Navbar() {
             </div>
           ) : (
             <Link 
-              href="/login" 
-              className="flex-shrink-0 px-8 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-primary bg-accent-yellow border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1"
+              href="/login"
+              className="flex-shrink-0 px-8 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1"
             >
               <i className="fa-solid fa-user-lock"></i> {t('nav.login')}
             </Link>
@@ -220,24 +216,25 @@ export default function Navbar() {
       {/* ================================== */}
       <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
         {/* Mobile Logo */}
-        <Link href="/" className="flex items-center flex-shrink-0 z-50">
-          <div className="h-10 w-36 flex items-center justify-start overflow-hidden">
+        <Link href="/" className="flex flex-col items-start flex-shrink-0 z-50 py-1">
+          <div className="h-8 w-28 flex items-center justify-start overflow-hidden">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={160} 
-              height={160} 
-              className="w-full h-auto object-contain scale-[1.1] origin-center transition-all"
+              width={120} 
+              height={90} 
+              className="w-full h-auto object-contain origin-left transition-all"
               priority
               unoptimized
             />
           </div>
+          <span className="text-[7px] font-extrabold text-gray-800 tracking-tight mt-0.5" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+            by Kantor Perwakilan Bank Indonesia Pematangsiantar
+          </span>
         </Link>
 
         {/* Mobile Actions Pill */}
-        <div className={`flex items-center gap-3 px-3 py-2 rounded-full flex-shrink-0 z-50 transition-all ${
-          isScrolled ? 'bg-accent-red text-white shadow-md border border-white/20' : 'bg-white/95 backdrop-blur-md text-gray-800 shadow-lg border border-gray-100'
-        }`}>
+        <div className={`flex items-center gap-3 px-3 py-2 rounded-full flex-shrink-0 z-50 transition-all bg-white/95 backdrop-blur-md text-gray-800 shadow-lg border border-gray-100`}>
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
             aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
@@ -252,7 +249,7 @@ export default function Navbar() {
             />
           </button>
           
-          <div className={`w-px h-5 transition-colors ${isScrolled ? 'bg-white/40' : 'bg-gray-200'}`}></div>
+          <div className={`w-px h-5 transition-colors bg-gray-200`}></div>
           
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}

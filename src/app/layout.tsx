@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Montserrat } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import FontAwesomeLoader from "@/components/ui/FontAwesomeLoader";
@@ -7,6 +7,12 @@ import FontAwesomeLoader from "@/components/ui/FontAwesomeLoader";
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-plus-jakarta",
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -68,7 +74,7 @@ export default function RootLayout({
         />
 
       </head>
-      <body className={`${plusJakartaSans.className} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${plusJakartaSans.variable} ${montserrat.variable} font-sans antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <FontAwesomeLoader />
         <LanguageProvider>
           {children}

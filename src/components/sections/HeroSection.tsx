@@ -174,7 +174,7 @@ export default function HeroSection() {
                     
                     <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
                       {slide.button_primary_text && (
-                        <Link href={slide.button_primary_url || '/edukasi/pengajuan'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-yellow text-primary font-bold rounded transition-all text-center border-b-4 border-yellow-600 hover:brightness-110 active:border-b-0 active:translate-y-1">
+                        <Link href={slide.button_primary_url || '/edukasi/pengajuan'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-red text-white font-bold rounded transition-all text-center border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1">
                           {slide.button_primary_text}
                         </Link>
                       )}
