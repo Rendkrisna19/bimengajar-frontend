@@ -17,7 +17,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'nav.home': { ID: 'Beranda', EN: 'Home' },
   'nav.about': { ID: 'Tentang Kami', EN: 'About Us' },
   'nav.edukasi': { ID: 'Edukasi', EN: 'Education' },
-  'nav.pengajuan': { ID: 'Pengajuan Kegiatan', EN: 'Activity Request' },
+  'nav.pengajuan': { ID: 'Pengajuan kegiatan BI Mengajar', EN: 'Activity Request' },
   'nav.materi': { ID: 'Materi Edukasi', EN: 'Educational Materials' },
   'nav.mitra': { ID: 'Mitra Edukasi', EN: 'Education Partners' },
   'nav.titikTemu': { ID: 'Titik Temu', EN: 'Coin Corner' },
