@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
@@ -15,7 +16,10 @@ const stripHtml = (html: string) => {
   return html.replace(/<[^>]*>/g, '').trim();
 };
 
-export default function MateriEdukasiUserPage() {
+function MateriEdukasiContent() {
+  const searchParams = useSearchParams();
+  const kategoriParam = searchParams.get('kategori');
+
   const [kategori, setKategori] = useState<KategoriMateri[]>([]);
   const [materi, setMateri] = useState<MateriEdukasi[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +45,17 @@ export default function MateriEdukasiUserPage() {
     };
     fetchKategori();
   }, []);
+
+  useEffect(() => {
+    if (kategoriParam && kategori.length > 0) {
+      const match = kategori.find(
+        (k) => k.slug.toLowerCase() === kategoriParam.toLowerCase() || k.id.toString() === kategoriParam
+      );
+      if (match) {
+        setSelectedKategori([match.id.toString()]);
+      }
+    }
+  }, [kategoriParam, kategori]);
 
   const fetchMateri = async () => {
     try {
@@ -314,5 +329,17 @@ export default function MateriEdukasiUserPage() {
       <FloatingAction />
       <Footer />
     </main>
+  );
+}
+
+export default function MateriEdukasiUserPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <i className="fa-solid fa-circle-notch animate-spin text-4xl text-[#003366]"></i>
+      </div>
+    }>
+      <MateriEdukasiContent />
+    </Suspense>
   );
 }

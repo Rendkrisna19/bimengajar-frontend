@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import KalenderView from './KalenderView';
 
@@ -9,10 +11,17 @@ interface KalenderModalProps {
 }
 
 export default function KalenderModal({ isOpen, onClose }: KalenderModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-[100000] flex items-center justify-center p-3 md:p-6 bg-black/70 backdrop-blur-md overflow-y-auto">
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-3 md:p-6 bg-black/70 backdrop-blur-md overflow-y-auto">
       <div className="bg-[#f0f4f8] w-full max-w-6xl max-h-[92vh] md:max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative border border-white/40 my-auto animate-fade-in-up">
         
         {/* Motif Background (Subtle Songket) */}
@@ -56,4 +65,6 @@ export default function KalenderModal({ isOpen, onClose }: KalenderModalProps) {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

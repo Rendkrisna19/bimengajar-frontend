@@ -5,10 +5,12 @@ import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
 import KalenderModal from '@/components/ui/KalenderModal';
+import KategoriMateriModal from '@/components/ui/KategoriMateriModal';
 
 export default function FeaturesSection() {
   const { t } = useLanguage();
   const [isKalenderOpen, setIsKalenderOpen] = useState(false);
+  const [isKategoriMateriOpen, setIsKategoriMateriOpen] = useState(false);
 
   const features = [
     {
@@ -50,11 +52,23 @@ export default function FeaturesSection() {
           {t('features.title')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
-          {features.map((feature, idx) => (
-            feature.link === '/kalender' ? (
+          {features.map((feature, idx) => {
+            
+            // Logika untuk onClick card
+            let onClickHandler = undefined;
+            if (feature.link === '/kalender') {
+              onClickHandler = () => setIsKalenderOpen(true);
+            } else if (feature.link === '/edukasi/materi-edukasi') {
+              onClickHandler = (e: any) => {
+                e.preventDefault();
+                setIsKategoriMateriOpen(true);
+              };
+            }
+
+            return onClickHandler ? (
               <div 
                 key={idx} 
-                onClick={() => setIsKalenderOpen(true)}
+                onClick={onClickHandler}
                 className="group relative overflow-hidden bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary z-10"
               >
                 {/* Texture Motif Background */}
@@ -99,11 +113,12 @@ export default function FeaturesSection() {
                   </h3>
                 </div>
               </Link>
-            )
-          ))}
+            );
+          })}
         </div>
       </div>
       <KalenderModal isOpen={isKalenderOpen} onClose={() => setIsKalenderOpen(false)} />
+      <KategoriMateriModal isOpen={isKategoriMateriOpen} onClose={() => setIsKategoriMateriOpen(false)} />
     </section>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from '@/lib/axios';
 import Swal from 'sweetalert2';
+import { getImageUrl } from '@/lib/api';
 import { KategoriMateri } from '../types';
 
 export default function KategoriMateriPage() {
@@ -15,8 +16,9 @@ export default function KategoriMateriPage() {
   const [editData, setEditData] = useState<KategoriMateri | null>(null);
   
   // Form state
-  const [formData, setFormData] = useState({
-    nama: ''
+  const [formData, setFormData] = useState<{nama: string, logo: File | null}>({
+    nama: '',
+    logo: null
   });
 
   const fetchKategori = async () => {
@@ -40,12 +42,14 @@ export default function KategoriMateriPage() {
     if (data) {
       setEditData(data);
       setFormData({
-        nama: data.nama
+        nama: data.nama,
+        logo: null
       });
     } else {
       setEditData(null);
       setFormData({
-        nama: ''
+        nama: '',
+        logo: null
       });
     }
     setIsModalOpen(true);
@@ -54,7 +58,7 @@ export default function KategoriMateriPage() {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditData(null);
-    setFormData({ nama: '' });
+    setFormData({ nama: '', logo: null });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,11 +69,22 @@ export default function KategoriMateriPage() {
 
     try {
       setIsSubmitting(true);
+      
+      const payload = new FormData();
+      payload.append('nama', formData.nama);
+      if (formData.logo) {
+        payload.append('logo', formData.logo);
+      }
+      
       if (editData) {
-        await axios.put(`/kategori-materi/${editData.id}`, formData);
+        await axios.post(`/kategori-materi/${editData.id}`, payload, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         Swal.fire('Berhasil', 'Kategori berhasil diperbarui', 'success');
       } else {
-        await axios.post('/kategori-materi', formData);
+        await axios.post('/kategori-materi', payload, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         Swal.fire('Berhasil', 'Kategori berhasil ditambahkan', 'success');
       }
       closeModal();
@@ -127,6 +142,7 @@ export default function KategoriMateriPage() {
             <thead className="bg-[#003366] text-white">
               <tr>
                 <th className="px-5 py-4 font-semibold w-16 text-center">No.</th>
+                <th className="px-5 py-4 font-semibold w-20 text-center">Logo</th>
                 <th className="px-5 py-4 font-semibold">Nama Kategori</th>
                 <th className="px-5 py-4 font-semibold">Slug</th>
                 <th className="px-5 py-4 font-semibold w-32 text-center">Aksi</th>
@@ -135,14 +151,14 @@ export default function KategoriMateriPage() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-gray-500">
+                  <td colSpan={5} className="px-5 py-8 text-center text-gray-500">
                     <i className="fa-solid fa-circle-notch animate-spin text-2xl text-primary mb-2"></i>
                     <p>Memuat data...</p>
                   </td>
                 </tr>
               ) : kategori.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-gray-500">
+                  <td colSpan={5} className="px-5 py-8 text-center text-gray-500">
                     Tidak ada data kategori.
                   </td>
                 </tr>
@@ -150,6 +166,17 @@ export default function KategoriMateriPage() {
                 kategori.map((item, index) => (
                   <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <td className="px-5 py-4 text-center text-gray-600 dark:text-gray-400">{index + 1}</td>
+                    <td className="px-5 py-4 text-center">
+                      {item.logo ? (
+                        <div className="w-12 h-12 relative mx-auto bg-gray-50 rounded-lg p-1 border border-gray-100 flex items-center justify-center">
+                          <img src={getImageUrl(item.logo)} alt={item.nama} className="max-w-full max-h-full object-contain" />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 mx-auto bg-gray-100 text-gray-400 rounded-lg flex items-center justify-center border border-gray-200">
+                          <i className="fa-solid fa-image"></i>
+                        </div>
+                      )}
+                    </td>
                     <td className="px-5 py-4">
                       <span className="font-medium text-gray-800 dark:text-gray-200">{item.nama}</span>
                     </td>
@@ -197,7 +224,7 @@ export default function KategoriMateriPage() {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6">
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Nama Kategori <span className="text-red-500">*</span>
                 </label>
@@ -208,6 +235,18 @@ export default function KategoriMateriPage() {
                   onChange={(e) => setFormData({...formData, nama: e.target.value})}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder="Misal: Keuangan Inklusif"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Logo Kategori {editData && <span className="text-gray-400 font-normal">(Opsional)</span>} {!editData && <span className="text-gray-400 font-normal">(Opsional)</span>}
+                </label>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={(e) => setFormData({...formData, logo: e.target.files ? e.target.files[0] : null})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-black text-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 />
               </div>
               
