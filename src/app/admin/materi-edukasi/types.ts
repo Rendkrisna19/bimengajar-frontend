@@ -2,6 +2,7 @@ export interface KategoriMateri {
   id: number;
   nama: string;
   slug: string;
+  logo?: string | null;
   created_at?: string;
   updated_at?: string;
 }
