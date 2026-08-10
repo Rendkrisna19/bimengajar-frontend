@@ -65,6 +65,12 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
         },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
       ]
+    },
+    {
+      category: "Pengaturan Sistem",
+      items: [
+        { name: "Manajemen User", icon: "fa-solid fa-users-gear", href: "/admin/users" },
+      ]
     }
   ];
 
