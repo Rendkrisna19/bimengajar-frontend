@@ -249,10 +249,10 @@ export default function AdminMitraPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button 
-                        onClick={() => toggleStatus(mitra.id, 'is_active', (mitra.is_active == 1 || mitra.is_active === true) ? false : true)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${(mitra.is_active == 1 || mitra.is_active === true) ? 'bg-green-500' : 'bg-gray-300'}`}
+                        onClick={() => toggleStatus(mitra.id, 'is_active', !mitra.is_active)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${mitra.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
                       >
-                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${(mitra.is_active == 1 || mitra.is_active === true) ? 'translate-x-6' : 'translate-x-1'}`} />
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${mitra.is_active ? 'translate-x-6' : 'translate-x-1'}`} />
                       </button>
                     </td>
                     <td className="px-4 py-3 text-center">
