@@ -70,33 +70,43 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
       category: "Pengaturan Sistem",
       items: [
         { name: "Manajemen User", icon: "fa-solid fa-users-gear", href: "/admin/users" },
+        { name: "Profil Saya", icon: "fa-solid fa-user-pen", href: "/admin/profil" },
       ]
     }
   ];
 
-  const handleLogout = () => {
-    Swal.fire({
-      title: 'Yakin ingin keluar?',
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: 'Konfirmasi Keluar',
+      text: 'Apakah Anda yakin ingin keluar dari Admin?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#003366',
       confirmButtonText: 'Ya, Keluar',
       cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Berhasil Keluar',
-          text: 'Anda telah keluar dari sistem.',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-          background: '#ffffff',
-        }).then(() => {
-          router.push('/login');
-        });
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/json'
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Logout error:', err);
+      } finally {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+    }
   };
 
   return (
