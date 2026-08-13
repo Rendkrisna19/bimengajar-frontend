@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import Image from 'next/image';
-import API_URL from '@/lib/api';
+import API_URL, { getImageUrl } from '@/lib/api';
 
 interface Article {
   id: number;
@@ -182,7 +181,7 @@ export default function AdminArtikelPage() {
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Manajemen Artikel</h2>
               <p className="text-gray-500 text-sm mt-1">Kelola konten artikel edukasi BI Mengajar.</p>
             </div>
-            <button onClick={() => handleOpenForm()} className="bg-primary hover:bg-blue-800 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md transition-all hover:-translate-y-0.5">
+            <button onClick={() => handleOpenForm()} className="bg-primary hover:bg-blue-800 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md transition-all hover:-translate-y-0.5 cursor-pointer">
               <i className="fa-solid fa-plus"></i> Tambah Artikel
             </button>
           </div>
@@ -205,7 +204,7 @@ export default function AdminArtikelPage() {
               <select 
                 value={itemsPerPage} 
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="p-2 border border-slate-200 dark:border-gray-700 rounded-xl dark:bg-gray-800 cursor-pointer outline-none"
+                className="p-2 border border-slate-200 dark:border-gray-700 rounded-xl dark:bg-gray-800 cursor-pointer outline-none font-bold"
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -230,13 +229,11 @@ export default function AdminArtikelPage() {
                 {currentItems.map((art) => (
                   <tr key={art.id} className="hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors">
                     <td className="p-4">
-                      <div className="relative w-16 h-12 rounded overflow-hidden bg-gray-100 border border-slate-200">
-                        <Image 
-                          src={(art.image && art.image.length > 0) ? art.image[0] : 'https://via.placeholder.com/150'} 
+                      <div className="relative w-16 h-12 rounded overflow-hidden bg-gray-100 border border-slate-200 shrink-0">
+                        <img 
+                          src={getImageUrl(art.image && art.image.length > 0 ? art.image[0] : null)} 
                           alt={art.title} 
-                          fill 
-                          sizes="64px"
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                     </td>
@@ -249,10 +246,10 @@ export default function AdminArtikelPage() {
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-4">
-                        <button onClick={() => handleOpenForm(art)} className="text-primary hover:text-blue-900 transition-colors" title="Edit">
+                        <button onClick={() => handleOpenForm(art)} className="text-primary hover:text-blue-900 transition-colors cursor-pointer" title="Edit">
                           <i className="fa-solid fa-pen-to-square text-base"></i>
                         </button>
-                        <button onClick={() => handleDelete(art.id)} className="text-red-500 hover:text-red-700 transition-colors" title="Hapus">
+                        <button onClick={() => handleDelete(art.id)} className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" title="Hapus">
                           <i className="fa-solid fa-trash-can text-base"></i>
                         </button>
                       </div>
@@ -299,7 +296,7 @@ export default function AdminArtikelPage() {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => setView('list')}
-                className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-gray-800 text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center border border-slate-100 dark:border-gray-700"
+                className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-gray-800 text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center border border-slate-100 dark:border-gray-700 cursor-pointer"
                 title="Kembali ke Daftar"
               >
                 <i className="fa-solid fa-arrow-left"></i>
@@ -320,14 +317,14 @@ export default function AdminArtikelPage() {
               <button 
                 type="button" 
                 onClick={() => setView('list')}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-gray-700 text-slate-600 dark:text-gray-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-gray-700 text-slate-600 dark:text-gray-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
               >
                 Batal
               </button>
               <button 
                 onClick={handleSubmit} 
                 disabled={isLoading}
-                className="px-6 py-2.5 bg-primary hover:bg-blue-900 text-white font-bold rounded-xl text-xs disabled:opacity-50 flex items-center gap-2 shadow-md transition-all hover:-translate-y-0.5"
+                className="px-6 py-2.5 bg-primary hover:bg-blue-900 text-white font-bold rounded-xl text-xs disabled:opacity-50 flex items-center gap-2 shadow-md transition-all hover:-translate-y-0.5 cursor-pointer"
               >
                 {isLoading ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-floppy-disk"></i>}
                 Simpan Data
@@ -410,12 +407,16 @@ export default function AdminArtikelPage() {
                     {/* Existing Images */}
                     {formData.existing_images.map((img, idx) => (
                       <div key={`existing-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden group shadow-sm border border-slate-200">
-                        <Image src={img} alt={`Gambar ${idx}`} fill sizes="96px" className="object-cover" />
+                        <img 
+                          src={getImageUrl(img)} 
+                          alt={`Gambar ${idx}`} 
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
                           <button 
                             type="button" 
                             onClick={() => removeExistingImage(idx)} 
-                            className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110"
+                            className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                             title="Hapus gambar ini"
                           >
                             <i className="fa-solid fa-trash-can text-sm"></i>
@@ -427,13 +428,17 @@ export default function AdminArtikelPage() {
                     {/* New Images */}
                     {formData.new_images.map((file, idx) => (
                       <div key={`new-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden group shadow-sm border border-green-200">
-                        <Image src={URL.createObjectURL(file)} alt={`New Gambar ${idx}`} fill className="object-cover" />
+                        <img 
+                          src={URL.createObjectURL(file)} 
+                          alt={`New Gambar ${idx}`} 
+                          className="w-full h-full object-cover" 
+                        />
                         <div className="absolute top-1 left-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">Baru</div>
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
                           <button 
                             type="button" 
                             onClick={() => removeNewImage(idx)} 
-                            className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110"
+                            className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                             title="Batal upload"
                           >
                             <i className="fa-solid fa-trash-can text-sm"></i>
