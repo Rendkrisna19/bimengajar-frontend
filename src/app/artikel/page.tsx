@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { gsap } from 'gsap';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { getImageUrl } from '@/lib/api';
 
 interface Article {
   id: number;
@@ -16,6 +16,24 @@ interface Article {
   description: string;
   published_at: string;
 }
+
+const getCardImage = (imgData: any): string => {
+  try {
+    let img = imgData;
+    if (typeof img === 'string') {
+      try { img = JSON.parse(img); } catch { return getImageUrl(img); }
+    }
+    if (Array.isArray(img) && img.length > 0) {
+      return getImageUrl(img[0]);
+    }
+    if (typeof img === 'string' && img.trim()) {
+      return getImageUrl(img);
+    }
+    return '/images/banner/hero1.png';
+  } catch (e) {
+    return '/images/banner/hero1.png';
+  }
+};
 
 export default function BlogPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -104,12 +122,12 @@ export default function BlogPage() {
                     href={`/artikel/${article.slug}`}
                     className="article-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100"
                   >
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <Image 
-                        src={(article.image && article.image.length > 0) ? article.image[0] : 'https://via.placeholder.com/400x300?text=No+Image'} 
+                    <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                      <img 
+                        src={getCardImage(article.image)} 
                         alt={article.title}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                       />
                       <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                         BI SIANTAR

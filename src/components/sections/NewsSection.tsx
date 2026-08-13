@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getImageUrl } from '@/lib/api';
 
 interface ContentItem {
   id: number;
@@ -14,6 +14,28 @@ interface ContentItem {
   description: string;
   published_at: string;
 }
+
+const getCardImage = (imgData: any): string => {
+  try {
+    let img = imgData;
+    if (typeof img === 'string') {
+      try { 
+        img = JSON.parse(img); 
+      } catch { 
+        return getImageUrl(img); 
+      }
+    }
+    if (Array.isArray(img) && img.length > 0) {
+      return getImageUrl(img[0]);
+    }
+    if (typeof img === 'string' && img.trim()) {
+      return getImageUrl(img);
+    }
+    return '/images/banner/hero1.png';
+  } catch (e) {
+    return '/images/banner/hero1.png';
+  }
+};
 
 export default function NewsSection() {
   const { t, lang } = useLanguage();
@@ -80,20 +102,11 @@ export default function NewsSection() {
                 className="w-[320px] md:w-[380px] bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="relative w-full h-[220px] overflow-hidden bg-gray-100">
-                  <Image 
-                    src={(() => {
-                      try {
-                        let img = article.image;
-                        if (typeof img === 'string') img = JSON.parse(img);
-                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://placehold.co/400x300?text=No+Image';
-                      } catch(e) {
-                        return 'https://placehold.co/400x300?text=No+Image';
-                      }
-                    })()}
+                  <img 
+                    src={getCardImage(article.image)}
                     alt={article.title}
-                    fill
-                    sizes="(max-width: 768px) 320px, 380px"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
                   <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900">
                     {t('news.articleBadge')}
@@ -153,20 +166,11 @@ export default function NewsSection() {
                 className="w-[320px] md:w-[380px] shrink-0 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="relative w-full h-[220px] overflow-hidden bg-gray-100">
-                  <Image 
-                    src={(() => {
-                      try {
-                        let img = news.image;
-                        if (typeof img === 'string') img = JSON.parse(img);
-                        return (Array.isArray(img) && img.length > 0) ? img[0] : 'https://placehold.co/400x300?text=No+Image';
-                      } catch(e) {
-                        return 'https://placehold.co/400x300?text=No+Image';
-                      }
-                    })()}
+                  <img 
+                    src={getCardImage(news.image)}
                     alt={news.title}
-                    fill
-                    sizes="(max-width: 768px) 320px, 380px"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
                   <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900">
                     {t('news.newsBadge')}
