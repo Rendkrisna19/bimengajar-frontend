@@ -145,7 +145,15 @@ export default function EditMateriEdukasiPage() {
       });
     } catch (error: any) {
       console.error('Submit error:', error);
-      Swal.fire('Error', error.response?.data?.message || 'Terjadi kesalahan saat menyimpan data', 'error');
+      if (error.response?.status === 413) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Ukuran Terlalu Besar (413)',
+          text: 'Ukuran file/gambar yang Anda unggah atau tempel melebihi batas maksimal server. Mohon kompres atau gunakan gambar dengan ukuran lebih kecil (maks 10MB).',
+        });
+      } else {
+        Swal.fire('Error', error.response?.data?.message || 'Terjadi kesalahan saat menyimpan data', 'error');
+      }
     } finally {
       setIsSubmitting(false);
     }

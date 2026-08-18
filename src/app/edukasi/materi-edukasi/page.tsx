@@ -13,7 +13,7 @@ import FloatingAction from '@/components/ui/FloatingAction';
 
 const stripHtml = (html: string) => {
   if (!html) return '';
-  return html.replace(/<[^>]*>/g, '').trim();
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ').trim();
 };
 
 function MateriEdukasiContent() {
