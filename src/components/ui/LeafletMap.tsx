@@ -306,7 +306,11 @@ export default function LeafletMap() {
               icon={createCustomIcon('SMA/SMK', true)}
               title={externalSearchPin.name}
               alt={externalSearchPin.name}
-              ref={(ref) => { ref?.openPopup(); }}
+              eventHandlers={{
+                add: (e) => {
+                  e.target.openPopup();
+                }
+              }}
             >
               <Popup>
                 <div className="font-bold text-gray-800 text-sm">{externalSearchPin.name}</div>

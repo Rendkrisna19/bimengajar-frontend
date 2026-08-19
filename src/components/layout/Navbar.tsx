@@ -254,9 +254,7 @@ export default function Navbar() {
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}
             aria-label={isMobileOpen ? "Tutup Menu Navigasi" : "Buka Menu Navigasi"}
-            className={`w-8 h-8 flex items-center justify-center transition-colors cursor-pointer ${
-              isScrolled ? 'text-white hover:text-white/80' : 'text-gray-800 hover:text-primary'
-            }`}
+            className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer text-gray-800 hover:text-primary"
           >
             <i className={`fa-solid ${isMobileOpen ? 'fa-xmark text-xl' : 'fa-bars text-lg'}`}></i>
           </button>

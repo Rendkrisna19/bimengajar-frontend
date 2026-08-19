@@ -182,8 +182,13 @@ export default function MapSection() {
             </div>
           </div>
         </div>
-
       </div>
+
+      {/* Subtle Bottom-to-Top Black Gradient Overlay */}
+      <div 
+        className="absolute inset-x-0 bottom-0 h-36 md:h-52 bg-gradient-to-t from-black/40 via-black/15 to-transparent pointer-events-none z-0" 
+        aria-hidden="true"
+      />
     </section>
   );
 }

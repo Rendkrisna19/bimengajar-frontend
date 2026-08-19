@@ -46,21 +46,25 @@ export default function TestimonialSection() {
   const duplicatedUlasan = ulasanList.length > 0 ? [...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList] : [];
 
   return (
-    <section className="bg-white py-16 md:py-24 relative overflow-hidden">
+    <section className="bg-primary py-16 md:py-24 relative overflow-hidden text-white">
+      {/* Background Ornaments (Subtle Glows & Songket Motif) */}
       <div 
-        className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none mix-blend-multiply bg-repeat"
-        style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '400px' }}
+        className="absolute inset-0 w-full h-full opacity-15 mix-blend-overlay pointer-events-none bg-repeat"
+        style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: '400px' }}
       ></div>
 
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-300/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 relative z-20 md:mr-[35%] lg:mr-[40%]">
           <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1a365d] mb-2">{t('testi.title')}</h2>
-            <p className="text-gray-500 text-sm md:text-base">{t('testi.subtitle')}</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight drop-shadow-md">{t('testi.title')}</h2>
+            <p className="text-blue-100/90 text-sm md:text-base font-medium">{t('testi.subtitle')}</p>
           </div>
-          <Link href="/ulasan" className="mt-4 md:mt-0 bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2 px-5 rounded flex items-center gap-2 border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1">
+          <Link href="/ulasan" className="mt-4 md:mt-0 bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2.5 px-6 rounded flex items-center gap-2 border-b-4 border-yellow-600 shadow-md shadow-accent-yellow/30 active:border-b-0 active:translate-y-1">
             {t('testi.viewAll')} <i className="fa-solid fa-arrow-right text-xs"></i>
           </Link>
         </div>
@@ -71,10 +75,10 @@ export default function TestimonialSection() {
           <div className="w-full md:w-[65%] lg:w-[65%] relative z-10 overflow-hidden rounded-r-3xl py-4">
             {loading ? (
                <div className="flex justify-center items-center h-48">
-                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
                </div>
             ) : ulasanList.length === 0 ? (
-               <div className="text-center text-gray-500 py-8">{t('testi.noUlasan')}</div>
+               <div className="text-center text-blue-100 py-8">{t('testi.noUlasan')}</div>
             ) : (
               <div 
                 className="flex gap-6 animate-marquee hover:[animation-play-state:paused] w-max px-4"
@@ -83,7 +87,7 @@ export default function TestimonialSection() {
                 {duplicatedUlasan.map((ulasan, idx) => (
                   <div 
                     key={`ulasan-${ulasan.id}-${idx}`}
-                    className="w-[280px] md:w-[320px] shrink-0 bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-lg transition-shadow flex flex-col h-[280px] relative overflow-hidden group"
+                    className="w-[280px] md:w-[320px] shrink-0 bg-white text-gray-800 rounded-2xl p-6 shadow-[0_15px_35px_rgba(0,0,0,0.3)] hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-[280px] relative overflow-hidden group border border-white/40"
                   >
                     <div 
                       className="absolute inset-0 w-full h-full opacity-[0.03] group-hover:opacity-[0.06] pointer-events-none transition-opacity duration-300"
@@ -103,13 +107,13 @@ export default function TestimonialSection() {
                       )}
                     </div>
                     
-                    <p className="text-gray-600 text-sm md:text-base italic mb-6 line-clamp-4 flex-1 relative z-10">
+                    <p className="text-gray-700 text-sm md:text-base italic mb-6 line-clamp-4 flex-1 relative z-10 leading-relaxed">
                       "{ulasan.komentar}"
                     </p>
                     
-                    <div className="mt-auto pt-4 border-t border-gray-50 relative z-10">
-                      <h3 className="font-bold text-[#1a365d] text-sm md:text-base truncate">{ulasan.nama}</h3>
-                      <p className="text-xs text-gray-500 mt-1 truncate">
+                    <div className="mt-auto pt-4 border-t border-gray-100 relative z-10">
+                      <h3 className="font-bold text-primary text-sm md:text-base truncate">{ulasan.nama}</h3>
+                      <p className="text-xs text-gray-500 font-medium mt-0.5 truncate">
                         {ulasan.kategori} - {ulasan.instansi}
                       </p>
                     </div>
@@ -126,13 +130,19 @@ export default function TestimonialSection() {
                 alt="Vektor Ulasan" 
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                className="object-contain object-center drop-shadow-2xl"
+                className="object-contain object-center drop-shadow-[0_25px_35px_rgba(0,0,0,0.4)]"
               />
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Subtle Bottom-to-Top Black Gradient Overlay */}
+      <div 
+        className="absolute inset-x-0 bottom-0 h-36 md:h-48 bg-gradient-to-t from-black/40 via-black/15 to-transparent pointer-events-none z-0" 
+        aria-hidden="true"
+      />
     </section>
   );
 }

@@ -48,23 +48,34 @@ const DEFAULT_SLIDES = [
   }
 ];
 
+let memoryHeroCache: any = null;
+
 export default function HeroSection() {
   const { t, lang } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
-  const [dynamicSlides, setDynamicSlides] = useState<any[]>(DEFAULT_SLIDES);
-  const [loading, setLoading] = useState(false);
+  const [dynamicSlides, setDynamicSlides] = useState<any[]>(() => {
+    if (memoryHeroCache) return memoryHeroCache;
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem('hero_banners_cache');
+      if (cached) {
+        try { return JSON.parse(cached); } catch (e) {}
+      }
+    }
+    return DEFAULT_SLIDES;
+  });
 
   useEffect(() => {
+    let isMounted = true;
     const fetchHeroBanners = async () => {
       try {
-        setLoading(true);
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const res = await fetch(`${apiUrl}/hero-banners`);
+        const res = await fetch(`${apiUrl}/hero-banners`, { cache: 'no-store' });
         const data = await res.json();
-        if (data.status === 'success' && data.data) {
+        if (isMounted && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
           const mapped = data.data.map((item: any) => ({
             id: item.id,
             title: lang === 'EN' ? (item.title_en || translateText(item.title, 'EN')) : item.title,
@@ -75,25 +86,30 @@ export default function HeroSection() {
             button_secondary_url: item.button_secondary_url,
             image: item.image_url || item.image || '/images/banner/hero1.png',
           }));
+          memoryHeroCache = mapped;
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('hero_banners_cache', JSON.stringify(mapped));
+          }
           setDynamicSlides(mapped);
         }
       } catch (err) {
         console.error('Failed to fetch hero banners', err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchHeroBanners();
+    return () => { isMounted = false; };
   }, [lang]);
 
-  const slides = dynamicSlides;
+  const slides = (dynamicSlides && dynamicSlides.length > 0) ? dynamicSlides : DEFAULT_SLIDES;
 
   const nextSlide = () => setCurrentSlide((prev) => (prev >= slides.length - 1 ? 0 : prev + 1));
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
 
   const startAutoPlay = () => {
     stopAutoPlay();
-    slideInterval.current = setInterval(nextSlide, 5000);
+    if (slides.length > 1) {
+      slideInterval.current = setInterval(nextSlide, 5000);
+    }
   };
 
   const stopAutoPlay = () => {
@@ -110,16 +126,22 @@ export default function HeroSection() {
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
     stopAutoPlay();
-    setStartX('touches' in e ? e.touches[0].clientX : e.clientX);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    setStartX(clientX);
+    setStartY(clientY);
   };
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
     const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const diff = startX - currentX;
+    const currentY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const diffX = startX - currentX;
+    const diffY = startY - currentY;
     
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) nextSlide();
+    // Only swipe horizontal slides if swipe movement is horizontal
+    if (Math.abs(diffX) > 70 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+      if (diffX > 0) nextSlide();
       else prevSlide();
       setIsDragging(false);
     }
@@ -222,6 +244,12 @@ export default function HeroSection() {
         </div>
 
       </div>
+
+      {/* Subtle Bottom-to-Top Black Gradient Overlay for enhanced contrast */}
+      <div 
+        className="absolute inset-x-0 bottom-0 h-44 md:h-60 bg-gradient-to-t from-black/45 via-black/15 to-transparent pointer-events-none z-0" 
+        aria-hidden="true"
+      />
     </section>
   );
 }

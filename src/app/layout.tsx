@@ -88,7 +88,7 @@ export default function RootLayout({
         />
 
       </head>
-      <body className={`${plusJakartaSans.className} ${plusJakartaSans.variable} ${montserrat.variable} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${montserrat.className} ${montserrat.variable} ${plusJakartaSans.variable} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <FontAwesomeLoader />
         <LanguageProvider>
           {children}
