@@ -115,15 +115,15 @@ export default function TentangKamiPage() {
 
       <div className="max-w-[1200px] mx-auto w-full px-4 md:px-8 -mt-24 relative z-10 pb-20 flex-1">
         {/* Content Area */}
-        <div ref={contentRef} className="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-2xl border border-white flex flex-col md:flex-row gap-8 md:gap-12 min-h-[400px]">
+        <div ref={contentRef} className="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-2xl border border-white flex flex-col md:flex-row items-center gap-8 md:gap-12 min-h-[420px]">
           {loading ? (
             <div className="w-full h-full flex items-center justify-center min-h-[300px]">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
             </div>
           ) : (
             <>
-              {/* Image Left */}
-              <div className="w-full md:w-1/2 relative h-[250px] md:h-[400px] rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 flex shrink-0 shadow-inner group">
+              {/* Image Left - Asymmetrical Curved Cut Corner with Floating Value Badge */}
+              <div className="w-full md:w-1/2 relative h-[280px] md:h-[380px] rounded-2xl rounded-tr-[4.5rem] rounded-br-[4.5rem] overflow-hidden bg-gray-100 border border-gray-100 flex shrink-0 shadow-xl group my-auto">
                 {rawData.image ? (
                   <img 
                     src={rawData.image} 
@@ -136,6 +136,20 @@ export default function TentangKamiPage() {
                     <p className="text-sm">{t('about.noImage')}</p>
                   </div>
                 )}
+
+                {/* Subtle Inner Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+
+                {/* Floating Value Badge (Top Right as in Reference Image) */}
+                <div className="absolute top-4 right-6 bg-primary/95 text-white backdrop-blur-md px-4 py-2 rounded-xl shadow-lg border border-white/20 flex items-center gap-2.5 text-xs md:text-sm font-bold z-10">
+                  <div className="w-7 h-7 rounded-lg bg-accent-yellow text-primary flex items-center justify-center font-black shrink-0 shadow-sm">
+                    <i className="fa-solid fa-award"></i>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-blue-200 uppercase tracking-wider font-semibold leading-none">Bank Sentral</p>
+                    <p className="text-xs md:text-sm font-extrabold text-white leading-tight">KPw BI Pematangsiantar</p>
+                  </div>
+                </div>
               </div>
 
               {/* Text Right */}

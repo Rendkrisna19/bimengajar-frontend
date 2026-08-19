@@ -15,27 +15,51 @@ interface Ulasan {
   created_at?: string;
 }
 
+const DEFAULT_TESTIMONIALS: Ulasan[] = [
+  { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5, created_at: new Date().toISOString() },
+  { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5, created_at: new Date().toISOString() },
+  { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5, created_at: new Date().toISOString() },
+  { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5, created_at: new Date().toISOString() }
+];
+
+let globalTestimonialCache: Ulasan[] | null = null;
+
 export default function TestimonialSection() {
   const { t, lang } = useLanguage();
-  const [ulasanList, setUlasanList] = useState<Ulasan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [ulasanList, setUlasanList] = useState<Ulasan[]>(() => {
+    if (globalTestimonialCache) return globalTestimonialCache;
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem('ulasan_data_cache');
+      if (cached) {
+        try { return JSON.parse(cached); } catch (e) {}
+      }
+    }
+    return DEFAULT_TESTIMONIALS;
+  });
+
+  const [loading, setLoading] = useState(() => {
+    if (globalTestimonialCache && globalTestimonialCache.length > 0) return false;
+    if (typeof window !== 'undefined' && sessionStorage.getItem('ulasan_data_cache')) return false;
+    return true;
+  });
 
   useEffect(() => {
     const fetchUlasan = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/ulasan`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/ulasan`, { cache: 'no-store' });
         const data = await res.json();
         if (data.status === 'success') {
-          setUlasanList(Array.isArray(data.data) ? data.data : data.data.data || []);
+          const list = Array.isArray(data.data) ? data.data : data.data.data || [];
+          if (list.length > 0) {
+            globalTestimonialCache = list;
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem('ulasan_data_cache', JSON.stringify(list));
+            }
+            setUlasanList(list);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch ulasan', error);
-        setUlasanList([
-          { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5 },
-          { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5 },
-          { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5 },
-          { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5 }
-        ]);
       } finally {
         setLoading(false);
       }

@@ -3,12 +3,15 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-[#003366] pt-16 pb-8 border-t border-gray-100 relative overflow-hidden">
+    <footer className="bg-gradient-to-b from-white via-blue-50/50 to-blue-100/40 text-[#003366] pt-16 pb-8 border-t border-blue-100/60 relative overflow-hidden">
       {/* Background Texture Element */}
       <div 
         className="absolute inset-0 w-full h-full opacity-5 pointer-events-none mix-blend-multiply bg-repeat"
         style={{ backgroundImage: 'url(/images/element/3.png)', backgroundSize: '500px' }}
       ></div>
+
+      {/* Subtle Blue Ambient Glow */}
+      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
