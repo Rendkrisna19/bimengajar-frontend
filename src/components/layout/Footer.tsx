@@ -14,21 +14,24 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
           
           {/* Logo & Tagline */}
-          <div className="lg:col-span-1 flex flex-col gap-6">
-            <Link href="/" className="inline-block">
-              <div className="h-14 w-52 flex items-center justify-start overflow-hidden">
+          <div className="lg:col-span-1 flex flex-col gap-4">
+            <Link href="/" className="flex flex-col items-start shrink-0 group">
+              <div className="h-24 w-auto flex items-center justify-start py-2">
                 <Image 
                   src="/images/logo.png?v=2" 
                   alt="Logo BI Mengajar" 
-                  width={220} 
-                  height={220} 
-                  className="w-full h-auto object-contain scale-[1.1] origin-center transition-all" 
+                  width={300} 
+                  height={100} 
+                  className="h-full w-auto object-contain scale-[1.6] origin-left transition-transform group-hover:scale-[1.7]" 
                   priority
                   unoptimized
                 />
               </div>
+              <span className="text-[11px] font-extrabold text-[#003366] tracking-tight mt-2 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+                by Kantor Perwakilan Bank Indonesia Pematangsiantar
+              </span>
             </Link>
-            <p className="text-gray-600 text-sm leading-relaxed">
+            <p className="text-gray-600 text-sm leading-relaxed mt-1">
               Mewujudkan masyarakat yang Cinta, Bangga, dan Paham Rupiah melalui edukasi yang berkelanjutan.
             </p>
           </div>

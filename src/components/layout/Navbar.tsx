@@ -79,19 +79,19 @@ export default function Navbar() {
       <div className="hidden xl:flex items-center justify-between w-full max-w-7xl mx-auto px-4 lg:px-8 h-20">
         
         {/* KIRI - Logo */}
-        <Link href="/" className="flex flex-col items-start shrink-0 py-1">
-          <div className="h-10 w-36 flex items-center justify-start overflow-hidden">
+        <Link href="/" className="flex flex-col items-start shrink-0 py-1 group">
+          <div className="h-14 w-auto flex items-center justify-start">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={160} 
-              height={120} 
-              className="w-full h-auto object-contain origin-left transition-all"
+              width={220} 
+              height={60} 
+              className="h-full w-auto object-contain scale-[1.45] origin-left transition-transform group-hover:scale-[1.55]"
               priority
               unoptimized
             />
           </div>
-          <span className="text-[9px] font-extrabold text-gray-800 tracking-tight mt-0.5" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+          <span className="text-[10px] font-extrabold text-gray-800 tracking-tight mt-1 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
             by Kantor Perwakilan Bank Indonesia Pematangsiantar
           </span>
         </Link>
@@ -217,18 +217,18 @@ export default function Navbar() {
       <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
         {/* Mobile Logo */}
         <Link href="/" className="flex flex-col items-start flex-shrink-0 z-50 py-1">
-          <div className="h-8 w-28 flex items-center justify-start overflow-hidden">
+          <div className="h-10 w-auto flex items-center justify-start">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={120} 
-              height={90} 
-              className="w-full h-auto object-contain origin-left transition-all"
+              width={160} 
+              height={40} 
+              className="h-full w-auto object-contain scale-[1.3] origin-left"
               priority
               unoptimized
             />
           </div>
-          <span className="text-[7px] font-extrabold text-gray-800 tracking-tight mt-0.5" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+          <span className="text-[8px] font-extrabold text-gray-800 tracking-tight mt-0.5 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
             by Kantor Perwakilan Bank Indonesia Pematangsiantar
           </span>
         </Link>

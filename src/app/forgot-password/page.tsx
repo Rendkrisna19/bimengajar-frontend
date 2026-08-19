@@ -131,13 +131,13 @@ function ForgotPasswordContent() {
         {/* Right Side: Email Form (7 Columns) */}
         <div className="md:col-span-7 p-8 lg:p-12 flex flex-col justify-center bg-white">
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="h-12 w-44 flex items-center justify-center overflow-hidden mb-2">
+            <div className="h-20 w-auto flex items-center justify-center mb-2">
               <Image
                 src="/images/logo.png?v=2"
                 alt="Logo BI Mengajar"
-                width={180}
-                height={180}
-                className="w-full h-auto object-contain scale-[1.1] origin-center"
+                width={250}
+                height={80}
+                className="h-full w-auto object-contain scale-[1.5] origin-center"
                 priority
                 unoptimized
               />

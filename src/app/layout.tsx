@@ -25,7 +25,12 @@ export const metadata: Metadata = {
   title: "Home Page | PLAT-BK",
   description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematang Siantar",
   icons: {
-    icon: "/images/logo.png?v=2",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/images/logo.png?v=3", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 
@@ -37,6 +42,10 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
+        {/* Favicon high contrast vector icon */}
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
+
         {/* Preconnect & DNS Prefetch to Cloudflare CDN to eliminate TCP/TLS latency */}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
