@@ -73,7 +73,7 @@ export default function HeroSection() {
     const fetchHeroBanners = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const res = await fetch(`${apiUrl}/hero-banners`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/hero-banners?t=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
         if (isMounted && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
           const mapped = data.data.map((item: any) => ({
@@ -154,7 +154,7 @@ export default function HeroSection() {
 
   return (
     <section 
-      className="relative min-h-[90vh] lg:min-h-screen bg-primary flex items-start overflow-hidden pt-32 md:pt-40 lg:pt-48 cursor-grab active:cursor-grabbing select-none"
+      className="relative min-h-[80vh] lg:min-h-[85vh] bg-primary flex items-start overflow-hidden pt-28 md:pt-36 lg:pt-40 cursor-grab active:cursor-grabbing select-none"
       onMouseDown={handleDragStart}
       onMouseMove={handleDragMove}
       onMouseUp={handleDragEnd}
@@ -174,53 +174,56 @@ export default function HeroSection() {
         ></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-16 lg:pb-20 flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-12 lg:pb-16 flex-1">
         
-        <div className="relative w-full overflow-hidden flex items-center min-h-[550px] lg:min-h-[500px]">
+        <div className="relative w-full overflow-hidden flex items-center min-h-[480px] lg:min-h-[450px]">
           {slides.length > 0 ? (
             <div 
               className="flex transition-transform duration-700 ease-in-out w-full"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {slides.map((slide, index) => (
-                <div key={slide.id || index} className="w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div key={slide.id || index} className="w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
                   
                   {/* Text Content - Centered on mobile, Left on desktop */}
-                  <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 px-2 mt-4 lg:mt-0 order-2 lg:order-1 w-full overflow-hidden">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4 lg:mb-6 whitespace-pre-line drop-shadow-md">
+                  <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl mx-auto lg:mx-0 px-2 mt-2 lg:mt-0 order-2 lg:order-1 w-full overflow-hidden">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-3 lg:mb-5 whitespace-pre-line drop-shadow-md">
                       {slide.title}
                     </h1>
-                    <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-8 lg:mb-10 leading-relaxed font-medium px-4 lg:px-0">
+                    <p className="text-xs sm:text-sm md:text-base text-blue-100/90 mb-6 lg:mb-8 leading-relaxed font-medium px-2 lg:px-0 max-w-lg">
                       {slide.subtitle}
                     </p>
                     
                     <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
                       {slide.button_primary_text && (
-                        <Link href={slide.button_primary_url || '/edukasi/pengajuan'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-accent-red text-white font-bold rounded transition-all text-center border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1">
+                        <Link href={slide.button_primary_url || '/edukasi/pengajuan'} className="w-full sm:w-auto px-5 sm:px-7 py-2.5 sm:py-3 bg-accent-red text-white text-xs sm:text-sm font-bold rounded transition-all text-center border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1">
                           {slide.button_primary_text}
                         </Link>
                       )}
                       {slide.button_secondary_text && (
-                        <Link href={slide.button_secondary_url || '/edukasi/materi-edukasi'} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-transparent border-2 border-b-4 border-white/50 text-white font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
+                        <Link href={slide.button_secondary_url || '/edukasi/materi-edukasi'} className="w-full sm:w-auto px-5 sm:px-7 py-2.5 sm:py-3 bg-transparent border-2 border-b-4 border-white/50 text-white text-xs sm:text-sm font-bold rounded hover:bg-white/10 transition-all text-center backdrop-blur-sm hover:border-white hover:border-b-white active:border-b-2 active:translate-y-0.5">
                           {slide.button_secondary_text}
                         </Link>
                       )}
                     </div>
                   </div>
 
-                  {/* Image - Placed above text on mobile */}
-                  <div className="relative w-full h-[250px] sm:h-[350px] lg:h-[500px] flex items-center justify-center pointer-events-none order-1 lg:order-2">
-                    <Image
-                      src={slide.image}
-                      alt="Banner Illustration"
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-contain"
-                      priority={index === 0}
-                      fetchPriority={index === 0 ? "high" : "auto"}
-                      draggable={false}
-                    />
+                  {/* Image - Real Image clipped directly with custom cut corner, no white background box, no text badge */}
+                  <div className="relative w-full flex items-center justify-center order-1 lg:order-2 my-auto">
+                    <div className="relative w-full max-w-[380px] lg:max-w-[420px] h-[240px] sm:h-[290px] lg:h-[340px] rounded-2xl rounded-tr-[4rem] rounded-br-[4rem] overflow-hidden group my-auto flex items-center justify-center">
+                      <Image
+                        src={slide.image}
+                        alt="Banner Illustration"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 420px"
+                        className="object-contain rounded-2xl rounded-tr-[4rem] rounded-br-[4rem] group-hover:scale-105 transition-transform duration-700"
+                        priority={index === 0}
+                        fetchPriority={index === 0 ? "high" : "auto"}
+                        draggable={false}
+                      />
+                    </div>
                   </div>
+
                 </div>
               ))}
             </div>

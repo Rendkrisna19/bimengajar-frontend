@@ -187,6 +187,9 @@ export default function AdminHeroBannerPage() {
       }
 
       if (res.ok && data.status === 'success') {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('hero_banners_cache');
+        }
         Swal.fire('Berhasil', data.message || 'Data berhasil disimpan', 'success');
         setShowModal(false);
         fetchBanners();
@@ -213,6 +216,7 @@ export default function AdminHeroBannerPage() {
       });
       const data = await res.json();
       if (res.ok && data.status === 'success') {
+        if (typeof window !== 'undefined') sessionStorage.removeItem('hero_banners_cache');
         fetchBanners();
       } else {
         Swal.fire('Gagal', data.message || 'Gagal mengubah status', 'error');
@@ -246,6 +250,7 @@ export default function AdminHeroBannerPage() {
           });
           const data = await res.json();
           if (res.ok && data.status === 'success') {
+            if (typeof window !== 'undefined') sessionStorage.removeItem('hero_banners_cache');
             Swal.fire('Terhapus!', 'Hero Banner berhasil dihapus.', 'success');
             fetchBanners();
           } else {

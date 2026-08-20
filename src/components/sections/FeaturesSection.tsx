@@ -46,7 +46,7 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="relative z-20 -mt-24 md:-mt-28 pb-20 px-4 md:px-8">
+    <section className="relative z-20 -mt-8 md:-mt-10 pb-20 px-4 md:px-8">
       <div className="max-w-[1400px] mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-100 mb-8 drop-shadow-sm">
           {t('features.title')}
