@@ -154,7 +154,7 @@ export default function HeroSection() {
 
   return (
     <section 
-      className="relative min-h-[80vh] lg:min-h-[85vh] bg-primary flex items-start overflow-hidden pt-28 md:pt-36 lg:pt-40 cursor-grab active:cursor-grabbing select-none"
+      className="relative min-h-[80vh] lg:min-h-[85vh] bg-gradient-to-br from-[#0062c4] via-[#0054a7] to-[#003c78] flex items-start overflow-hidden pt-28 md:pt-36 lg:pt-40 cursor-grab active:cursor-grabbing select-none"
       onMouseDown={handleDragStart}
       onMouseMove={handleDragMove}
       onMouseUp={handleDragEnd}
@@ -163,15 +163,38 @@ export default function HeroSection() {
       onTouchMove={handleDragMove}
       onTouchEnd={handleDragEnd}
     >
-      {/* Decorative background elements & Scattered Motif Songket */}
+      {/* Decorative background elements & Denser Thin Lines */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-20 -left-20 w-96 h-96 bg-white rounded-full blur-[120px] opacity-10"></div>
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-blue-300 rounded-full blur-[100px] opacity-10"></div>
+        {/* Soft Glowing Ambient Lights */}
+        <div className="absolute -top-24 -left-20 w-[500px] h-[500px] bg-white/10 rounded-full blur-[130px]"></div>
+        <div className="absolute bottom-1/4 -right-20 w-[450px] h-[450px] bg-sky-300/15 rounded-full blur-[120px]"></div>
 
-        <div 
-          className="absolute inset-0 w-full h-full opacity-5 bg-no-repeat bg-center bg-cover"
-          style={{ backgroundImage: 'url(/images/element/1.png)' }}
-        ></div>
+        {/* Denser Thin Grid Lines Pattern */}
+        <svg className="absolute inset-0 w-full h-full opacity-25" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="hero-grid-lines-dense" width="36" height="36" patternUnits="userSpaceOnUse">
+              <path d="M 36 0 L 0 0 0 36" fill="none" stroke="rgba(255, 255, 255, 0.35)" strokeWidth="0.8" />
+            </pattern>
+            <linearGradient id="grid-fade-dense" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fff" stopOpacity="0.9" />
+              <stop offset="60%" stopColor="#fff" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#fff" stopOpacity="0.1" />
+            </linearGradient>
+            <mask id="grid-mask-dense">
+              <rect width="100%" height="100%" fill="url(#grid-fade-dense)" />
+            </mask>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid-lines-dense)" mask="url(#grid-mask-dense)" />
+        </svg>
+
+        {/* Dynamic Multiple Accent Lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+          <line x1="-100" y1="80" x2="1200" y2="1100" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1.2" strokeDasharray="8 6" />
+          <line x1="100" y1="-100" x2="1400" y2="900" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="1" />
+          <line x1="400" y1="-100" x2="1600" y2="800" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="1.2" strokeDasharray="12 8" />
+          <line x1="-200" y1="300" x2="900" y2="1200" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="1" />
+          <line x1="700" y1="-100" x2="1800" y2="700" stroke="rgba(255, 255, 255, 0.35)" strokeWidth="1" strokeDasharray="4 4" />
+        </svg>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col justify-center h-full pb-12 lg:pb-16 flex-1">

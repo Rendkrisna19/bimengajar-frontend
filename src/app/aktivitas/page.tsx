@@ -263,15 +263,24 @@ export default function AktivitasPage() {
       <Navbar />
 
       {/* Header Navy */}
-      <section className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden">
+      <section className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden border-b-4 border-[#fbbf24]">
+        {/* Background Image /images/header.jpg with 20% Opacity */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src="/images/header.jpg"
+            alt="Header Background"
+            className="w-full h-full object-cover object-center opacity-20 mix-blend-overlay"
+          />
+        </div>
+
         <div className="max-w-[1200px] mx-auto relative z-10">
           <div className="flex items-center gap-2 text-sm text-blue-200 mb-4">
             <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
             <span>&gt;</span>
             <span className="text-white font-medium">Aktivitas</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Aktivitas</h1>
-          <p className="text-blue-100 max-w-xl text-lg leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-md">Aktivitas</h1>
+          <p className="text-blue-100 max-w-xl text-lg leading-relaxed drop-shadow-sm font-medium">
             Temukan berbagai artikel, berita terkini, dokumentasi kegiatan, dan kalender program BI Mengajar.
           </p>
           <div className="flex gap-2 mt-10 flex-wrap">
@@ -281,15 +290,6 @@ export default function AktivitasPage() {
               >{tab.label}</button>
             ))}
           </div>
-        </div>
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3 opacity-10"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2 opacity-10"></div>
-          {/* Texture Motif Background */}
-          <div 
-            className="absolute inset-0 w-full h-full opacity-15 bg-no-repeat bg-center bg-cover"
-            style={{ backgroundImage: 'url(/images/element/1.png)' }}
-          ></div>
         </div>
       </section>
 
