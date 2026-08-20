@@ -102,15 +102,15 @@ export default function Navbar() {
             <div key={idx} className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={item.href} 
-                className={`flex items-center gap-1.5 transition-colors text-[14px] whitespace-nowrap text-gray-700 hover:text-primary`}
+                className="relative py-2 flex items-center gap-1.5 transition-colors text-[14px] whitespace-nowrap text-gray-700 hover:text-primary"
               >
                 {item.name}
                 {item.dropdown && (
-                  <i className={`fa-solid fa-chevron-down text-[10px] transition-colors mt-0.5 text-gray-400 group-hover:text-primary`}></i>
+                  <i className="fa-solid fa-chevron-down text-[10px] transition-colors mt-0.5 text-gray-400 group-hover:text-primary"></i>
                 )}
+                {/* Garis hover persis di bawah teks */}
+                <div className="absolute bottom-0 left-0 h-[2.5px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-full bg-primary"></div>
               </Link>
-              
-              <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-300 ease-out rounded-t-full bg-primary`}></div>
               
               {/* Dropdown Menu */}
               {item.dropdown && item.subItems && (

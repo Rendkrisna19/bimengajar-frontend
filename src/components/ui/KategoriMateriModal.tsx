@@ -88,11 +88,6 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
                   onClick={onClose}
                   className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2 relative"
                 >
-                  {/* Subtle Background Pattern */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-                    style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover' }}>
-                  </div>
-                  
                   {/* Icon Area */}
                   <div className="p-4 md:p-6 flex items-center justify-center flex-1 relative z-10">
                     <div className="relative w-44 h-44 md:w-56 md:h-56 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center">
