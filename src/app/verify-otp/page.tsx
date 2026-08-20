@@ -156,21 +156,8 @@ function VerifyOtpContent() {
   };
 
   return (
-    <main className="min-h-screen relative flex items-center justify-center p-4 md:p-6 bg-[#002244] overflow-hidden font-sans">
+    <main className="min-h-screen relative flex items-center justify-center p-4 md:p-6 bg-gradient-to-br from-[#001529] via-[#003366] to-[#001f3f] overflow-hidden font-sans">
       <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" strategy="lazyOnload" />
-
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Glow Spheres */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-400/20 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-1/4 -right-20 w-[30rem] h-[30rem] bg-accent-yellow/15 rounded-full blur-[140px]"></div>
-        
-        {/* Songket Motif Overlay */}
-        <div 
-          className="absolute inset-0 w-full h-full opacity-15 bg-repeat bg-center pointer-events-none"
-          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: '350px' }}
-        ></div>
-      </div>
 
       {/* Back to Home Button */}
       <Link 
@@ -185,10 +172,6 @@ function VerifyOtpContent() {
         
         {/* Left Side: Brand & Illustration (5 Columns) */}
         <div className="hidden md:flex md:col-span-5 flex-col justify-between p-8 lg:p-10 bg-primary text-white relative overflow-hidden">
-          <div 
-            className="absolute inset-0 w-full h-full opacity-15 bg-cover bg-center pointer-events-none"
-            style={{ backgroundImage: 'url(/images/element/1.png)' }}
-          ></div>
           
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[11px] font-bold text-yellow-300 uppercase tracking-wider mb-4">

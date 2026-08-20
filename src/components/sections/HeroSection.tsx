@@ -208,19 +208,21 @@ export default function HeroSection() {
                     </div>
                   </div>
 
-                  {/* Image - Real Image clipped directly with custom cut corner, no white background box, no text badge */}
+                  {/* Image Container - Styled exactly like Tentang Kami (rounded-tr & rounded-br cut corner, full cover image, shadow, no extra badge) */}
                   <div className="relative w-full flex items-center justify-center order-1 lg:order-2 my-auto">
-                    <div className="relative w-full max-w-[380px] lg:max-w-[420px] h-[240px] sm:h-[290px] lg:h-[340px] rounded-2xl rounded-tr-[4rem] rounded-br-[4rem] overflow-hidden group my-auto flex items-center justify-center">
+                    <div className="relative w-full max-w-[380px] lg:max-w-[440px] h-[250px] sm:h-[300px] lg:h-[350px] bg-[#f2f6fa] rounded-2xl rounded-tr-[4.5rem] rounded-br-[4.5rem] overflow-hidden shadow-2xl border border-white/20 group my-auto">
                       <Image
                         src={slide.image}
                         alt="Banner Illustration"
                         fill
-                        sizes="(max-width: 1024px) 100vw, 420px"
-                        className="object-contain rounded-2xl rounded-tr-[4rem] rounded-br-[4rem] group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 1024px) 100vw, 440px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
                         priority={index === 0}
                         fetchPriority={index === 0 ? "high" : "auto"}
                         draggable={false}
                       />
+                      {/* Subtle Inner Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 pointer-events-none"></div>
                     </div>
                   </div>
 
