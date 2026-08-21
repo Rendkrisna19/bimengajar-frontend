@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dynamically import Leaflet Map to avoid SSR errors
@@ -17,7 +16,7 @@ const LeafletMap = dynamic(() => import('@/components/ui/LeafletMap'), {
 });
 
 export default function MapSection() {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,7 +57,7 @@ export default function MapSection() {
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         
-        {/* Intro Text / Rupiah Content */}
+        {/* Intro Text */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
           <h2 className="map-text-anim text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight opacity-0">
             {t('hero.slide1.title')}
@@ -94,10 +93,8 @@ export default function MapSection() {
                 <LeafletMap />
               </div>
 
-              {/* Legend & Action Button */}
+              {/* Legends */}
               <div className="mt-6 flex flex-col lg:flex-row items-center justify-between gap-6 bg-gray-50 p-4 md:p-5 rounded-xl border border-gray-100">
-                
-                {/* Legends */}
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-sm font-bold text-primary">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-md bg-[#2563eb] flex items-center justify-center shadow-sm">
@@ -130,15 +127,16 @@ export default function MapSection() {
                     {t('map.legend.komunitas')}
                   </div>
                 </div>
-
               </div>
+
             </div>
           </div>
 
           {/* RIGHT: Stats Grid (4 columns) */}
           <div className="xl:col-span-4 flex flex-col gap-4 map-container-anim opacity-0">
+            
             {/* Sekolah Teredukasi - Red */}
-            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark active:translate-y-0 active:border-b-0">
+            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-graduation-cap"></i>
               </div>
@@ -149,7 +147,7 @@ export default function MapSection() {
             </div>
             
             {/* Peserta Edukasi - Yellow */}
-            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600 active:translate-y-0 active:border-b-0">
+            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-solid fa-users"></i>
               </div>
@@ -160,7 +158,7 @@ export default function MapSection() {
             </div>
 
             {/* Kegiatan Terlaksana - Red */}
-            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark active:translate-y-0 active:border-b-0">
+            <div className="bg-accent-red rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(167,0,56,0.3)] transition-all duration-300 border-b-[5px] border-accent-red-dark">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-calendar-check"></i>
               </div>
@@ -171,7 +169,7 @@ export default function MapSection() {
             </div>
 
             {/* Program Inovasi - Yellow */}
-            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600 active:translate-y-0 active:border-b-0">
+            <div className="bg-accent-yellow rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center gap-4 h-full min-h-[100px] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(251,191,36,0.3)] transition-all duration-300 border-b-[5px] border-yellow-600">
               <div className="text-white text-4xl shrink-0 w-16 text-center">
                 <i className="fa-regular fa-lightbulb"></i>
               </div>
@@ -180,15 +178,11 @@ export default function MapSection() {
                 <p className="text-sm font-medium mt-0.5 text-white/90">{t('map.stat.innovations')}</p>
               </div>
             </div>
+
           </div>
+
         </div>
       </div>
-
-      {/* Subtle Bottom-to-Top Black Gradient Overlay */}
-      <div 
-        className="absolute inset-x-0 bottom-0 h-36 md:h-52 bg-gradient-to-t from-black/40 via-black/15 to-transparent pointer-events-none z-0" 
-        aria-hidden="true"
-      />
     </section>
   );
 }

@@ -46,7 +46,7 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="relative z-20 -mt-24 md:-mt-28 pb-20 px-4 md:px-8">
+    <section className="relative z-20 -mt-8 md:-mt-10 pb-20 px-4 md:px-8">
       <div className="max-w-[1400px] mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-100 mb-8 drop-shadow-sm">
           {t('features.title')}
@@ -71,12 +71,6 @@ export default function FeaturesSection() {
                 onClick={onClickHandler}
                 className="group relative overflow-hidden bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary z-10"
               >
-                {/* Texture Motif Background */}
-                <div 
-                  className="absolute inset-0 w-full h-full opacity-30 group-hover:opacity-50 bg-no-repeat bg-center bg-cover transition-all duration-300 pointer-events-none z-0"
-                  style={{ backgroundImage: 'url(/images/element/1.png)' }}
-                ></div>
-
                 <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">
@@ -95,12 +89,6 @@ export default function FeaturesSection() {
                 key={idx} 
                 className="group relative overflow-hidden bg-white rounded-2xl p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] cursor-pointer hover:bg-primary z-10"
               >
-                {/* Texture Motif Background */}
-                <div 
-                  className="absolute inset-0 w-full h-full opacity-30 group-hover:opacity-50 bg-no-repeat bg-center bg-cover transition-all duration-300 pointer-events-none z-0"
-                  style={{ backgroundImage: 'url(/images/element/1.png)' }}
-                ></div>
-
                 <div className="flex flex-col items-center text-center flex-1 relative z-10 justify-center">
                   {/* Icon */}
                   <div className="mb-4 transition-all duration-300 w-24 h-24 relative group-hover:scale-110">

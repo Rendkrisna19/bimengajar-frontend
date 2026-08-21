@@ -77,7 +77,16 @@ export default function EdukasiPage() {
       <Navbar />
 
       {/* Header Section */}
-      <section className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden">
+      <section className="bg-primary text-white pt-32 pb-40 px-4 md:px-8 relative overflow-hidden border-b-4 border-[#fbbf24]">
+        {/* Background Image /images/header.jpg with 20% Opacity */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src="/images/header.jpg"
+            alt="Header Background"
+            className="w-full h-full object-cover object-center opacity-20 mix-blend-overlay"
+          />
+        </div>
+
         <div ref={headerRef} className="max-w-[1200px] mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-blue-200 mb-4">
@@ -105,17 +114,6 @@ export default function EdukasiPage() {
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Background Elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3 opacity-10"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2 opacity-10"></div>
-          {/* Texture Motif Background */}
-          <div 
-            className="absolute inset-0 w-full h-full opacity-15 bg-no-repeat bg-center bg-cover"
-            style={{ backgroundImage: 'url(/images/element/1.png)' }}
-          ></div>
         </div>
       </section>
 

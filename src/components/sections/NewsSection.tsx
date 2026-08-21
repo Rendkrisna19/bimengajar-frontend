@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getImageUrl } from '@/lib/api';
 
+import GallerySection from './GallerySection';
+
 interface ContentItem {
   id: number;
   title: string;
@@ -138,6 +140,11 @@ export default function NewsSection() {
           </div>
         </div>
       )}
+
+      {/* DOKUMENTASI & GALERI SECTION (RIGHT BETWEEN ARTIKEL AND BERITA) */}
+      <div className="my-6">
+        <GallerySection />
+      </div>
 
       {/* BERITA SECTION */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 mt-12 flex items-center justify-between relative z-10">

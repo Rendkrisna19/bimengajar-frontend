@@ -86,20 +86,24 @@ export default function BlogPage() {
       <Navbar />
       
       {/* Header Section */}
-      <section className="bg-primary text-white pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
+      <section className="bg-primary text-white pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden border-b-4 border-[#fbbf24]">
+        {/* Background Image /images/header.jpg with 20% Opacity */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src="/images/header.jpg"
+            alt="Header Background"
+            className="w-full h-full object-cover object-center opacity-20 mix-blend-overlay"
+          />
+        </div>
+
         <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-blue-200 mb-4">
             <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
             <span>&gt;</span>
             <span className="text-white font-medium">Blog</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Berita Terkini</h1>
-          <p className="text-blue-100 max-w-2xl mx-auto text-lg">Ikuti perkembangan terbaru dan informasi seputar program BI Mengajar di Kota Pematangsiantar.</p>
-        </div>
-        {/* Background Elements */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[120px] translate-x-1/3 translate-y-1/3"></div>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-md">Berita Terkini</h1>
+          <p className="text-blue-100 max-w-2xl mx-auto text-lg drop-shadow-sm font-medium">Ikuti perkembangan terbaru dan informasi seputar program BI Mengajar di Kota Pematangsiantar.</p>
         </div>
       </section>
 

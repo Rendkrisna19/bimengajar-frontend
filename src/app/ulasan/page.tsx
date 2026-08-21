@@ -162,16 +162,19 @@ export default function UlasanPage() {
       <Navbar />
 
       {/* Header Spacer */}
-      <div className="pt-32 pb-16 bg-primary relative overflow-hidden" ref={headerRef}>
-        {/* Header Background Element 1.png */}
-        <div 
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none mix-blend-overlay"
-          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-        ></div>
+      <div className="pt-32 pb-16 bg-primary relative overflow-hidden border-b-4 border-[#fbbf24]" ref={headerRef}>
+        {/* Background Image /images/header.jpg with 20% Opacity */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src="/images/header.jpg"
+            alt="Header Background"
+            className="w-full h-full object-cover object-center opacity-20 mix-blend-overlay"
+          />
+        </div>
         
         <div className="max-w-[1200px] mx-auto px-4 md:px-8 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Ulasan Edukasi</h1>
-          <p className="text-gray-200 text-lg">Bagikan pengalaman Anda dan lihat apa kata mereka tentang program BI Mengajar.</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-md">Ulasan Edukasi</h1>
+          <p className="text-gray-200 text-lg drop-shadow-sm font-medium">Bagikan pengalaman Anda dan lihat apa kata mereka tentang program BI Mengajar.</p>
         </div>
       </div>
 

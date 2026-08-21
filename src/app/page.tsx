@@ -27,6 +27,10 @@ const TestimonialSection = dynamic(() => import("@/components/sections/Testimoni
   ssr: false,
 });
 
+const WebVisitsAnalyticsSection = dynamic(() => import("@/components/sections/WebVisitsAnalyticsSection"), {
+  ssr: false,
+});
+
 export default function Home() {
   const containerRef = useRef<HTMLElement>(null);
 
@@ -85,6 +89,9 @@ export default function Home() {
       </div>
       <div className="animate-on-scroll">
         <TestimonialSection />
+      </div>
+      <div className="animate-on-scroll">
+        <WebVisitsAnalyticsSection />
       </div>
 
       <FloatingAction />

@@ -113,20 +113,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     <aside 
       className={`relative h-full bg-primary dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 overflow-hidden`}
     >
-      {/* Background element for Sidebar */}
-      <div 
-        className="absolute inset-0 opacity-[0.06] pointer-events-none bg-no-repeat bg-cover bg-center z-0"
-        style={{ backgroundImage: 'url("/images/element/2.png")' }} 
-      ></div>
-
-      {/* Sidebar Center Seal Watermark (1.png) */}
-      {!isCollapsed && (
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] opacity-[0.04] dark:opacity-[0.02] pointer-events-none bg-no-repeat bg-center z-0"
-          style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: 'contain' }}
-        ></div>
-      )}
-
       {/* Logo Area */}
       <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">
         <div className="relative w-10 h-10 transition-all duration-300 flex items-center justify-center shrink-0 bg-white rounded-full p-1 shadow-sm">
