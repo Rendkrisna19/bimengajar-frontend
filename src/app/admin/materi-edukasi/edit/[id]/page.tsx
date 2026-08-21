@@ -17,6 +17,8 @@ export default function EditMateriEdukasiPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
+  const [selectedFont, setSelectedFont] = useState('Plus Jakarta Sans');
+
   const [formData, setFormData] = useState({
     kategori_materi_id: '',
     judul: '',
@@ -60,14 +62,20 @@ export default function EditMateriEdukasiPage() {
         const res = await axios.get(`/materi-edukasi/${id}`);
         const data = res.data.data;
         
+        const rawKonten = data.konten_teks || '';
         setFormData({
           kategori_materi_id: data.kategori_materi_id.toString(),
           judul: data.judul,
           deskripsi_singkat: data.deskripsi_singkat || '',
           jenis_konten: data.jenis_konten,
           link_eksternal: data.link_eksternal || '',
-          konten_teks: data.konten_teks || ''
+          konten_teks: rawKonten
         });
+
+        const fontMatch = rawKonten.match(/data-font="([^"]+)"/) || rawKonten.match(/font-family:\s*'([^']+)'/);
+        if (fontMatch && fontMatch[1]) {
+          setSelectedFont(fontMatch[1]);
+        }
 
         if (data.link_youtube && data.link_youtube.length > 0) {
           setUseYoutube(true);
@@ -107,7 +115,14 @@ export default function EditMateriEdukasiPage() {
       setIsSubmitting(true);
       const payload = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        payload.append(key, value);
+        if (key === 'konten_teks' && value) {
+          // If value is already wrapped with a div, update or replace outer font style
+          const cleanedValue = value.replace(/^<div style="font-family:[^>]+data-font="[^"]+">(.*)<\/div>$/s, '$1');
+          const formattedContent = `<div style="font-family: '${selectedFont}', sans-serif;" data-font="${selectedFont}">${cleanedValue}</div>`;
+          payload.append(key, formattedContent);
+        } else {
+          payload.append(key, value);
+        }
       });
 
       if (thumbnailFile) {
@@ -284,6 +299,38 @@ export default function EditMateriEdukasiPage() {
           </div>
 
           <div className="mb-8">
+            <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-blue-50/60 dark:bg-blue-900/10 p-4 rounded-2xl border border-blue-100 dark:border-blue-800">
+              <div>
+                <label className="block text-sm font-bold text-gray-800 dark:text-gray-200">
+                  <i className="fa-solid fa-font text-primary mr-1.5"></i> Font Utama Materi Edukasi
+                </label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Pilih gaya font utama untuk tampilan materi di Landing Page & Detail Edukasi.
+                </p>
+              </div>
+              <select 
+                value={selectedFont}
+                onChange={(e) => setSelectedFont(e.target.value)}
+                style={{ fontFamily: selectedFont }}
+                className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:border-primary shrink-0 cursor-pointer shadow-xs"
+              >
+                <option value="Plus Jakarta Sans" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Plus Jakarta Sans (Default)</option>
+                <option value="Poppins" style={{ fontFamily: 'Poppins, sans-serif' }}>Poppins (Modern & Friendly)</option>
+                <option value="Inter" style={{ fontFamily: 'Inter, sans-serif' }}>Inter (Clean Tech)</option>
+                <option value="Montserrat" style={{ fontFamily: 'Montserrat, sans-serif' }}>Montserrat (Elegant Heading)</option>
+                <option value="Outfit" style={{ fontFamily: 'Outfit, sans-serif' }}>Outfit (Minimalist)</option>
+                <option value="Playfair Display" style={{ fontFamily: 'Playfair Display, serif' }}>Playfair Display (Classic Serif)</option>
+                <option value="Merriweather" style={{ fontFamily: 'Merriweather, serif' }}>Merriweather (Warm Serif)</option>
+                <option value="Caveat" style={{ fontFamily: 'Caveat, cursive' }}>Caveat (Handwriting)</option>
+                <option value="Cinzel" style={{ fontFamily: 'Cinzel, serif' }}>Cinzel (Roman Luxury)</option>
+                <option value="Oswald" style={{ fontFamily: 'Oswald, sans-serif' }}>Oswald (Bold Impact)</option>
+                <option value="Fira Code" style={{ fontFamily: 'Fira Code, monospace' }}>Fira Code (Monospace)</option>
+                <option value="Roboto" style={{ fontFamily: 'Roboto, sans-serif' }}>Roboto</option>
+                <option value="Open Sans" style={{ fontFamily: 'Open Sans, sans-serif' }}>Open Sans</option>
+                <option value="Lato" style={{ fontFamily: 'Lato, sans-serif' }}>Lato</option>
+              </select>
+            </div>
+
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Konten Artikel Lengkap <span className="text-gray-400 font-normal">(Opsional)</span>
             </label>

@@ -232,9 +232,19 @@ export default function MateriEdukasiDetailPage() {
               </div>
 
               {/* Judul Materi */}
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 leading-snug">
-                {materi.judul}
-              </h1>
+              {(() => {
+                const matchFont = materi.konten_teks?.match(/data-font="([^"]+)"/) || materi.konten_teks?.match(/font-family:\s*'([^']+)'/);
+                const fontStyle = matchFont && matchFont[1] ? matchFont[1] : undefined;
+                
+                return (
+                  <h1 
+                    style={fontStyle ? { fontFamily: `'${fontStyle}', sans-serif` } : undefined}
+                    className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 leading-snug"
+                  >
+                    {materi.judul}
+                  </h1>
+                );
+              })()}
               
               {/* Thumbnail Banner Slider */}
               {(() => {
@@ -301,13 +311,18 @@ export default function MateriEdukasiDetailPage() {
                 );
               })()}
 
-              {/* Konten Teks HTML (Preserve CKEditor Typography) */}
-              {processedContent && (
-                <div 
-                  className="prose max-w-none text-slate-700 leading-relaxed mb-8"
-                  dangerouslySetInnerHTML={{ __html: processedContent }}
-                ></div>
-              )}
+              {/* Konten Teks HTML (Preserve Rich Text Typography & Custom Admin Font) */}
+              {processedContent && (() => {
+                const matchFont = materi.konten_teks?.match(/data-font="([^"]+)"/) || materi.konten_teks?.match(/font-family:\s*'([^']+)'/);
+                const fontStyle = matchFont && matchFont[1] ? matchFont[1] : undefined;
+                return (
+                  <div 
+                    style={fontStyle ? { fontFamily: `'${fontStyle}', sans-serif` } : undefined}
+                    className="prose max-w-none text-slate-700 leading-relaxed mb-8"
+                    dangerouslySetInnerHTML={{ __html: processedContent }}
+                  ></div>
+                );
+              })()}
               
               {/* Konten Teks Fallback jika tidak pakai Rich Text */}
               {!processedContent && materi.deskripsi_singkat && (

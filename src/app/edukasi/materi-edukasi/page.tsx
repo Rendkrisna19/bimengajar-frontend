@@ -270,7 +270,15 @@ function MateriEdukasiContent() {
                       <div className="mb-3">
                         <span className="text-xs font-semibold text-[#003366] uppercase tracking-wider">{item.kategori?.nama}</span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#003366] transition-colors">{item.judul}</h3>
+                      <h3 
+                        style={(() => {
+                          const matchFont = item.konten_teks?.match(/data-font="([^"]+)"/) || item.konten_teks?.match(/font-family:\s*'([^']+)'/);
+                          return matchFont && matchFont[1] ? { fontFamily: `'${matchFont[1]}', sans-serif` } : undefined;
+                        })()}
+                        className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#003366] transition-colors"
+                      >
+                        {item.judul}
+                      </h3>
                       <p className="text-sm text-gray-500 line-clamp-3 mb-6 flex-1">{item.deskripsi_singkat || stripHtml(item.konten_teks || '')}</p>
                       
                       <Link href={`/edukasi/materi-edukasi/${item.slug}`} className="w-full py-2.5 rounded-xl bg-[#fbbf24] text-center font-bold text-white text-sm hover:bg-yellow-500 shadow-sm transition-all block">
