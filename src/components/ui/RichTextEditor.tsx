@@ -25,9 +25,11 @@ const QuillNoSSRWrapper = dynamic(
     const ReactQuill = await import('react-quill-new');
     const Quill = ReactQuill.default.Quill;
     if (Quill) {
-      const Font = Quill.import('attributors/style/font');
-      Font.whitelist = FONT_OPTIONS;
-      Quill.register(Font, true);
+      const Font = Quill.import('attributors/style/font') as any;
+      if (Font) {
+        Font.whitelist = FONT_OPTIONS;
+        Quill.register(Font, true);
+      }
     }
     return ReactQuill.default;
   },
