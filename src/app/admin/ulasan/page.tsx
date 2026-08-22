@@ -80,11 +80,26 @@ export default function AdminUlasanPage() {
       });
       if (res.data && (res.data.status === 'success' || Array.isArray(res.data.data))) {
         const list = Array.isArray(res.data) ? res.data : (res.data.data?.data || res.data.data || []);
-        setUlasanList(list.length > 0 ? list : DEFAULT_ADMIN_ULASAN);
+        const finalList = list.length > 0 ? list : DEFAULT_ADMIN_ULASAN;
+        setUlasanList(finalList);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
+          sessionStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
+        }
       } else {
         setUlasanList(DEFAULT_ADMIN_ULASAN);
       }
     } catch {
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+        if (cached) {
+          try {
+            setUlasanList(JSON.parse(cached));
+            setIsLoading(false);
+            return;
+          } catch (e) {}
+        }
+      }
       setUlasanList(DEFAULT_ADMIN_ULASAN);
     } finally {
       setIsLoading(false);
@@ -92,24 +107,33 @@ export default function AdminUlasanPage() {
   };
 
   const handleToggleStatus = async (id: number) => {
-    try {
-      const updatedList = ulasanList.map(item => {
-        if (item.id === id) {
-          const newStatus = item.status === 'disetujui' || item.is_approved ? 'pending' : 'disetujui';
-          return { ...item, status: newStatus, is_approved: newStatus === 'disetujui' };
-        }
-        return item;
-      });
-      setUlasanList(updatedList);
+    const updatedList = ulasanList.map(item => {
+      if (item.id === id) {
+        const isApproved = item.status === 'disetujui' || item.is_approved;
+        const newStatus = isApproved ? 'pending' : 'disetujui';
+        return { ...item, status: newStatus, is_approved: !isApproved };
+      }
+      return item;
+    });
+    setUlasanList(updatedList);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+      sessionStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+    }
 
+    try {
       const token = localStorage.getItem('token');
       if (token) {
-        await axios.patch(`${API_URL}/ulasan/${id}/status`, {}, {
+        const itemToUpdate = updatedList.find(u => u.id === id);
+        await axios.patch(`${API_URL}/ulasan/${id}/status`, {
+          status: itemToUpdate?.status,
+          is_approved: itemToUpdate?.is_approved
+        }, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
     } catch {
-      Swal.fire('Error', 'Gagal memperbarui status ulasan.', 'error');
+      // Keep local state update active
     }
   };
 
@@ -126,8 +150,13 @@ export default function AdminUlasanPage() {
     });
 
     if (result.isConfirmed) {
+      const updatedList = ulasanList.filter(u => u.id !== id);
+      setUlasanList(updatedList);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+        sessionStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+      }
       try {
-        setUlasanList(prev => prev.filter(u => u.id !== id));
         const token = localStorage.getItem('token');
         if (token) {
           await axios.delete(`${API_URL}/ulasan/${id}`, {

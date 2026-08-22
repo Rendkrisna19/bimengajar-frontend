@@ -26,12 +26,19 @@ let globalTestimonialCache: Ulasan[] | null = null;
 
 export default function TestimonialSection() {
   const { t, lang } = useLanguage();
+  const filterActiveUlasan = (list: Ulasan[]) => {
+    return list.filter(u => u.status === 'disetujui' || u.is_approved === true || (u.status !== 'pending' && u.is_approved !== false));
+  };
+
   const [ulasanList, setUlasanList] = useState<Ulasan[]>(() => {
-    if (globalTestimonialCache) return globalTestimonialCache;
+    if (globalTestimonialCache) return filterActiveUlasan(globalTestimonialCache);
     if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem('ulasan_data_cache');
+      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
       if (cached) {
-        try { return JSON.parse(cached); } catch (e) {}
+        try { 
+          const parsed = JSON.parse(cached);
+          return filterActiveUlasan(parsed);
+        } catch (e) {}
       }
     }
     return DEFAULT_TESTIMONIALS;
@@ -39,7 +46,7 @@ export default function TestimonialSection() {
 
   const [loading, setLoading] = useState(() => {
     if (globalTestimonialCache && globalTestimonialCache.length > 0) return false;
-    if (typeof window !== 'undefined' && sessionStorage.getItem('ulasan_data_cache')) return false;
+    if (typeof window !== 'undefined' && (localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache'))) return false;
     return true;
   });
 
@@ -55,16 +62,39 @@ export default function TestimonialSection() {
             if (typeof window !== 'undefined') {
               sessionStorage.setItem('ulasan_data_cache', JSON.stringify(list));
             }
-            setUlasanList(list);
+            setUlasanList(filterActiveUlasan(list));
           }
         }
       } catch (error) {
-        console.error('Failed to fetch ulasan', error);
+        // Fallback to local storage if API is not available
+        if (typeof window !== 'undefined') {
+          const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+          if (cached) {
+            try {
+              setUlasanList(filterActiveUlasan(JSON.parse(cached)));
+            } catch (e) {}
+          }
+        }
       } finally {
         setLoading(false);
       }
     };
+
     fetchUlasan();
+
+    const handleStorageChange = () => {
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+        if (cached) {
+          try {
+            setUlasanList(filterActiveUlasan(JSON.parse(cached)));
+          } catch (e) {}
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const duplicatedUlasan = ulasanList.length > 0 ? [...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList] : [];

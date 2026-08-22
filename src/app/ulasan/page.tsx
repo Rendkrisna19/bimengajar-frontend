@@ -25,12 +25,16 @@ const DEFAULT_ULASAN: Ulasan[] = [
 let globalUlasanCache: Ulasan[] | null = null;
 
 export default function UlasanPage() {
+  const filterActiveUlasan = (list: Ulasan[]) => {
+    return list.filter((u: any) => u.status === 'disetujui' || u.is_approved === true || (u.status !== 'pending' && u.is_approved !== false));
+  };
+
   const [ulasanList, setUlasanList] = useState<Ulasan[]>(() => {
-    if (globalUlasanCache) return globalUlasanCache;
+    if (globalUlasanCache) return filterActiveUlasan(globalUlasanCache);
     if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem('ulasan_data_cache');
+      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
       if (cached) {
-        try { return JSON.parse(cached); } catch (e) {}
+        try { return filterActiveUlasan(JSON.parse(cached)); } catch (e) {}
       }
     }
     return DEFAULT_ULASAN;
@@ -38,7 +42,7 @@ export default function UlasanPage() {
 
   const [loading, setLoading] = useState(() => {
     if (globalUlasanCache && globalUlasanCache.length > 0) return false;
-    if (typeof window !== 'undefined' && sessionStorage.getItem('ulasan_data_cache')) return false;
+    if (typeof window !== 'undefined' && (localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache'))) return false;
     return true;
   });
   
@@ -68,11 +72,18 @@ export default function UlasanPage() {
           if (typeof window !== 'undefined') {
             sessionStorage.setItem('ulasan_data_cache', JSON.stringify(list));
           }
-          setUlasanList(list);
+          setUlasanList(filterActiveUlasan(list));
         }
       }
     } catch (error) {
-      console.error('Failed to fetch ulasan', error);
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+        if (cached) {
+          try {
+            setUlasanList(filterActiveUlasan(JSON.parse(cached)));
+          } catch (e) {}
+        }
+      }
     } finally {
       setLoading(false);
     }
