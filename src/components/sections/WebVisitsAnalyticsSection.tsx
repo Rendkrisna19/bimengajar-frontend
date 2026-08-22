@@ -108,8 +108,14 @@ export default function WebVisitsAnalyticsSection() {
   }, [activeData, selectedTahun]);
 
   return (
-    <section className="py-16 bg-[#f8fafc] font-sans border-t border-gray-100">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+    <section className="py-16 bg-[#f8fafc] font-sans border-t border-gray-100 relative overflow-hidden">
+      {/* Responsive Background Element 2.png Overlay */}
+      <img 
+        src="/images/element/2.png" 
+        alt="Statistik Kunjungan Background Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none z-0"
+      />
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
         
         {/* Header Title Bar */}
         <div className="flex items-center justify-between mb-8">

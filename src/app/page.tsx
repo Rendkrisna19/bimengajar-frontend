@@ -82,7 +82,7 @@ export default function Home() {
           <img 
             src="/images/element/2.png" 
             alt="Menu Cepat & Statistik Background Element" 
-            className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay pointer-events-none z-0"
+            className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none z-0"
           />
         </div>
 
