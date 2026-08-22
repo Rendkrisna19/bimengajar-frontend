@@ -58,10 +58,12 @@ export default function AboutPreviewSection() {
 
   return (
     <section className="bg-white py-16 md:py-24 overflow-hidden relative border-y border-gray-100">
-      <div 
-        className="absolute inset-0 w-full h-full opacity-[0.01] bg-no-repeat bg-center bg-cover pointer-events-none"
-        style={{ backgroundImage: 'url(/images/element/2.png)' }}
-      ></div>
+      {/* Responsive Background Element 2.png Overlay */}
+      <img 
+        src="/images/element/2.png" 
+        alt="Tentang Kami Background Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none z-0"
+      />
 
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
         {/* Left Side: Graphic / Image */}

@@ -49,7 +49,7 @@ export default function MapSection() {
       <img 
         src="/images/element/1.png" 
         alt="Cinta Bangga Paham Rupiah Element" 
-        className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay pointer-events-none z-0"
+        className="absolute inset-0 w-full h-full object-cover opacity-75 mix-blend-overlay pointer-events-none z-0"
       />
 
       {/* Background Ornaments (Subtle Glows) */}

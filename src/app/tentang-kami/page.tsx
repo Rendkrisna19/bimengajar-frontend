@@ -79,11 +79,12 @@ export default function TentangKamiPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
-      {/* Overall Background Texture (Grid area) */}
-      <div 
-        className="fixed inset-0 w-full h-full opacity-[0.02] pointer-events-none z-0 mix-blend-multiply bg-repeat"
-        style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '400px' }}
-      ></div>
+      {/* Overall Background Texture 2.png */}
+      <img 
+        src="/images/element/7.png" 
+        alt="Tentang Kami Page Background Element" 
+        className="fixed inset-0 w-full h-full object-cover opacity-75 pointer-events-none z-0"
+      />
 
       <Navbar />
       

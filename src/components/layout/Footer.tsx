@@ -4,11 +4,14 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-b from-white via-blue-50/50 to-blue-100/40 text-[#003366] pt-16 pb-8 border-t border-blue-100/60 relative overflow-hidden">
-      {/* Background Texture Element */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-5 pointer-events-none mix-blend-multiply bg-repeat"
-        style={{ backgroundImage: 'url(/images/element/3.png)', backgroundSize: '500px' }}
-      ></div>
+      {/* Decorative Element 7.png on the right edge */}
+      <div className="absolute right-0 bottom-0 top-0 pointer-events-none z-0 overflow-hidden flex items-end justify-end">
+        <img 
+          src="/images/element/7.png" 
+          alt="Footer Decorative Element 7" 
+          className="h-full w-auto max-w-[450px] md:max-w-[650px] object-contain object-right-bottom opacity-75 pointer-events-none z-0"
+        />
+      </div>
 
       {/* Subtle Blue Ambient Glow */}
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
