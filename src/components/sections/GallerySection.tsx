@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+import { getImageUrl } from '@/lib/api';
+
 interface DokItem {
   id: number;
   nama_kegiatan: string;
@@ -38,14 +40,6 @@ export default function GallerySection() {
   // Selected documentation item for preview modal
   const [selectedItem, setSelectedItem] = useState<DokItem | null>(null);
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
-
-  const getImageUrl = (path: string) => {
-    if (!path) return '/images/banner/hero1.png';
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
-    return `${baseUrl}/storage${cleanPath}`;
-  };
 
   useEffect(() => {
     // Quick cache check first for instant loading
@@ -124,18 +118,28 @@ export default function GallerySection() {
         ) : items.length === 0 ? (
           /* Fallback Sample Gallery Items if DB is empty */
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-            {[1, 2, 3, 4].map((idx) => (
+            {[
+              { id: 1, title: 'Sosialisasi QRIS Pasar', kat: 'Sosialisasi', img: 'https://images.unsplash.com/photo-1556742049-0a679246c5a7?auto=format&fit=crop&w=800&q=80' },
+              { id: 2, title: 'Seminar CBP Rupiah', kat: 'Seminar', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80' },
+              { id: 3, title: 'Kunjungan Kebanksentralan', kat: 'Kunjungan', img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80' },
+              { id: 4, title: 'Workshop Penukaran Koin', kat: 'Workshop', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80' },
+            ].map((sample) => (
               <div 
-                key={idx} 
-                className="relative h-48 md:h-56 rounded-2xl overflow-hidden shadow-md bg-white/10 group cursor-pointer"
+                key={sample.id} 
+                className="relative h-48 md:h-56 rounded-2xl overflow-hidden shadow-md bg-white/10 group cursor-pointer border border-white/10"
               >
                 <img 
-                  src={`/images/banner/hero${idx > 3 ? 1 : idx}.png`} 
-                  alt="Dokumentasi BI Mengajar"
+                  src={sample.img} 
+                  alt={sample.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded-md backdrop-blur-sm">
+                    {sample.kat}
+                  </span>
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 transition-opacity flex flex-col justify-end p-4">
-                  <span className="text-xs font-bold text-white">Sosialisasi QRIS</span>
+                  <span className="text-xs font-bold text-white">{sample.title}</span>
                   <span className="text-[10px] text-gray-200">Kegiatan BI Mengajar</span>
                 </div>
               </div>
