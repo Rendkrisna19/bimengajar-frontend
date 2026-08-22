@@ -45,11 +45,12 @@ export default function MapSection() {
 
   return (
     <section ref={containerRef} className="relative bg-primary py-24 md:py-32 px-4 md:px-8 overflow-hidden">
-      {/* Texture Motif Background */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay bg-no-repeat bg-center bg-cover pointer-events-none z-0"
-        style={{ backgroundImage: 'url(/images/element/1.png)' }}
-      ></div>
+      {/* Responsive Background Element 1.png Overlay */}
+      <img 
+        src="/images/element/1.png" 
+        alt="Cinta Bangga Paham Rupiah Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay pointer-events-none z-0"
+      />
 
       {/* Background Ornaments (Subtle Glows) */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none z-0"></div>

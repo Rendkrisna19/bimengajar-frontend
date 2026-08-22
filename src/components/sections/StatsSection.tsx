@@ -29,12 +29,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <section className="relative z-10 bg-gray-50 pt-10 pb-20 px-4 md:px-8 overflow-hidden">
-      {/* Texture Motif Background */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-[0.1] bg-no-repeat bg-center bg-cover pointer-events-none"
-        style={{ backgroundImage: 'url(/images/element/2.png)' }}
-      ></div>
+    <section className="relative z-10 pt-4 pb-20 px-4 md:px-8">
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8 drop-shadow-sm">

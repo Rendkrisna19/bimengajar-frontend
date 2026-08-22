@@ -76,10 +76,12 @@ export default function NewsSection() {
 
   return (
     <section className="bg-[#f2f6fa] py-16 overflow-hidden relative">
-      <div 
-        className="absolute inset-0 w-full h-full opacity-[0.1] bg-no-repeat bg-center bg-cover pointer-events-none"
-        style={{ backgroundImage: 'url(/images/element/2.png)' }}
-      ></div>
+      {/* Responsive Background Element 2.png Overlay */}
+      <img 
+        src="/images/element/2.png" 
+        alt="News Background Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay pointer-events-none z-0"
+      />
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 flex items-center justify-between relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{t('news.articlesTitle')}</h2>

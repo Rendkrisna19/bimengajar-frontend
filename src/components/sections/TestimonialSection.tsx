@@ -103,11 +103,12 @@ export default function TestimonialSection() {
 
   return (
     <section className="bg-primary py-16 md:py-24 relative overflow-hidden text-white">
-      {/* Background Ornaments (Subtle Glows & Songket Motif) */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-15 mix-blend-overlay pointer-events-none bg-repeat"
-        style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: '400px' }}
-      ></div>
+      {/* Responsive Background Element 1.png Overlay */}
+      <img 
+        src="/images/element/1.png" 
+        alt="Testimonial Background Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay pointer-events-none z-0"
+      />
 
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-300/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
@@ -147,7 +148,7 @@ export default function TestimonialSection() {
                   >
                     <div 
                       className="absolute inset-0 w-full h-full opacity-[0.03] group-hover:opacity-[0.06] pointer-events-none transition-opacity duration-300"
-                      style={{ backgroundImage: 'url(/images/element/2.png)', backgroundSize: '150px' }}
+                      style={{ backgroundImage: 'url(/images/element/1.png)', backgroundSize: '150px' }}
                     ></div>
 
                     <div className="flex justify-between items-start mb-4 relative z-10">
