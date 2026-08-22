@@ -12,6 +12,8 @@ interface Ulasan {
   instansi: string;
   komentar: string;
   rating: number;
+  status?: string;
+  is_approved?: boolean;
   created_at?: string;
 }
 
