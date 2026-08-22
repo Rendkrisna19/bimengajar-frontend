@@ -64,6 +64,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
           ]
         },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
+        { name: "Ulasan Edukasi", icon: "fa-solid fa-star", href: "/admin/ulasan" },
       ]
     },
     {
