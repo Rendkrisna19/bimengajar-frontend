@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import FontAwesomeLoader from "@/components/ui/FontAwesomeLoader";
 import VisitorTracker from "@/components/ui/VisitorTracker";
+import PWAInstaller from "@/components/ui/PWAInstaller";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,18 +21,26 @@ const montserrat = Montserrat({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#003366",
 };
 
 export const metadata: Metadata = {
-  title: "Home Page | PLAT-BK",
-  description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematang Siantar",
+  title: "BI Mengajar - Platform Edukasi Bank Indonesia",
+  description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematangsiantar",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BI Mengajar",
+  },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/images/logo.png?v=3", sizes: "192x192", type: "image/png" },
+      { url: "/images/logo.png", type: "image/png" },
+      { url: "/images/logo.png", sizes: "192x192", type: "image/png" },
+      { url: "/images/logo.png", sizes: "512x512", type: "image/png" },
     ],
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
   },
 };
 
@@ -43,9 +52,12 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        {/* Favicon high contrast vector icon */}
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/images/logo.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="BI Mengajar" />
+        <meta name="theme-color" content="#003366" />
 
         {/* Preconnect & DNS Prefetch to Cloudflare CDN to eliminate TCP/TLS latency */}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
@@ -100,6 +112,7 @@ export default function RootLayout({
       <body className={`${montserrat.className} ${montserrat.variable} ${plusJakartaSans.variable} antialiased min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <FontAwesomeLoader />
         <VisitorTracker />
+        <PWAInstaller />
         <LanguageProvider>
           {children}
         </LanguageProvider>

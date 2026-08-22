@@ -79,6 +79,13 @@ export default function LoginPage() {
         }).then(() => {
           router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
         });
+      } else if (res.status === 429) {
+        Swal.fire({
+          title: 'Terlalu Banyak Percobaan Login!',
+          text: data.message || 'Akses dibatasi sementara karena terlalu banyak percobaan login. Silakan tunggu 1 menit lalu coba lagi.',
+          icon: 'warning',
+          confirmButtonColor: '#003366',
+        });
       } else {
         Swal.fire('Gagal', data.message || 'Email atau password salah.', 'error');
       }

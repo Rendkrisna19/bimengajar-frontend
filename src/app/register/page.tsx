@@ -75,6 +75,23 @@ export default function RegisterPage() {
         if (errors.password) newErrors.password = errors.password[0];
 
         setFieldErrors(newErrors);
+
+        if (errors.email) {
+          Swal.fire({
+            title: 'Email Sudah Terdaftar!',
+            text: errors.email[0] || 'Email ini sudah terdaftar di sistem BI Mengajar. Silakan gunakan email lain atau langsung masuk ke akun Anda.',
+            icon: 'warning',
+            confirmButtonText: 'Masuk ke Halaman Login',
+            showCancelButton: true,
+            cancelButtonText: 'Gunakan Email Lain',
+            confirmButtonColor: '#003366',
+            cancelButtonColor: '#6b7280',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.push('/login');
+            }
+          });
+        }
       } else {
         Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat pendaftaran.', 'error');
       }
