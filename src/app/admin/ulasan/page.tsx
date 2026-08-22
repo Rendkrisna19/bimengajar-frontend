@@ -73,34 +73,60 @@ export default function AdminUlasanPage() {
 
   const fetchUlasan = async () => {
     setIsLoading(true);
+
+    // 1. Get cached statuses from local storage if available
+    let cachedMap: Record<number, { status: string; is_approved: boolean }> = {};
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+      if (cached) {
+        try {
+          const parsedCache: Ulasan[] = JSON.parse(cached);
+          parsedCache.forEach(c => {
+            cachedMap[c.id] = {
+              status: c.status || 'disetujui',
+              is_approved: c.is_approved !== undefined ? c.is_approved : true
+            };
+          });
+        } catch (e) {}
+      }
+    }
+
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get(`${API_URL}/ulasan`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
+      
+      let rawList: any[] = DEFAULT_ADMIN_ULASAN;
       if (res.data && (res.data.status === 'success' || Array.isArray(res.data.data))) {
-        const list = Array.isArray(res.data) ? res.data : (res.data.data?.data || res.data.data || []);
-        const finalList = list.length > 0 ? list : DEFAULT_ADMIN_ULASAN;
-        setUlasanList(finalList);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
-          sessionStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
+        const fetched = Array.isArray(res.data) ? res.data : (res.data.data?.data || res.data.data || []);
+        if (fetched.length > 0) {
+          rawList = fetched;
         }
-      } else {
-        setUlasanList(DEFAULT_ADMIN_ULASAN);
+      }
+
+      // Map items: Default to 'disetujui' and merge with cached toggle state
+      const finalList = rawList.map(item => {
+        const saved = cachedMap[item.id];
+        const status = saved ? saved.status : (item.status || 'disetujui');
+        const is_approved = saved ? saved.is_approved : (item.is_approved !== undefined ? item.is_approved : (status === 'disetujui'));
+        return { ...item, status, is_approved };
+      });
+
+      setUlasanList(finalList);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
+        sessionStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
       }
     } catch {
-      if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-        if (cached) {
-          try {
-            setUlasanList(JSON.parse(cached));
-            setIsLoading(false);
-            return;
-          } catch (e) {}
-        }
-      }
-      setUlasanList(DEFAULT_ADMIN_ULASAN);
+      // Fallback if API offline
+      const finalList = DEFAULT_ADMIN_ULASAN.map(item => {
+        const saved = cachedMap[item.id];
+        const status = saved ? saved.status : (item.status || 'disetujui');
+        const is_approved = saved ? saved.is_approved : (item.is_approved !== undefined ? item.is_approved : (status === 'disetujui'));
+        return { ...item, status, is_approved };
+      });
+      setUlasanList(finalList);
     } finally {
       setIsLoading(false);
     }
