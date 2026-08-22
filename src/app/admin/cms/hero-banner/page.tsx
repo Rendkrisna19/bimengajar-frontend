@@ -304,7 +304,7 @@ export default function AdminHeroBannerPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                <tr className="bg-primary text-white text-xs font-bold uppercase tracking-wider">
                   <th className="p-4 text-center w-16">Urutan</th>
                   <th className="p-4">Banner / Ilustrasi</th>
                   <th className="p-4">Judul & Subjudul</th>
@@ -394,21 +394,25 @@ export default function AdminHeroBannerPage() {
 
       {/* Modal Form Add/Edit */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#1e1e1e] rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 relative my-8">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 transition-colors"
-            >
-              <i className="fa-solid fa-xmark"></i>
-            </button>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-hidden animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1e1e1e] rounded-3xl max-w-2xl w-full max-h-[90vh] shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between shrink-0 bg-primary text-white">
+              <h2 className="text-base font-bold flex items-center gap-2">
+                <i className="fa-solid fa-sliders"></i>
+                <span>{editingBanner ? 'Edit Hero Banner' : 'Tambah Hero Banner Baru'}</span>
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
 
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
-              <i className="fa-solid fa-sliders text-primary"></i>
-              {editingBanner ? 'Edit Hero Banner' : 'Tambah Hero Banner Baru'}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Scrollable Form Content */}
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5 text-sm custom-scrollbar">
               {/* Title & Title EN */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -421,7 +425,7 @@ export default function AdminHeroBannerPage() {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Contoh: Edukasi untuk\nIndonesia yang Maju"
                     required
-                    className="w-full p-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
+                    className="w-full p-3 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div>
@@ -433,7 +437,7 @@ export default function AdminHeroBannerPage() {
                     value={titleEn}
                     onChange={(e) => setTitleEn(e.target.value)}
                     placeholder="Example: Education for\nan Advanced Indonesia"
-                    className="w-full p-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
+                    className="w-full p-3 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -450,7 +454,7 @@ export default function AdminHeroBannerPage() {
                     onChange={(e) => setSubtitle(e.target.value)}
                     placeholder="Masukkan deskripsi singkat banner..."
                     required
-                    className="w-full p-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
+                    className="w-full p-3 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div>
@@ -462,7 +466,7 @@ export default function AdminHeroBannerPage() {
                     value={subtitleEn}
                     onChange={(e) => setSubtitleEn(e.target.value)}
                     placeholder="Enter short banner description in English..."
-                    className="w-full p-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
+                    className="w-full p-3 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -545,7 +549,7 @@ export default function AdminHeroBannerPage() {
                     min="1"
                     value={order}
                     onChange={(e) => setOrder(parseInt(e.target.value) || 1)}
-                    className="w-full p-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
+                    className="w-full p-2.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-6">
@@ -580,19 +584,19 @@ export default function AdminHeroBannerPage() {
                 )}
               </div>
 
-              {/* Submit Buttons */}
+              {/* Modal Footer Buttons */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-bold text-xs hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-blue-900 transition-colors shadow-md flex items-center gap-2 disabled:opacity-70"
+                  className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-blue-900 transition-colors shadow-md flex items-center gap-2 disabled:opacity-70 cursor-pointer"
                 >
                   {submitting ? <i className="fa-solid fa-circle-notch animate-spin"></i> : <i className="fa-solid fa-check"></i>}
                   Simpan Banner

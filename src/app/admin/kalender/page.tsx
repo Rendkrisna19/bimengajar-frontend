@@ -185,7 +185,7 @@ export default function AdminKalenderPage() {
             <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
-                  <thead className="bg-[#002a5c] text-white uppercase font-semibold text-xs tracking-wider">
+                  <thead className="bg-primary text-white uppercase font-semibold text-xs tracking-wider">
                     <tr>
                       <th className="px-6 py-4">No</th>
                       <th className="px-6 py-4">Kegiatan</th>

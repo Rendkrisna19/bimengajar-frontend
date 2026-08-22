@@ -138,7 +138,7 @@ export default function MateriEdukasiPage() {
       <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[#003366] text-white">
+            <thead className="bg-primary text-white">
               <tr>
                 <th className="px-5 py-4 font-semibold w-16 text-center">No.</th>
                 <th className="px-5 py-4 font-semibold">Judul Materi</th>

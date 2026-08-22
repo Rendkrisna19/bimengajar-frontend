@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 
-// Beautiful realistic dummy datasets for each year matching the reference screenshot
+// Realistic early-stage dummy datasets matching early website traffic
 const DUMMY_DATA_BY_YEAR: Record<string, {
   total: number;
   bulanIni: number;
@@ -11,27 +11,48 @@ const DUMMY_DATA_BY_YEAR: Record<string, {
   monthly: number[];
 }> = {
   '2026': {
-    total: 71087,
-    bulanIni: 2743,
-    rataRata: 8886,
-    pertumbuhan: -83.2,
-    // Waves peaking smoothly around 28,500 in June, dropping, then rising again in October
-    monthly: [1200, 2800, 5400, 12800, 21500, 28500, 10200, 2743, 8900, 16400, 12800, 6200]
+    total: 3770,
+    bulanIni: 650,
+    rataRata: 314,
+    pertumbuhan: 35.4,
+    monthly: [15, 35, 70, 140, 220, 360, 480, 650, 780, 520, 310, 190]
   },
   '2025': {
-    total: 94250,
-    bulanIni: 7850,
-    rataRata: 7854,
-    pertumbuhan: 14.8,
-    monthly: [2500, 4200, 7800, 11400, 16800, 22400, 18900, 14500, 19800, 24500, 17200, 9400]
+    total: 1215,
+    bulanIni: 210,
+    rataRata: 101,
+    pertumbuhan: 18.2,
+    monthly: [12, 18, 25, 45, 80, 110, 160, 210, 180, 150, 130, 95]
   },
   '2027': {
-    total: 128400,
-    bulanIni: 10700,
-    rataRata: 10700,
-    pertumbuhan: 26.4,
-    monthly: [4200, 8500, 14200, 21000, 27800, 34200, 26500, 21400, 29800, 36500, 31200, 18400]
+    total: 7300,
+    bulanIni: 990,
+    rataRata: 608,
+    pertumbuhan: 42.1,
+    monthly: [180, 290, 420, 580, 710, 860, 950, 990, 870, 640, 490, 320]
   }
+};
+
+// Helper for piecewise interpolation between scale ticks (10, 50, 100, 200, 500, 1000)
+const getYForVal = (val: number): number => {
+  if (val >= 500) {
+    const ratio = Math.min(1, (val - 500) / 500);
+    return 56 - ratio * 36;
+  }
+  if (val >= 200) {
+    const ratio = (val - 200) / 300;
+    return 92 - ratio * 36;
+  }
+  if (val >= 100) {
+    const ratio = (val - 100) / 100;
+    return 128 - ratio * 36;
+  }
+  if (val >= 50) {
+    const ratio = (val - 50) / 50;
+    return 164 - ratio * 36;
+  }
+  const ratio = Math.max(0, val / 50);
+  return 200 - ratio * 36;
 };
 
 export default function WebVisitsAnalyticsSection() {
@@ -57,23 +78,17 @@ export default function WebVisitsAnalyticsSection() {
   // Chart smooth curve points calculation
   const chartData = useMemo(() => {
     const vals = activeData.monthly;
-
-    const maxVal = Math.max(...vals, 1000);
-    const yMax = 30000;
-    const yAxisStep = 7500; // 30,000 / 4 = 7,500
-
     const width = 800;
     const height = 220;
-    const paddingY = 20;
 
     const points = vals.map((val, idx) => {
       const x = vals.length > 1 ? (idx / (vals.length - 1)) * width : width / 2;
-      const y = height - paddingY - ((val / yMax) * (height - paddingY * 2));
+      const y = getYForVal(val);
       return { x, y, val, label: monthLabels[idx] };
     });
 
     if (points.length <= 1) {
-      return { pathD: '', areaD: '', points, yMax, yAxisStep };
+      return { pathD: '', areaD: '', points };
     }
 
     // Smooth cubic bezier spline for natural curve
@@ -89,7 +104,7 @@ export default function WebVisitsAnalyticsSection() {
     const last = points[points.length - 1];
     const areaD = `${pathD} L ${last.x} ${height} L ${first.x} ${height} Z`;
 
-    return { pathD, areaD, points, yMax, yAxisStep };
+    return { pathD, areaD, points };
   }, [activeData, selectedTahun]);
 
   return (
@@ -235,13 +250,14 @@ export default function WebVisitsAnalyticsSection() {
 
             <div className="flex items-stretch gap-4">
               
-              {/* Y-Axis Labels */}
+              {/* Y-Axis Labels matching requested scale: 1000, 500, 200, 100, 50, 10 */}
               <div className="flex flex-col justify-between text-xs text-gray-400 font-medium py-1 text-right select-none w-14 shrink-0">
-                <span>30,000</span>
-                <span>22,500</span>
-                <span>15,000</span>
-                <span>7,500</span>
-                <span>0</span>
+                <span>1.000</span>
+                <span>500</span>
+                <span>200</span>
+                <span>100</span>
+                <span>50</span>
+                <span>10</span>
               </div>
 
               {/* Chart SVG */}
@@ -252,18 +268,19 @@ export default function WebVisitsAnalyticsSection() {
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    {/* Soft Blue Area Fill Gradient matching exact screenshot */}
+                    {/* Soft Blue Area Fill Gradient */}
                     <linearGradient id="blue-area-gradient-dummy" x1="0%" y1="0%" x2="0%" y2="100%">
                       <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.30" />
                       <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
                     </linearGradient>
                   </defs>
 
-                  {/* Dotted Horizontal Grid Lines */}
+                  {/* Dotted Horizontal Grid Lines corresponding to 1000, 500, 200, 100, 50, 10 */}
                   <line x1="0" y1="20" x2="800" y2="20" stroke="#f1f5f9" strokeDasharray="3 3" />
-                  <line x1="0" y1="65" x2="800" y2="65" stroke="#f1f5f9" strokeDasharray="3 3" />
-                  <line x1="0" y1="110" x2="800" y2="110" stroke="#f1f5f9" strokeDasharray="3 3" />
-                  <line x1="0" y1="155" x2="800" y2="155" stroke="#f1f5f9" strokeDasharray="3 3" />
+                  <line x1="0" y1="56" x2="800" y2="56" stroke="#f1f5f9" strokeDasharray="3 3" />
+                  <line x1="0" y1="92" x2="800" y2="92" stroke="#f1f5f9" strokeDasharray="3 3" />
+                  <line x1="0" y1="128" x2="800" y2="128" stroke="#f1f5f9" strokeDasharray="3 3" />
+                  <line x1="0" y1="164" x2="800" y2="164" stroke="#f1f5f9" strokeDasharray="3 3" />
                   <line x1="0" y1="200" x2="800" y2="200" stroke="#e2e8f0" />
 
                   {/* Gradient Area Fill */}

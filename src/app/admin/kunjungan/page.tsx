@@ -196,7 +196,7 @@ export default function AdminPengajuanEdukasiPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#003366] text-white text-[13px] tracking-wide">
+              <tr className="bg-primary text-white text-[13px] tracking-wide">
                 <th className="py-4 px-5 font-semibold text-center w-16">No.</th>
                 <th className="py-4 px-5 font-semibold">Tgl Pengajuan <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
                 <th className="py-4 px-5 font-semibold">Instansi & PIC <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
