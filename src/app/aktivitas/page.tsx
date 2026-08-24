@@ -6,8 +6,13 @@ import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { gsap } from 'gsap';
+import dynamic from 'next/dynamic';
 import KalenderView from '@/components/ui/KalenderView';
 import { getImageUrl } from '@/lib/api';
+
+const MapSection = dynamic(() => import('@/components/sections/MapSection'), {
+  ssr: false,
+});
 
 interface Article {
   id: number;
@@ -46,6 +51,7 @@ const TABS = [
   { id: 'berita', label: 'Berita' },
   { id: 'dokumentasi', label: 'Dokumentasi' },
   { id: 'kalender', label: 'Kalender Kegiatan' },
+  { id: 'peta', label: 'Peta Edukasi' },
 ];
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -258,6 +264,12 @@ export default function AktivitasPage() {
     </div>
   );
 
+  const renderPeta = () => (
+    <div className="w-full bg-white rounded-3xl p-2 md:p-6 shadow-xl border border-gray-100 overflow-hidden">
+      <MapSection />
+    </div>
+  );
+
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
@@ -281,7 +293,7 @@ export default function AktivitasPage() {
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-md">Aktivitas</h1>
           <p className="text-blue-100 max-w-xl text-lg leading-relaxed drop-shadow-sm font-medium">
-            Temukan berbagai artikel, berita terkini, dokumentasi kegiatan, dan kalender program BI Mengajar.
+            Temukan berbagai artikel, berita terkini, dokumentasi kegiatan, kalender program, serta peta lokasi edukasi BI Mengajar.
           </p>
           <div className="flex gap-2 mt-10 flex-wrap">
             {TABS.map((tab) => (
@@ -305,6 +317,7 @@ export default function AktivitasPage() {
             {activeTab === 'berita' && renderBerita()}
             {activeTab === 'dokumentasi' && renderDokumentasi()}
             {activeTab === 'kalender' && renderKalender()}
+            {activeTab === 'peta' && renderPeta()}
           </>
         )}
       </section>

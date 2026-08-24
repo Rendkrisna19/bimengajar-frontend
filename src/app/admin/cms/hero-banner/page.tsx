@@ -111,11 +111,16 @@ export default function AdminHeroBannerPage() {
     setShowModal(true);
   };
 
+  const isVideoFile = (urlOrName: string | null) => {
+    if (!urlOrName) return false;
+    return /\.(mp4|webm|ogg|mov|quicktime)($|\?)/i.test(urlOrName) || urlOrName.startsWith('data:video');
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('Ukuran Terlalu Besar', 'Ukuran berkas gambar maksimal adalah 5MB. Silakan pilih gambar yang lebih kecil.', 'warning');
+      if (file.size > 50 * 1024 * 1024) {
+        Swal.fire('Ukuran Terlalu Besar', 'Ukuran berkas gambar/video maksimal adalah 50MB. Silakan pilih berkas yang lebih kecil.', 'warning');
         e.target.value = '';
         return;
       }
@@ -131,8 +136,8 @@ export default function AdminHeroBannerPage() {
       return;
     }
 
-    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
-      Swal.fire('Ukuran Terlalu Besar', 'Ukuran gambar maksimal adalah 5MB.', 'warning');
+    if (imageFile && imageFile.size > 50 * 1024 * 1024) {
+      Swal.fire('Ukuran Terlalu Besar', 'Ukuran berkas maksimal adalah 50MB.', 'warning');
       return;
     }
 
@@ -322,11 +327,22 @@ export default function AdminHeroBannerPage() {
                     <td className="p-4">
                       <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shrink-0">
                         {item.image_url ? (
-                          <img
-                            src={item.image_url}
-                            alt={item.title}
-                            className="w-full h-full object-contain p-1"
-                          />
+                          isVideoFile(item.image_url) ? (
+                            <video
+                              src={item.image_url}
+                              className="w-full h-full object-cover"
+                              muted
+                              loop
+                              autoPlay
+                              playsInline
+                            />
+                          ) : (
+                            <img
+                              src={item.image_url}
+                              alt={item.title}
+                              className="w-full h-full object-contain p-1"
+                            />
+                          )
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                             Tidak ada
@@ -566,20 +582,24 @@ export default function AdminHeroBannerPage() {
                 </div>
               </div>
 
-              {/* Image File Upload */}
+              {/* Image/Video File Upload */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
-                  Gambar / Ilustrasi Banner
+                  Gambar / Video Ilustrasi Banner <span className="text-gray-400 font-normal">(Maksimal 50MB: JPG, PNG, WEBP, MP4, WEBM)</span>
                 </label>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,video/*,.mp4,.webm,.ogg,.mov"
                   onChange={handleImageChange}
                   className="w-full p-2.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white cursor-pointer"
                 />
                 {imagePreview && (
-                  <div className="mt-3 relative w-32 h-20 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 p-1">
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-contain" />
+                  <div className="mt-3 relative w-44 h-28 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 p-1">
+                    {isVideoFile(imagePreview) || (imageFile && imageFile.type.startsWith('video/')) ? (
+                      <video src={imagePreview} controls autoPlay muted loop className="w-full h-full object-cover rounded-lg" />
+                    ) : (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-contain" />
+                    )}
                   </div>
                 )}
               </div>

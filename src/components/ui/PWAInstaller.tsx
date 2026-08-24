@@ -26,7 +26,15 @@ export default function PWAInstaller() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowInstallBanner(true);
+      // Hanya tampilkan di perangkat mobile / Android / tablet kecil (< 768px atau mobile UA)
+      const isMobileDevice = 
+        typeof window !== 'undefined' &&
+        (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+          window.innerWidth < 768);
+
+      if (isMobileDevice) {
+        setShowInstallBanner(true);
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -48,7 +56,7 @@ export default function PWAInstaller() {
   if (!showInstallBanner) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:max-w-md bg-primary/95 text-white backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/20 z-50 animate-bounce-short flex items-center justify-between gap-4">
+    <div className="md:hidden fixed bottom-6 left-4 right-4 bg-primary/95 text-white backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/20 z-50 animate-bounce-short flex items-center justify-between gap-3">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-white p-1 shrink-0 shadow-md flex items-center justify-center overflow-hidden">
           <Image 

@@ -47,7 +47,6 @@ export default function Navbar() {
 
   const menuItems = [
     { name: t('nav.home'), icon: 'fa-solid fa-house', href: '/' },
-    { name: t('nav.about'), icon: 'fa-solid fa-circle-info', href: '/tentang-kami' },
     { 
       name: t('nav.edukasi'), 
       icon: 'fa-solid fa-book-open', 
@@ -56,11 +55,14 @@ export default function Navbar() {
       subItems: [
         { name: t('nav.pengajuan'), href: '/edukasi/pengajuan' },
         { name: t('nav.materi'), href: '/edukasi/materi-edukasi' },
-        { name: t('nav.mitra'), href: '/edukasi/mitra' }
+        { name: t('nav.mitra'), href: '/edukasi/mitra' },
+        { name: t('nav.gameKuis'), href: '/user/dashboard/kuis' },
+        { name: t('nav.prePostTest'), href: '/edukasi/pre-post-test' }
       ]
     },
     { name: t('nav.titikTemu'), icon: 'fa-solid fa-coins', href: '/titik-temu' },
     { name: t('nav.aktivitas'), icon: 'fa-solid fa-chart-line', href: '/aktivitas' },
+    { name: t('nav.perpustakaan'), icon: 'fa-solid fa-book-bookmark', href: '/perpustakaan' },
   ];
 
   return (
@@ -114,7 +116,7 @@ export default function Navbar() {
               
               {/* Dropdown Menu */}
               {item.dropdown && item.subItems && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-56 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-72 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
                   {item.subItems.map((sub, sIdx) => (
                     <Link 
                       key={sIdx} 

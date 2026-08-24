@@ -13,21 +13,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import dynamic from 'next/dynamic';
 
-// Dynamically import heavy below-the-fold sections to eliminate 143.1 KiB initial JS payload
-const MapSection = dynamic(() => import("@/components/sections/MapSection"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full min-h-[500px] bg-primary/90 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-    </div>
-  ),
-});
-
 const TestimonialSection = dynamic(() => import("@/components/sections/TestimonialSection"), {
-  ssr: false,
-});
-
-const WebVisitsAnalyticsSection = dynamic(() => import("@/components/sections/WebVisitsAnalyticsSection"), {
   ssr: false,
 });
 
@@ -91,16 +77,10 @@ export default function Home() {
       </div>
 
       <div className="animate-on-scroll">
-        <MapSection />
-      </div>
-      <div className="animate-on-scroll">
         <NewsSection />
       </div>
       <div className="animate-on-scroll">
         <TestimonialSection />
-      </div>
-      <div className="animate-on-scroll">
-        <WebVisitsAnalyticsSection />
       </div>
 
       <FloatingAction />
