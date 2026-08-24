@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { PengajuanForm } from "./types";
 import { submitPengajuanEdukasi } from "./api";
 import Swal from "sweetalert2";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const WILAYAH_KERJA = [
@@ -154,20 +155,28 @@ export default function PengajuanEdukasiPage() {
     <main className="min-h-screen bg-[#f8fafc] font-sans flex flex-col">
       <Navbar />
 
-      {/* Top Banner Header - Matches Screenshot */}
-      <section className="relative pt-28 pb-16 bg-gradient-to-r from-[#003975] via-[#004f9e] to-[#0066c0] text-white overflow-hidden shadow-md">
-        <div className="absolute inset-0 pointer-events-none opacity-20">
+      {/* Top Banner Header - Standard App Page Header */}
+      <section className="bg-primary text-white pt-32 pb-20 md:pt-36 md:pb-24 px-4 md:px-8 relative overflow-hidden border-b-4 border-[#fbbf24]">
+        {/* Background Image /images/header.jpg */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
-            src="/images/element/1.png" 
-            alt="Header Background Pattern" 
-            className="w-full h-full object-cover"
+            src="/images/header.jpg" 
+            alt="Header Background" 
+            className="w-full h-full object-cover object-center opacity-20 mix-blend-overlay"
           />
         </div>
-        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 text-center">
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
-            Ajukan Kegiatan <span className="relative inline-block">Edukasi<span className="absolute left-0 bottom-0 w-full h-1 bg-[#fbbf24] rounded-full"></span></span>
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-blue-200 mb-3 font-medium">
+            <Link href="/" className="hover:text-white transition-colors">Beranda</Link>
+            <span>&gt;</span>
+            <Link href="/edukasi" className="hover:text-white transition-colors">Edukasi</Link>
+            <span>&gt;</span>
+            <span className="text-white font-semibold">Pengajuan Kegiatan</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3 drop-shadow-md">
+            Ajukan Kegiatan <span className="relative inline-block">Edukasi<span className="absolute left-0 bottom-0 w-full h-1.5 bg-[#fbbf24] rounded-full"></span></span>
           </h1>
-          <p className="text-blue-100/90 text-sm md:text-base max-w-2xl mx-auto font-medium">
+          <p className="text-blue-100 max-w-2xl mx-auto text-sm md:text-base font-medium leading-relaxed drop-shadow-sm">
             Ajukan kegiatan edukasi yang ingin Anda selenggarakan bersama Bank Indonesia. Lengkapi informasi berikut dengan benar.
           </p>
         </div>

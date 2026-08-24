@@ -83,11 +83,14 @@ export default function GallerySection() {
   return (
     <section className="py-12 md:py-16 bg-primary text-white relative overflow-hidden">
       
-      {/* Background Texture Overlay */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-10 mix-blend-overlay bg-no-repeat bg-center bg-cover pointer-events-none z-0"
-        style={{ backgroundImage: 'url(/images/element/1.png)' }}
-      ></div>
+      {/* Background Element section.png (100% Opacity) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <img 
+          src="/images/element/section.png" 
+          alt="Dokumentasi Background Element" 
+          className="absolute inset-0 w-full h-full object-cover opacity-100 pointer-events-none z-0"
+        />
+      </div>
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         

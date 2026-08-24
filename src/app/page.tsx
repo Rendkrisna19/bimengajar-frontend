@@ -60,14 +60,14 @@ export default function Home() {
       
       <HeroSection />
 
-      {/* Combined Section for Menu Cepat & Statistik with Single Continuous 2.png Element Overlay */}
-      <div className="relative overflow-hidden bg-gray-50 animate-on-scroll pt-8 pb-4">
-        {/* Continuous Background Element 2.png spanning across Menu Cepat & Statistik */}
+      {/* Menu Cepat Section with section.png Background Element (100% Opacity) */}
+      <div className="relative overflow-hidden bg-sky-50/30 animate-on-scroll pt-8 pb-8">
+        {/* Continuous Background Element section.png (100% Opacity) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
           <img 
-            src="/images/element/2.png" 
-            alt="Menu Cepat & Statistik Background Element" 
-            className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none z-0"
+            src="/images/element/section.png" 
+            alt="Menu Cepat Background Section" 
+            className="absolute inset-0 w-full h-full object-cover opacity-100 pointer-events-none z-0"
           />
         </div>
 
