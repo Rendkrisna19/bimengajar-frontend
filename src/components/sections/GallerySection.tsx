@@ -94,20 +94,20 @@ export default function GallerySection() {
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
-        {/* Header Bar - Dark Blue Navy Text for Legibility */}
+        {/* Header Bar - Bright Blue Text & Standout Button */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a2540] tracking-tight drop-shadow-sm">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#003975] tracking-tight drop-shadow-sm">
               Dokumentasi Kegiatan BI Mengajar
             </h2>
-            <p className="text-sm text-[#0a2540]/80 mt-1 font-medium">
+            <p className="text-sm text-[#004f9e] mt-1 font-semibold">
               Kumpulan dokumentasi foto & video kegiatan edukasi kebanksentralan.
             </p>
           </div>
 
           <Link 
             href="/aktivitas"
-            className="text-sm font-extrabold text-[#005bb5] hover:text-primary transition-colors flex items-center gap-1 shrink-0"
+            className="text-sm font-extrabold text-white bg-[#003975] hover:bg-[#00264d] px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 border border-blue-400/30"
           >
             Lihat Semua &gt;
           </Link>
