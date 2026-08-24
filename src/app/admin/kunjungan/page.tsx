@@ -76,40 +76,49 @@ export default function AdminPengajuanEdukasiPage() {
   const handleUpdateStatus = async (id: number, currentStatus: string, newStatus: string) => {
     if (currentStatus === newStatus) return;
 
-    Swal.fire({
-      title: 'Ubah Status?',
-      text: `Anda yakin ingin mengubah status menjadi ${newStatus.toUpperCase()}?`,
-      icon: 'question',
+    const { value: catatan, isConfirmed } = await Swal.fire({
+      title: `Ubah Status ke ${newStatus.toUpperCase()}?`,
+      text: 'Tambahkan catatan / pesan untuk pemohon (opsional):',
+      input: 'textarea',
+      inputPlaceholder: 'Tuliskan catatan, jadwal, atau alasan jika ditolak...',
+      inputValue: selectedItem?.catatan_admin || '',
       showCancelButton: true,
       confirmButtonColor: '#003366',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, Ubah!',
+      confirmButtonText: 'Ya, Simpan & Kirim Email',
       cancelButtonText: 'Batal'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const token = localStorage.getItem('token');
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/pengajuan-edukasi/${id}/status`, {
-            method: 'PATCH',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ status: newStatus })
-          });
-
-          if (res.ok) {
-            Swal.fire('Berhasil!', 'Status berhasil diperbarui.', 'success');
-            fetchData();
-          } else {
-            Swal.fire('Gagal!', 'Terjadi kesalahan saat memperbarui.', 'error');
-          }
-        } catch (error) {
-          Swal.fire('Error!', 'Tidak dapat terhubung ke server.', 'error');
-        }
-      }
     });
+
+    if (isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api'}/pengajuan-edukasi/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            status: newStatus,
+            catatan_admin: catatan || null
+          })
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          Swal.fire('Berhasil!', 'Status pengajuan berhasil diperbarui dan notifikasi email telah dikirim ke pemohon.', 'success');
+          if (selectedItem && selectedItem.id === id) {
+            setSelectedItem(result.data || { ...selectedItem, status: newStatus, catatan_admin: catatan });
+          }
+          fetchData();
+        } else {
+          Swal.fire('Gagal!', 'Terjadi kesalahan saat memperbarui status.', 'error');
+        }
+      } catch (error) {
+        Swal.fire('Error!', 'Tidak dapat terhubung ke server.', 'error');
+      }
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -457,7 +466,7 @@ export default function AdminPengajuanEdukasiPage() {
                             </div>
                           </div>
                           <a 
-                            href={`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/storage/${selectedItem.dokumen_proposal}`} 
+                            href={`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8001'}/storage/${selectedItem.dokumen_proposal}`} 
                             target="_blank"
                             rel="noreferrer"
                             className="px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors text-xs flex items-center gap-2"
@@ -505,6 +514,7 @@ export default function AdminPengajuanEdukasiPage() {
                     <option value="verifikasi">Set Verifikasi</option>
                     <option value="penjadwalan">Set Penjadwalan</option>
                     <option value="konfirmasi">Set Konfirmasi</option>
+                    <option value="disetujui">Set Disetujui</option>
                     <option value="selesai">Set Selesai</option>
                     <option value="ditolak">Set Ditolak</option>
                  </select>

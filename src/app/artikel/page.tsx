@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
+import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { getImageUrl } from '@/lib/api';
@@ -127,13 +128,15 @@ export default function BlogPage() {
                     className="article-card block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100"
                   >
                     <div className="relative h-48 w-full overflow-hidden bg-gray-100">
-                      <img 
+                      <Image 
                         src={getCardImage(article.image)} 
                         alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        loading="lazy"
                       />
-                      <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                      <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
                         BI SIANTAR
                       </div>
                     </div>
