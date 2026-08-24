@@ -81,7 +81,7 @@ export default function GallerySection() {
   };
 
   return (
-    <section className="py-12 md:py-16 bg-primary text-white relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-[#f2f6fa] text-[#0a2540] relative overflow-hidden">
       
       {/* Background Element section.png (100% Opacity) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -94,20 +94,20 @@ export default function GallerySection() {
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
-        {/* Simple Clean Header Bar */}
+        {/* Header Bar - Dark Blue Navy Text for Legibility */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a2540] tracking-tight drop-shadow-sm">
               Dokumentasi Kegiatan BI Mengajar
             </h2>
-            <p className="text-sm text-blue-100/80 mt-1 font-medium">
+            <p className="text-sm text-[#0a2540]/80 mt-1 font-medium">
               Kumpulan dokumentasi foto & video kegiatan edukasi kebanksentralan.
             </p>
           </div>
 
           <Link 
             href="/aktivitas"
-            className="text-sm font-semibold text-white hover:underline flex items-center gap-1 shrink-0"
+            className="text-sm font-extrabold text-[#005bb5] hover:text-primary transition-colors flex items-center gap-1 shrink-0"
           >
             Lihat Semua &gt;
           </Link>
@@ -201,65 +201,65 @@ export default function GallerySection() {
 
       </div>
 
-      {/* Lightbox / Preview Modal (Full Screen Overlay z-[9999] with backdrop blur) */}
+      {/* Lightbox / Preview Modal - Premium Blue Theme */}
       {selectedItem && (
         <div 
-          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto"
+          className="fixed inset-0 z-[9999] bg-[#001d3d]/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto"
           onClick={() => setSelectedItem(null)}
         >
           <div 
-            className="relative bg-gray-900 rounded-3xl overflow-hidden border border-white/20 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col"
+            className="relative bg-gradient-to-b from-[#003366] via-[#004f9e] to-[#00264d] text-white rounded-3xl overflow-hidden border border-blue-400/30 shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-4xl max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-5 border-b border-white/10 flex items-start justify-between bg-black/40 shrink-0">
+            <div className="p-5 md:p-6 border-b border-blue-300/20 flex items-start justify-between bg-[#001d3d]/40 shrink-0">
               <div>
-                <span className="text-[11px] font-bold text-blue-400 bg-blue-500/20 px-2.5 py-1 rounded-full border border-blue-400/30">
+                <span className="text-[11px] font-extrabold text-[#00264d] bg-amber-400 px-3 py-1 rounded-full shadow-sm">
                   {selectedItem.kategori}
                 </span>
-                <h3 className="text-lg md:text-xl font-bold text-white mt-2">
+                <h3 className="text-xl md:text-2xl font-extrabold text-white mt-2 drop-shadow-sm tracking-tight">
                   {selectedItem.nama_kegiatan}
                 </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  <i className="fa-regular fa-calendar mr-1"></i>
+                <p className="text-xs text-blue-200/90 mt-1 font-medium flex items-center gap-1.5">
+                  <i className="fa-regular fa-calendar text-amber-400"></i>
                   {new Date(selectedItem.tanggal_kegiatan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               </div>
               
               <button 
                 onClick={() => setSelectedItem(null)}
-                className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-colors shrink-0"
+                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-red-500 transition-all duration-300 shrink-0 shadow-sm border border-white/10"
               >
-                <i className="fa-solid fa-times text-sm"></i>
+                <i className="fa-solid fa-xmark text-lg"></i>
               </button>
             </div>
 
-            {/* Modal Body (Scrollable if videos present) */}
+            {/* Modal Body */}
             <div className="overflow-y-auto p-5 md:p-6 space-y-6 flex-1">
               
               {/* Photo Carousel Slider */}
               {selectedItem.images && selectedItem.images.length > 0 && (
-                <div className="relative bg-black rounded-2xl overflow-hidden group flex items-center justify-center min-h-[250px] max-h-[50vh]">
+                <div className="relative bg-[#001833]/80 rounded-2xl overflow-hidden border border-blue-300/20 group flex items-center justify-center min-h-[260px] max-h-[52vh] shadow-inner">
                   <img 
                     src={getImageUrl(selectedItem.images[currentImgIndex])} 
                     alt={`Foto ${currentImgIndex + 1}`}
-                    className="max-w-full max-h-[50vh] object-contain mx-auto"
+                    className="max-w-full max-h-[52vh] object-contain mx-auto"
                     onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
 
-                  {/* Previous / Next Arrow Buttons for Multi-photo */}
+                  {/* Previous / Next Arrow Buttons */}
                   {selectedItem.images.length > 1 && (
                     <>
                       <button
                         onClick={() => setCurrentImgIndex((prev) => (prev > 0 ? prev - 1 : selectedItem.images.length - 1))}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#001d3d]/80 text-white flex items-center justify-center hover:bg-amber-400 hover:text-[#00264d] transition-all shadow-lg border border-white/10"
                       >
                         <i className="fa-solid fa-chevron-left text-sm"></i>
                       </button>
                       
                       <button
                         onClick={() => setCurrentImgIndex((prev) => (prev < selectedItem.images.length - 1 ? prev + 1 : 0))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-lg"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#001d3d]/80 text-white flex items-center justify-center hover:bg-amber-400 hover:text-[#00264d] transition-all shadow-lg border border-white/10"
                       >
                         <i className="fa-solid fa-chevron-right text-sm"></i>
                       </button>
@@ -270,7 +270,7 @@ export default function GallerySection() {
                             key={idx}
                             onClick={() => setCurrentImgIndex(idx)}
                             className={`h-2 rounded-full transition-all ${
-                              currentImgIndex === idx ? 'w-6 bg-blue-500' : 'w-2 bg-white/50'
+                              currentImgIndex === idx ? 'w-6 bg-amber-400' : 'w-2 bg-white/40'
                             }`}
                           />
                         ))}
@@ -282,7 +282,7 @@ export default function GallerySection() {
 
               {/* Description */}
               {selectedItem.deskripsi && (
-                <div className="text-gray-300 text-sm leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/10">
+                <div className="text-blue-50 text-sm leading-relaxed bg-[#001d3d]/50 p-4 md:p-5 rounded-2xl border border-blue-300/20 shadow-sm font-medium">
                   {selectedItem.deskripsi}
                 </div>
               )}
@@ -291,7 +291,7 @@ export default function GallerySection() {
               {selectedItem.video_urls && selectedItem.video_urls.length > 0 && (
                 <div className="space-y-3 pt-2">
                   <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <i className="fa-brands fa-youtube text-red-500 text-base"></i>
+                    <i className="fa-brands fa-youtube text-red-400 text-lg"></i>
                     Video Dokumentasi ({selectedItem.video_urls.length})
                   </h4>
 
@@ -299,7 +299,7 @@ export default function GallerySection() {
                     {selectedItem.video_urls.map((url, i) => {
                       const embed = getEmbedUrl(url);
                       return embed ? (
-                        <div key={i} className="relative w-full rounded-2xl overflow-hidden border border-white/15 shadow-md bg-black" style={{ paddingTop: '56.25%' }}>
+                        <div key={i} className="relative w-full rounded-2xl overflow-hidden border border-blue-300/20 shadow-md bg-black" style={{ paddingTop: '56.25%' }}>
                           <iframe 
                             src={embed} 
                             className="absolute inset-0 w-full h-full" 
@@ -314,9 +314,9 @@ export default function GallerySection() {
                           href={url} 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="flex items-center gap-2 text-xs text-blue-400 bg-white/5 p-3 rounded-xl hover:bg-white/10 transition-colors"
+                          className="flex items-center gap-2 text-xs text-blue-200 bg-[#001d3d]/50 p-3 rounded-xl hover:bg-[#001d3d] transition-colors border border-blue-300/20"
                         >
-                          <i className="fa-solid fa-link"></i> {url}
+                          <i className="fa-solid fa-link text-amber-400"></i> {url}
                         </a>
                       );
                     })}
