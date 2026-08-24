@@ -56,41 +56,58 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
   if (!isOpen || !mounted) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#f0f4f8] w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col relative border border-white/50 animate-fade-in-up">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md overflow-y-auto">
+      <div className="bg-[#f2f6fa] w-full max-w-6xl max-h-[90vh] rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.35)] flex flex-col relative border border-white/60 overflow-hidden animate-fade-in-up">
         
-        {/* Header */}
-        <div className="px-6 py-5 flex items-center justify-between border-b border-gray-200/60 bg-white/80 backdrop-blur-md rounded-t-2xl z-10 shrink-0">
-          <div className="flex-1"></div>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-800 tracking-tight text-center flex-1">Edukasi BI Mengajar</h2>
-          <div className="flex-1 flex justify-end">
-            <button 
-              onClick={onClose} 
-              className="text-gray-400 hover:text-gray-700 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
-            >
-              <i className="fa-solid fa-xmark text-lg"></i>
-            </button>
-          </div>
+        {/* Background Element 2.png (80% Opacity) */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 rounded-3xl">
+          <img 
+            src="/images/element/2.png" 
+            alt="Modal Background Element" 
+            className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0"
+          />
         </div>
 
-        {/* Content */}
-        <div className="p-6 md:p-10 overflow-y-auto z-10 relative flex-1 bg-[#f0f4f8] rounded-b-2xl">
+        {/* Header */}
+        <div className="px-6 py-5 flex items-center justify-between border-b border-blue-100/80 bg-white/90 backdrop-blur-md rounded-t-3xl z-10 shrink-0 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+              <i className="fa-solid fa-graduation-cap text-xl text-primary"></i>
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-extrabold text-[#003366] tracking-tight">Edukasi BI Mengajar</h2>
+              <p className="text-xs text-gray-500 font-medium">Pilihan topik dan materi kebanksentralan</p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-gray-400 hover:text-red-500 transition-all duration-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-50 border border-transparent hover:border-red-100 shadow-xs"
+          >
+            <i className="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        {/* Content - 4 Columns in 1 Row */}
+        <div className="p-6 md:p-8 overflow-y-auto z-10 relative flex-1">
           {loading && categories.length === 0 ? (
             <div className="flex justify-center items-center py-20">
               <i className="fa-solid fa-circle-notch animate-spin text-4xl text-primary"></i>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {categories.map((kategori) => (
                 <Link 
                   href={`/edukasi/materi-edukasi?kategori=${kategori.slug}`} 
                   key={kategori.id}
                   onClick={onClose}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full hover:-translate-y-2 relative"
+                  className="group bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-blue-100/80 hover:border-primary/50 flex flex-col h-full hover:-translate-y-2 relative"
                 >
-                  {/* Icon Area */}
-                  <div className="p-4 md:p-6 flex items-center justify-center flex-1 relative z-10">
-                    <div className="relative w-44 h-44 md:w-56 md:h-56 transition-transform duration-500 group-hover:scale-105 flex items-center justify-center">
+                  {/* Decorative top border accent on hover */}
+                  <div className="h-1.5 w-full bg-gradient-to-r from-primary to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                  {/* Icon Area - Original Logo Kept Intact */}
+                  <div className="p-5 md:p-6 flex items-center justify-center flex-1 relative z-10 bg-gradient-to-b from-white to-blue-50/40">
+                    <div className="relative w-36 h-36 md:w-44 md:h-44 transition-transform duration-500 group-hover:scale-110 flex items-center justify-center drop-shadow-sm">
                       {kategori.logo ? (
                         <img 
                           src={getImageUrl(kategori.logo)}
@@ -98,16 +115,16 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
                           className="w-full h-full object-contain"
                         />
                       ) : (
-                        <div className="w-full h-full bg-blue-50 rounded-full flex items-center justify-center text-blue-300">
-                          <i className="fa-solid fa-book-open text-5xl"></i>
+                        <div className="w-full h-full bg-blue-50 rounded-full flex items-center justify-center text-blue-400">
+                          <i className="fa-solid fa-book-open text-4xl"></i>
                         </div>
                       )}
                     </div>
                   </div>
                   
                   {/* Title Area */}
-                  <div className="bg-white px-4 py-5 text-center border-t border-gray-50 relative z-10 group-hover:bg-[#f8fafc] transition-colors">
-                    <h3 className="text-lg font-bold text-[#003366] group-hover:text-primary transition-colors">
+                  <div className="bg-white px-4 py-4 text-center border-t border-blue-50 relative z-10 group-hover:bg-primary transition-all duration-300">
+                    <h3 className="text-sm md:text-base font-extrabold text-[#003366] group-hover:text-white transition-colors">
                       {kategori.nama}
                     </h3>
                   </div>

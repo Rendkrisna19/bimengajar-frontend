@@ -78,24 +78,26 @@ export default function Navbar() {
       {/* ======================= */}
       {/* DESKTOP LAYOUT (xl up)  */}
       {/* ======================= */}
-      <div className="hidden xl:flex items-center justify-between w-full max-w-7xl mx-auto px-4 lg:px-8 h-20">
+      <div className="hidden xl:flex items-center justify-between w-full max-w-[1400px] mx-auto px-4 md:px-8 h-20">
         
-        {/* KIRI - Logo */}
-        <Link href="/" className="flex flex-col items-start shrink-0 py-1 group">
-          <div className="h-14 w-auto flex items-center justify-start">
+        {/* KIRI - Logo & Tagline */}
+        <Link href="/" className="flex items-center gap-3.5 shrink-0 py-1 group">
+          <div className="h-12 w-auto flex items-center justify-start">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={220} 
-              height={60} 
-              className="h-full w-auto object-contain scale-[1.45] origin-left transition-transform group-hover:scale-[1.55]"
+              width={180} 
+              height={50} 
+              className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               priority
               unoptimized
             />
           </div>
-          <span className="text-[10px] font-extrabold text-gray-800 tracking-tight mt-1 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-            by Kantor Perwakilan Bank Indonesia Pematangsiantar
-          </span>
+          <div className="h-8 w-[2px] bg-yellow-500/80 rounded-full shrink-0"></div>
+          <div className="flex flex-col text-[11px] font-extrabold text-[#003366] leading-tight tracking-tight" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+            <span className="whitespace-nowrap">By Kantor Perwakilan Bank Indonesia</span>
+            <span className="text-primary font-black mt-0.5 whitespace-nowrap">Pematang Siantar</span>
+          </div>
         </Link>
 
         {/* TENGAH - Menu */}
@@ -104,7 +106,7 @@ export default function Navbar() {
             <div key={idx} className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={item.href} 
-                className="relative py-2 flex items-center gap-1.5 transition-colors text-[14px] whitespace-nowrap text-gray-700 hover:text-primary"
+                className="relative py-2 flex items-center gap-1.5 transition-colors text-[14px] font-bold whitespace-nowrap text-gray-700 hover:text-primary"
               >
                 {item.name}
                 {item.dropdown && (
@@ -134,38 +136,17 @@ export default function Navbar() {
 
         {/* KANAN - Actions */}
         <div className="flex items-center gap-5 shrink-0">
-          {/* Flag Translate Button (Commented Out)
-          <button 
-            onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
-            aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
-            className={`flex items-center gap-2 text-sm transition-colors hover:opacity-80 cursor-pointer text-gray-700`}
-          >
-            <div className="w-5 h-5 rounded-full overflow-hidden relative shadow-sm shrink-0">
-              <Image 
-                src={lang === 'ID' ? '/images/bendera/indonesia.png' : '/images/bendera/inggris.svg'} 
-                alt={`Bendera ${lang}`}
-                fill
-                sizes="20px"
-                className="object-cover"
-              />
-            </div>
-            <span>{lang}</span>
-          </button>
-
-          <div className={`w-px h-6 mx-1 bg-gray-200`}></div>
-          */}
-
           {user ? (
             <div className="relative group shrink-0 h-20 flex items-center">
               <Link 
                 href={user.role === 'admin' ? '/admin' : '/user/dashboard'} 
-                className="flex-shrink-0 px-6 py-2 rounded text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1"
+                className="flex-shrink-0 px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-3 whitespace-nowrap transition-all text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/30 hover:brightness-110 active:border-b-0 active:translate-y-1"
               >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] bg-primary text-white">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] bg-primary text-white font-bold">
                   {user.name.substring(0, 2).toUpperCase()}
-                 </div>
-                 {user.name.split(' ')[0]}
-               </Link>
+                </div>
+                {user.name.split(' ')[0]}
+              </Link>
               
               {/* Dropdown Profile */}
               <div className="absolute top-full right-0 mt-0 w-60 bg-white rounded-b-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-3 z-50 flex flex-col translate-y-2 group-hover:translate-y-0">
@@ -207,7 +188,7 @@ export default function Navbar() {
           ) : (
             <Link 
               href="/login"
-              className="flex-shrink-0 px-8 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/40 hover:brightness-110 active:border-b-0 active:translate-y-1"
+              className="flex-shrink-0 px-8 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap text-white bg-accent-red border-b-4 border-red-900 shadow-md shadow-accent-red/30 hover:brightness-110 active:border-b-0 active:translate-y-1"
             >
               <i className="fa-solid fa-user-lock"></i> {t('nav.login')}
             </Link>
@@ -219,22 +200,24 @@ export default function Navbar() {
       {/* MOBILE / TABLET LAYOUT (< xl)      */}
       {/* ================================== */}
       <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
-        {/* Mobile Logo */}
-        <Link href="/" className="flex flex-col items-start flex-shrink-0 z-50 py-1">
-          <div className="h-10 w-auto flex items-center justify-start">
+        {/* Mobile Logo & Tagline */}
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 z-50 py-1">
+          <div className="h-9 w-auto flex items-center justify-start">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={160} 
+              width={140} 
               height={40} 
-              className="h-full w-auto object-contain scale-[1.3] origin-left"
+              className="h-full w-auto object-contain"
               priority
               unoptimized
             />
           </div>
-          <span className="text-[8px] font-extrabold text-gray-800 tracking-tight mt-0.5 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-            by Kantor Perwakilan Bank Indonesia Pematangsiantar
-          </span>
+          <div className="h-7 w-[1.5px] bg-yellow-500/80 rounded-full shrink-0"></div>
+          <div className="flex flex-col text-[8.5px] font-extrabold text-[#003366] leading-none tracking-tight" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+            <span className="whitespace-nowrap">By Kantor Perwakilan Bank Indonesia</span>
+            <span className="text-primary font-black mt-0.5 whitespace-nowrap">Pematang Siantar</span>
+          </div>
         </Link>
 
         {/* Mobile Actions Pill */}
