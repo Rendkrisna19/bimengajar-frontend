@@ -1,7 +1,54 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+interface FooterData {
+  deskripsi: string;
+  alamat: string;
+  telepon: string;
+  email: string;
+  instagram_url: string;
+  youtube_url: string;
+  facebook_url: string;
+  twitter_url: string;
+  tiktok_url: string;
+  copyright_text: string;
+}
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+const DEFAULT_FOOTER: FooterData = {
+  deskripsi: 'Mewujudkan masyarakat yang Cinta, Bangga, dan Paham Rupiah melalui edukasi yang berkelanjutan.',
+  alamat: 'Jl. H. Adam Malik No. 1, Pematangsiantar, Sumatera Utara',
+  telepon: '(0622) 22100',
+  email: 'pematangsiantar@bi.go.id',
+  instagram_url: 'https://instagram.com/bank_indonesia_pematangsiantar',
+  youtube_url: 'https://youtube.com',
+  facebook_url: 'https://facebook.com',
+  twitter_url: 'https://x.com',
+  tiktok_url: 'https://tiktok.com',
+  copyright_text: 'Bank Indonesia Pematangsiantar. Hak Cipta Dilindungi.',
+};
+
 export default function Footer() {
+  const [data, setData] = useState<FooterData>(DEFAULT_FOOTER);
+
+  useEffect(() => {
+    fetch(`${API}/footer-settings`)
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData && resData.data) {
+          setData({
+            ...DEFAULT_FOOTER,
+            ...resData.data
+          });
+        }
+      })
+      .catch((err) => console.error('Failed fetching footer settings:', err));
+  }, []);
+
   return (
     <footer className="bg-gradient-to-b from-white via-blue-50/50 to-blue-100/40 text-[#003366] pt-16 pb-8 border-t border-blue-100/60 relative overflow-hidden">
       {/* Decorative Element 7.png on the right edge */}
@@ -17,32 +64,37 @@ export default function Footer() {
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
+        {/* 4 Kolom: Logo & Deskripsi, Tautan, Kontak, Ikuti Kami (Tanpa Bantuan) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           
-          {/* Logo & Tagline */}
-          <div className="lg:col-span-1 flex flex-col gap-4">
+          {/* Logo & Tagline & Deskripsi */}
+          <div className="flex flex-col gap-4">
             <Link href="/" className="flex flex-col items-start shrink-0 group">
-              <div className="h-24 w-auto flex items-center justify-start py-2">
-                <Image 
-                  src="/images/logo.png?v=2" 
-                  alt="Logo BI Mengajar" 
-                  width={300} 
-                  height={100} 
-                  className="h-full w-auto object-contain scale-[1.6] origin-left transition-transform group-hover:scale-[1.7]" 
-                  priority
-                  unoptimized
-                />
+              <div className="flex items-center gap-3.5 py-1">
+                <div className="h-12 w-auto flex items-center justify-start">
+                  <Image 
+                    src="/images/logo.png?v=2" 
+                    alt="Logo BI Mengajar" 
+                    width={180} 
+                    height={50} 
+                    className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+                    priority
+                    unoptimized
+                  />
+                </div>
+                <div className="h-8 w-[2px] bg-yellow-500/80 rounded-full shrink-0"></div>
+                <div className="flex flex-col text-[11px] font-extrabold text-[#003366] leading-tight tracking-tight" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+                  <span className="whitespace-nowrap">By Kantor Perwakilan Bank Indonesia</span>
+                  <span className="text-primary font-black mt-0.5 whitespace-nowrap">Pematang Siantar</span>
+                </div>
               </div>
-              <span className="text-[11px] font-extrabold text-[#003366] tracking-tight mt-2 leading-none" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-                by Kantor Perwakilan Bank Indonesia Pematangsiantar
-              </span>
             </Link>
             <p className="text-gray-600 text-sm leading-relaxed mt-1">
-              Mewujudkan masyarakat yang Cinta, Bangga, dan Paham Rupiah melalui edukasi yang berkelanjutan.
+              {data.deskripsi}
             </p>
           </div>
 
-          {/* Tautan */}
+          {/* Tautan Navigasi */}
           <div>
             <h3 className="font-bold text-lg mb-6 text-[#003366] tracking-wide">Tautan</h3>
             <ul className="flex flex-col gap-3">
@@ -54,67 +106,102 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Bantuan */}
-          <div>
-            <h3 className="font-bold text-lg mb-6 text-[#003366] tracking-wide">Bantuan</h3>
-            <ul className="flex flex-col gap-3">
-              <li><Link href="/faq" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">FAQ</Link></li>
-              <li><Link href="/panduan" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Panduan</Link></li>
-              <li><Link href="/kebijakan-privasi" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Kebijakan Privasi</Link></li>
-              <li><Link href="/syarat-ketentuan" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Syarat & Ketentuan</Link></li>
-            </ul>
-          </div>
-
-          {/* Kontak */}
+          {/* Kontak (Dynamic) */}
           <div>
             <h3 className="font-bold text-lg mb-6 text-[#003366] tracking-wide">Kontak</h3>
             <ul className="flex flex-col gap-4">
-              <li className="flex items-start gap-3 text-gray-600">
-                <i className="fa-solid fa-location-dot mt-1 text-primary"></i>
-                <span className="text-sm leading-relaxed">Jl. M.H. Thamrin No. 2<br />Jakarta 10350</span>
-              </li>
-              <li className="flex items-center gap-3 text-gray-600">
-                <i className="fa-solid fa-phone text-primary"></i>
-                <span className="text-sm">(021) 3861 811</span>
-              </li>
-              <li className="flex items-center gap-3 text-gray-600">
-                <i className="fa-solid fa-envelope text-primary"></i>
-                <span className="text-sm">bi@bi.go.id</span>
-              </li>
+              {data.alamat && (
+                <li className="flex items-start gap-3 text-gray-600">
+                  <i className="fa-solid fa-location-dot mt-1 text-primary shrink-0"></i>
+                  <span className="text-sm leading-relaxed whitespace-pre-line">{data.alamat}</span>
+                </li>
+              )}
+              {data.telepon && (
+                <li className="flex items-center gap-3 text-gray-600">
+                  <i className="fa-solid fa-phone text-primary shrink-0"></i>
+                  <span className="text-sm">{data.telepon}</span>
+                </li>
+              )}
+              {data.email && (
+                <li className="flex items-center gap-3 text-gray-600">
+                  <i className="fa-solid fa-envelope text-primary shrink-0"></i>
+                  <span className="text-sm">{data.email}</span>
+                </li>
+              )}
             </ul>
           </div>
 
-          {/* Ikuti Kami */}
+          {/* Ikuti Kami (Dynamic Social Media) */}
           <div>
             <h3 className="font-bold text-lg mb-6 text-[#003366] tracking-wide">Ikuti Kami</h3>
-            <div className="flex items-center gap-4">
-              <a href="#" aria-label="Kunjungi Instagram Bank Indonesia" className="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-gray-100">
-                <i className="fa-brands fa-instagram"></i>
-              </a>
-              <a href="#" aria-label="Kunjungi YouTube Bank Indonesia" className="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-gray-100">
-                <i className="fa-brands fa-youtube"></i>
-              </a>
-              <a href="#" aria-label="Kunjungi Facebook Bank Indonesia" className="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-gray-100">
-                <i className="fa-brands fa-facebook-f"></i>
-              </a>
-              <a href="#" aria-label="Kunjungi Twitter Bank Indonesia" className="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-gray-100">
-                <i className="fa-brands fa-x-twitter"></i>
-              </a>
-              <a href="#" aria-label="Kunjungi TikTok Bank Indonesia" className="w-10 h-10 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-gray-100">
-                <i className="fa-brands fa-tiktok"></i>
-              </a>
+            <div className="flex items-center gap-3 flex-wrap">
+              {data.instagram_url && (
+                <a 
+                  href={data.instagram_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="Instagram Bank Indonesia" 
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-blue-100"
+                >
+                  <i className="fa-brands fa-instagram"></i>
+                </a>
+              )}
+              {data.youtube_url && (
+                <a 
+                  href={data.youtube_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="YouTube Bank Indonesia" 
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-blue-100"
+                >
+                  <i className="fa-brands fa-youtube"></i>
+                </a>
+              )}
+              {data.facebook_url && (
+                <a 
+                  href={data.facebook_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="Facebook Bank Indonesia" 
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-blue-100"
+                >
+                  <i className="fa-brands fa-facebook-f"></i>
+                </a>
+              )}
+              {data.twitter_url && (
+                <a 
+                  href={data.twitter_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="Twitter X Bank Indonesia" 
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-blue-100"
+                >
+                  <i className="fa-brands fa-x-twitter"></i>
+                </a>
+              )}
+              {data.tiktok_url && (
+                <a 
+                  href={data.tiktok_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="TikTok Bank Indonesia" 
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#003366] hover:bg-primary hover:text-white transition-all duration-300 text-lg shadow-sm border border-blue-100"
+                >
+                  <i className="fa-brands fa-tiktok"></i>
+                </a>
+              )}
             </div>
           </div>
 
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} Bank Indonesia. Hak Cipta Dilindungi.
+        <div className="border-t border-blue-200/60 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-gray-600 text-sm">
+            &copy; {new Date().getFullYear()} {data.copyright_text || 'Bank Indonesia. Hak Cipta Dilindungi.'}
           </p>
           <div className="flex gap-4">
-            <span className="text-gray-500 text-sm font-medium">Indonesia Maju</span>
+            <span className="text-primary font-bold text-sm">Indonesia Maju</span>
           </div>
         </div>
       </div>
