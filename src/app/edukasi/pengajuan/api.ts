@@ -7,12 +7,17 @@ export const submitPengajuanEdukasi = async (data: PengajuanForm) => {
   // Append all text fields
   Object.keys(data).forEach((key) => {
     const value = data[key as keyof PengajuanForm];
-    if (value !== null && key !== 'dokumen_proposal') {
+    if (value !== null && value !== undefined && key !== 'dokumen_proposal' && key !== 'dokumen_lainnya') {
       formData.append(key, String(value));
     }
   });
 
-  // Append file
+  // Map nama_kegiatan to tema_kegiatan for backend compatibility
+  if (data.nama_kegiatan && !formData.has('tema_kegiatan')) {
+    formData.append('tema_kegiatan', data.nama_kegiatan);
+  }
+
+  // Append proposal file
   if (data.dokumen_proposal) {
     formData.append('dokumen_proposal', data.dokumen_proposal);
   }

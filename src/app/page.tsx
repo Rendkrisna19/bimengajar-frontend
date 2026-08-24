@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
-import StatsSection from "@/components/sections/StatsSection";
 
 import NewsSection from "@/components/sections/NewsSection";
 import FloatingAction from "@/components/ui/FloatingAction";
@@ -73,7 +72,6 @@ export default function Home() {
         </div>
 
         <FeaturesSection />
-        <StatsSection />
       </div>
 
       <div className="animate-on-scroll">

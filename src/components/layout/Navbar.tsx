@@ -134,6 +134,7 @@ export default function Navbar() {
 
         {/* KANAN - Actions */}
         <div className="flex items-center gap-5 shrink-0">
+          {/* Flag Translate Button (Commented Out)
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
             aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
@@ -152,6 +153,7 @@ export default function Navbar() {
           </button>
 
           <div className={`w-px h-6 mx-1 bg-gray-200`}></div>
+          */}
 
           {user ? (
             <div className="relative group shrink-0 h-20 flex items-center">
@@ -237,6 +239,7 @@ export default function Navbar() {
 
         {/* Mobile Actions Pill */}
         <div className={`flex items-center gap-3 px-3 py-2 rounded-full flex-shrink-0 z-50 transition-all bg-white/95 backdrop-blur-md text-gray-800 shadow-lg border border-gray-100`}>
+          {/* Flag Translate Button Mobile (Commented Out)
           <button 
             onClick={() => setLang(lang === 'ID' ? 'EN' : 'ID')}
             aria-label={`Ganti Bahasa ke ${lang === 'ID' ? 'Inggris' : 'Indonesia'}`}
@@ -252,6 +255,7 @@ export default function Navbar() {
           </button>
           
           <div className={`w-px h-5 transition-colors bg-gray-200`}></div>
+          */}
           
           <button 
             onClick={() => setIsMobileOpen(!isMobileOpen)}

@@ -21,16 +21,20 @@ interface Pengajuan {
   email_pic: string;
   no_telp_pic: string;
   tema_kegiatan: string;
+  tujuan_kegiatan?: string;
   deskripsi_kegiatan: string;
   jumlah_peserta: number;
   tanggal_kegiatan: string;
-  waktu_mulai: string;
-  waktu_selesai: string;
+  waktu_mulai?: string;
+  waktu_selesai?: string;
+  waktu_pelaksanaan?: string;
+  durasi?: string;
+  kota_kabupaten?: string;
   lokasi_kegiatan: string;
   dokumen_proposal: string;
-  catatan_tambahan: string;
+  catatan_tambahan?: string;
   status: string;
-  catatan_admin: string;
+  catatan_admin?: string;
   created_at: string;
   user?: User;
 }
@@ -164,7 +168,7 @@ export default function AdminPengajuanEdukasiPage() {
         </button>
       </div>
 
-      {/* Filter / Search Bar (Visual matching reference) */}
+      {/* Filter / Search Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
@@ -200,6 +204,7 @@ export default function AdminPengajuanEdukasiPage() {
                 <th className="py-4 px-5 font-semibold text-center w-16">No.</th>
                 <th className="py-4 px-5 font-semibold">Tgl Pengajuan <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
                 <th className="py-4 px-5 font-semibold">Instansi & PIC <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
+                <th className="py-4 px-5 font-semibold">Kota / Kabupaten <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
                 <th className="py-4 px-5 font-semibold">Tema Kegiatan <i className="fa-solid fa-arrows-up-down text-[10px] ml-1 opacity-50"></i></th>
                 <th className="py-4 px-5 font-semibold text-center">Status</th>
                 <th className="py-4 px-5 font-semibold text-center">Aksi</th>
@@ -208,14 +213,14 @@ export default function AdminPengajuanEdukasiPage() {
             <tbody className="text-[13px] divide-y divide-gray-100 dark:divide-gray-800">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-gray-500">
+                  <td colSpan={7} className="py-12 text-center text-gray-500">
                     <i className="fa-solid fa-circle-notch animate-spin text-2xl text-primary mb-2"></i>
                     <p>Memuat data...</p>
                   </td>
                 </tr>
               ) : data.filter(item => item.jenis_pengajuan === activeTab).length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-gray-500">
+                  <td colSpan={7} className="py-12 text-center text-gray-500">
                     <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
                       <i className="fa-solid fa-folder-open text-2xl text-gray-400"></i>
                     </div>
@@ -236,12 +241,23 @@ export default function AdminPengajuanEdukasiPage() {
                     </td>
                     <td className="py-4 px-5 align-top">
                       <p className="font-bold text-gray-800 dark:text-white">{item.nama_instansi}</p>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
                         <span className="inline-block px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-md text-[10px] font-bold uppercase border border-gray-200 dark:border-gray-700">{item.jenis_instansi}</span>
                         <span className="text-xs text-gray-500"><i className="fa-solid fa-user-tie"></i> {item.nama_pic}</span>
                       </div>
+                      {item.email_pic && (
+                        <p className="text-[11px] text-blue-600 dark:text-blue-400 mt-0.5">
+                          <i className="fa-regular fa-envelope text-[10px]"></i> {item.email_pic}
+                        </p>
+                      )}
                     </td>
-                    <td className="py-4 px-5 align-top max-w-[200px]">
+                    <td className="py-4 px-5 align-top">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-lg text-xs font-bold border border-blue-100 dark:border-blue-800/40">
+                        <i className="fa-solid fa-location-dot text-[11px] text-red-500"></i>
+                        <span>{item.kota_kabupaten || 'Belum diisi'}</span>
+                      </span>
+                    </td>
+                    <td className="py-4 px-5 align-top max-w-[180px]">
                       <p className="font-medium text-gray-800 dark:text-gray-200 line-clamp-2" title={item.tema_kegiatan}>{item.tema_kegiatan}</p>
                       <p className="text-xs text-gray-500 mt-1">
                         <i className="fa-regular fa-calendar text-[10px]"></i> {new Date(item.tanggal_kegiatan).toLocaleDateString('id-ID')}
@@ -318,7 +334,7 @@ export default function AdminPengajuanEdukasiPage() {
                       </div>
                       <div>
                         <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Alamat Lengkap</p>
-                        <p className="font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.alamat_instansi}</p>
+                        <p className="font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.alamat_instansi}</p>
                       </div>
                     </div>
                   </div>
@@ -327,17 +343,35 @@ export default function AdminPengajuanEdukasiPage() {
                     <h4 className="text-sm font-bold text-primary dark:text-blue-400 mb-3 border-b border-gray-100 dark:border-gray-700 pb-2 uppercase tracking-wider">
                       <i className="fa-solid fa-user-tie mr-2"></i> Penanggung Jawab (PIC)
                     </h4>
-                    <div className="flex flex-col gap-3 text-sm bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                    <div className="flex flex-col gap-3 text-sm bg-blue-50/70 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
                       <div>
-                        <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mb-0.5">Nama PIC</p>
-                        <p className="font-bold text-blue-900 dark:text-blue-100">{selectedItem.nama_pic}</p>
+                        <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mb-0.5">Nama PIC & Jabatan</p>
+                        <p className="font-bold text-blue-900 dark:text-blue-100">{selectedItem.nama_pic} {selectedItem.jabatan_pic ? `(${selectedItem.jabatan_pic})` : ''}</p>
                       </div>
+
+                      {/* Email PIC */}
+                      <div>
+                        <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mb-0.5">Email PIC / Instansi</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-blue-900 dark:text-blue-100 break-all">{selectedItem.email_pic || selectedItem.user?.email || '-'}</p>
+                          {(selectedItem.email_pic || selectedItem.user?.email) && (
+                            <a 
+                              href={`mailto:${selectedItem.email_pic || selectedItem.user?.email}`} 
+                              className="w-6 h-6 rounded bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors shrink-0" 
+                              title="Kirim Email"
+                            >
+                              <i className="fa-regular fa-envelope text-xs"></i>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
                       <div>
                         <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mb-0.5">No WhatsApp / Telepon</p>
                         <div className="flex items-center gap-2">
                           <p className="font-bold text-blue-900 dark:text-blue-100">{selectedItem.no_telp_pic || '-'}</p>
                           {selectedItem.no_telp_pic && (
-                            <a href={`https://wa.me/${selectedItem.no_telp_pic.replace(/\D/g,'').replace(/^0/,'62')}`} target="_blank" rel="noreferrer" className="w-6 h-6 rounded bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors" title="Hubungi via WA">
+                            <a href={`https://wa.me/${selectedItem.no_telp_pic.replace(/\D/g,'').replace(/^0/,'62')}`} target="_blank" rel="noreferrer" className="w-6 h-6 rounded bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors shrink-0" title="Hubungi via WA">
                               <i className="fa-brands fa-whatsapp"></i>
                             </a>
                           )}
@@ -357,39 +391,60 @@ export default function AdminPengajuanEdukasiPage() {
                     </h4>
                     <div className="flex flex-col gap-3 text-sm">
                       <div>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Tema Kegiatan</p>
-                        <p className="font-bold text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.tema_kegiatan}</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Nama / Tema Kegiatan</p>
+                        <p className="font-bold text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.tema_kegiatan}</p>
                       </div>
+
+                      {selectedItem.tujuan_kegiatan && (
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Tujuan Kegiatan</p>
+                          <p className="font-medium text-gray-700 dark:text-gray-300 text-xs bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800 leading-relaxed">{selectedItem.tujuan_kegiatan}</p>
+                        </div>
+                      )}
+
                       <div className="grid grid-cols-2 gap-3">
                         <div className="col-span-2">
                           <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Deskripsi Kegiatan</p>
-                          <p className="font-semibold text-gray-800 dark:text-gray-200 text-xs leading-relaxed">{selectedItem.deskripsi_kegiatan}</p>
+                          <p className="font-semibold text-gray-800 dark:text-gray-200 text-xs leading-relaxed bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.deskripsi_kegiatan}</p>
                         </div>
                         <div>
                           <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Jumlah Peserta</p>
-                          <p className="font-semibold text-gray-800 dark:text-gray-200">{selectedItem.jumlah_peserta} Orang</p>
+                          <p className="font-bold text-gray-800 dark:text-gray-200">{selectedItem.jumlah_peserta} Orang</p>
                         </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
                         <div>
                           <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Tanggal</p>
-                          <p className="font-semibold text-gray-800 dark:text-gray-200"><i className="fa-regular fa-calendar mr-1"></i> {new Date(selectedItem.tanggal_kegiatan).toLocaleDateString('id-ID')}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Waktu</p>
-                          <p className="font-semibold text-gray-800 dark:text-gray-200"><i className="fa-regular fa-clock mr-1"></i> {selectedItem.waktu_mulai} - {selectedItem.waktu_selesai}</p>
+                          <p className="font-bold text-gray-800 dark:text-gray-200"><i className="fa-regular fa-calendar mr-1 text-primary"></i> {new Date(selectedItem.tanggal_kegiatan).toLocaleDateString('id-ID')}</p>
                         </div>
                       </div>
+
+                      <div>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Waktu & Durasi</p>
+                        <p className="font-semibold text-gray-800 dark:text-gray-200 text-xs">
+                          <i className="fa-regular fa-clock mr-1 text-primary"></i> 
+                          {selectedItem.waktu_pelaksanaan || `${selectedItem.waktu_mulai || ''} - ${selectedItem.waktu_selesai || ''}`} 
+                          {selectedItem.durasi ? ` (${selectedItem.durasi})` : ''}
+                        </p>
+                      </div>
+
+                      {/* Kota / Kabupaten - NEW DISPLAY */}
+                      <div className="bg-blue-50/70 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                        <p className="text-blue-600/70 dark:text-blue-400/70 text-xs font-semibold mb-0.5">Kota / Kabupaten</p>
+                        <p className="font-extrabold text-blue-900 dark:text-blue-100 text-sm flex items-center gap-1.5">
+                          <i className="fa-solid fa-location-dot text-red-500"></i>
+                          <span>{selectedItem.kota_kabupaten || 'Belum ditentukan'}</span>
+                        </p>
+                      </div>
+
                       <div>
                         <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Lokasi Pelaksanaan</p>
-                        <p className="font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.lokasi_kegiatan}</p>
+                        <p className="font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-gray-100 dark:border-gray-800">{selectedItem.lokasi_kegiatan}</p>
                       </div>
                     </div>
                   </div>
 
                   <div>
                     <h4 className="text-sm font-bold text-primary dark:text-blue-400 mb-3 border-b border-gray-100 dark:border-gray-700 pb-2 uppercase tracking-wider">
-                      <i className="fa-solid fa-file-pdf mr-2"></i> Dokumen & Catatan
+                      <i className="fa-solid fa-file-pdf mr-2"></i> Dokumen Proposal & Catatan
                     </h4>
                     <div className="flex flex-col gap-4 text-sm">
                       {selectedItem.dokumen_proposal ? (
@@ -398,7 +453,7 @@ export default function AdminPengajuanEdukasiPage() {
                             <i className="fa-solid fa-file-pdf text-3xl text-red-500"></i>
                             <div>
                               <p className="font-bold text-gray-800 dark:text-gray-200">Proposal Kegiatan</p>
-                              <p className="text-xs text-gray-500">PDF Document</p>
+                              <p className="text-xs text-gray-500">Berkas Pendukung (Wajib)</p>
                             </div>
                           </div>
                           <a 
@@ -407,7 +462,7 @@ export default function AdminPengajuanEdukasiPage() {
                             rel="noreferrer"
                             className="px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors text-xs flex items-center gap-2"
                           >
-                            <i className="fa-solid fa-download"></i> Unduh
+                            <i className="fa-solid fa-download"></i> Unduh Berkas
                           </a>
                         </div>
                       ) : (

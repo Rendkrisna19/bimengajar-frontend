@@ -62,25 +62,32 @@ export default function HeroSection() {
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
-  const [dynamicSlides, setDynamicSlides] = useState<any[]>(() => {
-    if (memoryHeroCache) return memoryHeroCache;
-    if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem('hero_banners_cache');
-      if (cached) {
-        try { return JSON.parse(cached); } catch (e) {}
-      }
-    }
-    return DEFAULT_SLIDES;
-  });
+  const [isMounted, setIsMounted] = useState(false);
+  const [dynamicSlides, setDynamicSlides] = useState<any[]>(DEFAULT_SLIDES);
 
   useEffect(() => {
-    let isMounted = true;
+    setIsMounted(true);
+    if (memoryHeroCache) {
+      setDynamicSlides(memoryHeroCache);
+    } else if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem('hero_banners_cache');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setDynamicSlides(parsed);
+          }
+        } catch (e) {}
+      }
+    }
+
+    let isApiActive = true;
     const fetchHeroBanners = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
         const res = await fetch(`${apiUrl}/hero-banners?t=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
-        if (isMounted && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
+        if (isApiActive && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
           const mapped = data.data.map((item: any) => ({
             id: item.id,
             title: lang === 'EN' ? (item.title_en || translateText(item.title, 'EN')) : item.title,
@@ -102,7 +109,7 @@ export default function HeroSection() {
       }
     };
     fetchHeroBanners();
-    return () => { isMounted = false; };
+    return () => { isApiActive = false; };
   }, [lang]);
 
   const slides = (dynamicSlides && dynamicSlides.length > 0) ? dynamicSlides : DEFAULT_SLIDES;
@@ -203,6 +210,10 @@ export default function HeroSection() {
                           loop
                           muted
                           playsInline
+                          preload="auto"
+                          onLoadedData={(e) => {
+                            e.currentTarget.play().catch(() => {});
+                          }}
                           className="w-full h-full object-cover rounded-2xl"
                         />
                       ) : (

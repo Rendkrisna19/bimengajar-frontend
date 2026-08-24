@@ -2,12 +2,22 @@
 
 import Navbar from "@/components/layout/Navbar";
 import { useState, useEffect } from "react";
-import PageHeader from "@/components/ui/PageHeader";
 import Footer from "@/components/layout/Footer";
 import { PengajuanForm } from "./types";
 import { submitPengajuanEdukasi } from "./api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+
+const WILAYAH_KERJA = [
+  'Pematangsiantar',
+  'Simalungun',
+  'Batubara',
+  'Asahan',
+  'Tanjungbalai',
+  'Labuhanbatu Utara',
+  'Labuhanbatu',
+  'Labuhanbatu Selatan'
+];
 
 export default function PengajuanEdukasiPage() {
   const router = useRouter();
@@ -22,29 +32,33 @@ export default function PengajuanEdukasiPage() {
 
   const [formData, setFormData] = useState<PengajuanForm>({
     jenis_pengajuan: 'mengunjungi',
+    nama_kegiatan: '',
+    tujuan_kegiatan: '',
+    jumlah_peserta: '',
+    deskripsi_kegiatan: '',
+    tanggal_kegiatan: '',
+    waktu_pelaksanaan: '',
+    durasi: '',
+    kota_kabupaten: '',
+    lokasi_kegiatan: '',
+    
+    nama_pic: '',
+    jabatan_pic: '',
     jenis_instansi: '',
     nama_instansi: '',
     alamat_instansi: '',
-    nama_pic: '',
-    jabatan_pic: '',
     email_pic: '',
     no_telp_pic: '',
-    tema_kegiatan: '',
-    deskripsi_kegiatan: '',
-    jumlah_peserta: '',
-    tanggal_kegiatan: '',
-    waktu_mulai: '',
-    waktu_selesai: '',
-    lokasi_kegiatan: '',
+
     dokumen_proposal: null,
+    dokumen_lainnya: null,
   });
 
   const steps = [
-    { id: 1, label: 'Data Instansi' },
-    { id: 2, label: 'Tema & Kegiatan' },
-    { id: 3, label: 'Waktu & Lokasi' },
-    { id: 4, label: 'Unggah Dokumen' },
-    { id: 5, label: 'Konfirmasi' },
+    { id: 1, label: 'Informasi Kegiatan' },
+    { id: 2, label: 'Informasi Pemohon' },
+    { id: 3, label: 'Dokumen Pendukung' },
+    { id: 4, label: 'Konfirmasi' },
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -52,32 +66,49 @@ export default function PengajuanEdukasiPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'dokumen_proposal' | 'dokumen_lainnya') => {
     if (e.target.files && e.target.files.length > 0) {
-      setFormData(prev => ({ ...prev, dokumen_proposal: e.target.files![0] }));
+      setFormData(prev => ({ ...prev, [fieldName]: e.target.files![0] }));
     }
   };
 
   const nextStep = () => {
-    // Basic validation
     if (step === 1) {
-      if (!formData.jenis_instansi || !formData.nama_instansi || !formData.alamat_instansi || !formData.nama_pic || !formData.jabatan_pic || !formData.email_pic || !formData.no_telp_pic) {
-        Swal.fire('Data Belum Lengkap', 'Harap isi semua bidang yang ditandai bintang merah (*).', 'warning');
+      if (
+        !formData.nama_kegiatan ||
+        !formData.tujuan_kegiatan ||
+        !formData.jumlah_peserta ||
+        !formData.deskripsi_kegiatan ||
+        !formData.tanggal_kegiatan ||
+        !formData.waktu_pelaksanaan ||
+        !formData.durasi ||
+        !formData.kota_kabupaten ||
+        !formData.lokasi_kegiatan
+      ) {
+        Swal.fire('Data Belum Lengkap', 'Harap isi semua kolom informasi kegiatan termasuk Kota/Kabupaten yang ditandai bintang merah (*).', 'warning');
         return;
       }
     } else if (step === 2) {
-      if (!formData.tema_kegiatan || !formData.jumlah_peserta || !formData.deskripsi_kegiatan) {
-        Swal.fire('Data Belum Lengkap', 'Harap lengkapi tema, jumlah peserta, dan deskripsi kegiatan.', 'warning');
+      if (
+        !formData.nama_pic ||
+        !formData.jabatan_pic ||
+        !formData.jenis_instansi ||
+        !formData.nama_instansi ||
+        !formData.alamat_instansi ||
+        !formData.email_pic ||
+        !formData.no_telp_pic
+      ) {
+        Swal.fire('Data Pemohon Belum Lengkap', 'Harap lengkapi semua data penanggung jawab dan instansi pemohon (*).', 'warning');
         return;
       }
     } else if (step === 3) {
-      if (!formData.tanggal_kegiatan || !formData.waktu_mulai || !formData.waktu_selesai || !formData.lokasi_kegiatan) {
-        Swal.fire('Data Belum Lengkap', 'Harap isi tanggal, waktu, dan lokasi kegiatan.', 'warning');
+      if (!formData.dokumen_proposal) {
+        Swal.fire('Dokumen Proposal Wajib Upload', 'Unggah berkas Proposal Kegiatan dalam format PDF/DOC/ZIP.', 'warning');
         return;
       }
     }
     
-    setStep(prev => Math.min(prev + 1, 5));
+    setStep(prev => Math.min(prev + 1, 4));
   };
 
   const prevStep = () => {
@@ -93,6 +124,12 @@ export default function PengajuanEdukasiPage() {
       return;
     }
 
+    if (!formData.dokumen_proposal) {
+      Swal.fire('Proposal Belum Diunggah', 'Dokumen proposal kegiatan wajib diunggah.', 'warning');
+      setStep(3);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       await submitPengajuanEdukasi(formData);
@@ -103,7 +140,7 @@ export default function PengajuanEdukasiPage() {
         icon: 'success',
         confirmButtonColor: '#003366'
       }).then(() => {
-        router.push('/');
+        router.push('/user/dashboard/riwayat');
       });
     } catch (error: any) {
       console.error(error);
@@ -114,36 +151,47 @@ export default function PengajuanEdukasiPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f2f6fa] font-sans flex flex-col">
+    <main className="min-h-screen bg-[#f8fafc] font-sans flex flex-col">
       <Navbar />
-      <PageHeader
-        title="Ajukan Kegiatan Edukasi"
-        description="Ajukan permintaan kegiatan edukasi atau sosialisasi yang akan diadakan oleh Bank Indonesia di instansi Anda."
-        breadcrumbs={[
-          { label: 'Beranda', href: '/' },
-          { label: 'Edukasi', href: '/edukasi' },
-          { label: 'Pengajuan Kegiatan' }
-        ]}
-      />
+
+      {/* Top Banner Header - Matches Screenshot */}
+      <section className="relative pt-28 pb-16 bg-gradient-to-r from-[#003975] via-[#004f9e] to-[#0066c0] text-white overflow-hidden shadow-md">
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <img 
+            src="/images/element/1.png" 
+            alt="Header Background Pattern" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 text-center">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
+            Ajukan Kegiatan <span className="relative inline-block">Edukasi<span className="absolute left-0 bottom-0 w-full h-1 bg-[#fbbf24] rounded-full"></span></span>
+          </h1>
+          <p className="text-blue-100/90 text-sm md:text-base max-w-2xl mx-auto font-medium">
+            Ajukan kegiatan edukasi yang ingin Anda selenggarakan bersama Bank Indonesia. Lengkapi informasi berikut dengan benar.
+          </p>
+        </div>
+      </section>
       
-      <div className="px-4 md:px-8 max-w-7xl mx-auto pt-12 relative z-20 pb-20 flex-1 w-full">
-        {/* Stepper Section */}
-        <div className="w-full mb-10 overflow-x-auto pb-6 hide-scrollbar">
-          <div className="flex items-center justify-between min-w-[700px] relative px-4">
-            <div className="absolute top-5 left-4 right-4 h-[2px] bg-gray-200 -z-10"></div>
+      <div className="px-4 md:px-8 max-w-7xl mx-auto pt-10 relative z-20 pb-20 flex-1 w-full">
+        
+        {/* Stepper Section - Matches Screenshot (4 Steps) */}
+        <div className="w-full mb-10 overflow-x-auto pb-4 hide-scrollbar">
+          <div className="flex items-center justify-between min-w-[650px] max-w-4xl mx-auto relative px-6">
+            <div className="absolute top-5 left-10 right-10 h-[2px] bg-gray-200 -z-10"></div>
             {steps.map((s, idx) => (
-              <div key={s.id} className="flex flex-col items-center gap-3 relative w-1/5">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-[3px] border-white shadow-md transition-all duration-300 ${
-                  step >= s.id ? 'bg-primary text-white scale-110' : 'bg-gray-100 text-gray-400'
+              <div key={s.id} className="flex flex-col items-center gap-2 relative">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-4 border-white shadow-md transition-all duration-300 ${
+                  step >= s.id ? 'bg-[#004f9e] text-white scale-110' : 'bg-gray-200 text-gray-400'
                 }`}>
-                  {step > s.id ? <i className="fa-solid fa-check"></i> : s.id}
+                  {step > s.id ? <i className="fa-solid fa-check text-xs"></i> : s.id}
                 </div>
-                <span className={`text-[13px] font-bold text-center ${step >= s.id ? 'text-primary' : 'text-gray-400'}`}>
+                <span className={`text-[12px] font-bold text-center ${step >= s.id ? 'text-[#004f9e]' : 'text-gray-400'}`}>
                   {s.label}
                 </span>
                 
                 {idx !== 0 && step >= s.id && (
-                  <div className="absolute top-5 right-1/2 w-full h-[2px] bg-primary -z-10 transition-all duration-500"></div>
+                  <div className="absolute top-5 right-1/2 w-full h-[2px] bg-[#004f9e] -z-10 transition-all duration-500"></div>
                 )}
               </div>
             ))}
@@ -152,377 +200,424 @@ export default function PengajuanEdukasiPage() {
 
         {/* Main Content Area */}
         {isAuthenticated === false ? (
-          <div className="flex flex-col items-center justify-center bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-12 text-center max-w-2xl mx-auto mt-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
-            <div className="w-24 h-24 bg-blue-50 text-primary rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner">
+          <div className="flex flex-col items-center justify-center bg-white rounded-3xl shadow-xl border border-gray-100 p-12 text-center max-w-2xl mx-auto mt-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-[#004f9e]"></div>
+            <div className="w-20 h-20 bg-blue-50 text-[#004f9e] rounded-full flex items-center justify-center text-3xl mb-6 shadow-inner">
               <i className="fa-solid fa-lock"></i>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Akses Terbatas</h2>
-            <p className="text-gray-500 mb-8 max-w-md">
-              Silakan <span className="font-bold text-primary">Login</span> atau <span className="font-bold text-primary">Register</span> terlebih dahulu untuk dapat mengajukan permintaan kegiatan edukasi Bank Indonesia.
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">Akses Terbatas</h2>
+            <p className="text-gray-500 mb-8 max-w-md text-sm">
+              Silakan <span className="font-bold text-[#004f9e]">Login</span> terlebih dahulu untuk dapat mengajukan permintaan kegiatan edukasi Bank Indonesia.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <button onClick={() => router.push('/login')} className="px-10 py-3 rounded-xl bg-[#fbbf24] text-white font-bold hover:bg-yellow-500 transition-all shadow-md w-full sm:w-auto text-sm">
+              <button onClick={() => router.push('/login')} className="px-8 py-3 rounded-xl bg-accent-red text-white font-bold hover:brightness-110 transition-all shadow-md text-sm">
                 Masuk (Log In)
               </button>
-              <button onClick={() => router.push('/register')} className="px-10 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm w-full sm:w-auto text-sm">
+              <button onClick={() => router.push('/register')} className="px-8 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm text-sm">
                 Daftar Baru
               </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* Form Area */}
-            <div className="flex-1 bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,51,102,0.04)] border border-gray-100 p-8 md:p-10 w-full relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/4"></div>
             
-            {/* Tab Jenis Pengajuan */}
-            <div className="flex bg-gray-100 rounded-xl p-1.5 mb-8 w-full max-w-md">
-              <button 
-                onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'mengunjungi' }))}
-                disabled={step > 1}
-                title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
-                className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  formData.jenis_pengajuan === 'mengunjungi' ? 'bg-[#fbbf24] text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
-                } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
-              >
-                Ingin Mengunjungi BI
-              </button>
-              <button 
-                onClick={() => setFormData(prev => ({ ...prev, jenis_pengajuan: 'dikunjungi' }))}
-                disabled={step > 1}
-                title={step > 1 ? "Kategori hanya bisa diubah pada Tahap 1" : ""}
-                className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                  formData.jenis_pengajuan === 'dikunjungi' ? 'bg-accent-red text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
-                } ${step > 1 ? 'opacity-60 cursor-not-allowed' : ''}`}
-              >
-                Ingin Dikunjungi BI
-              </button>
+            {/* Form Area (Left Main) */}
+            <div className="flex-1 bg-white rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.05)] border border-gray-100 p-6 md:p-10 w-full relative">
+            
+            {/* Top Form Header with Jenis Kegiatan Dropdown/Pill */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-100">
+              <div className="bg-gray-100 text-gray-700 text-xs sm:text-sm font-bold px-5 py-2.5 rounded-xl shadow-inner">
+                {steps[step - 1].label}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-bold text-gray-500 hidden sm:inline-block">Tipe Pengajuan:</label>
+                <div className="relative">
+                  <select
+                    name="jenis_pengajuan"
+                    value={formData.jenis_pengajuan}
+                    onChange={(e) => setFormData(prev => ({ ...prev, jenis_pengajuan: e.target.value as 'mengunjungi' | 'dikunjungi' }))}
+                    disabled={step > 1}
+                    className="bg-accent-red text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl border-none outline-none shadow-md cursor-pointer appearance-none pr-8 hover:brightness-110 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
+                  >
+                    <option value="mengunjungi" className="bg-white text-gray-800 font-medium">Ingin Mengunjungi BI</option>
+                    <option value="dikunjungi" className="bg-white text-gray-800 font-medium">BI Mengunjungi Instansi Anda</option>
+                  </select>
+                  <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white text-xs pointer-events-none"></i>
+                </div>
+              </div>
             </div>
 
-            <h2 className="text-[17px] font-bold text-primary mb-8 border-b border-gray-100 pb-4 flex items-center justify-between">
-              <span>{steps[step - 1].label}</span>
-              <span className="text-xs font-semibold bg-blue-50 text-primary px-3 py-1 rounded-full border border-blue-100">
-                {formData.jenis_pengajuan === 'mengunjungi' ? 'Mengunjungi Bank Indonesia' : 'BI Mengunjungi Instansi Anda'}
-              </span>
-            </h2>
-            
-            <div className="flex flex-col gap-10 min-h-[350px]">
-              
-              {/* STEP 1: Data Instansi */}
-              {step === 1 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
-                  <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Jenis Instansi <span className="text-red-500">*</span></label>
-                      <div className="relative group">
-                        <select name="jenis_instansi" value={formData.jenis_instansi} onChange={handleInputChange} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none shadow-sm cursor-pointer">
-                          <option value="">Pilih jenis instansi</option>
-                          <option value="Sekolah">Sekolah / Universitas</option>
-                          <option value="Pemerintah">Instansi Pemerintah</option>
-                          <option value="Swasta">Perusahaan Swasta</option>
-                          <option value="Komunitas">Komunitas / Masyarakat</option>
-                        </select>
-                        <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs group-focus-within:text-primary transition-colors"></i>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Nama Instansi <span className="text-red-500">*</span></label>
-                      <input type="text" name="nama_instansi" value={formData.nama_instansi} onChange={handleInputChange} placeholder="Masukkan nama instansi" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
-                    <div className="flex flex-col gap-2 flex-1">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Alamat Instansi <span className="text-red-500">*</span></label>
-                      <textarea name="alamat_instansi" value={formData.alamat_instansi} onChange={handleInputChange} placeholder="Masukkan alamat lengkap" className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
-                    </div>
+            {/* STEP 1: Informasi Kegiatan */}
+            {step === 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                {/* Column 1: Detail Kegiatan */}
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center gap-2 text-[#004f9e] font-bold text-sm mb-1 pb-2 border-b border-blue-50">
+                    <i className="fa-regular fa-clipboard"></i>
+                    <span>Detail Kegiatan</span>
                   </div>
-                  <div className="flex-1 flex flex-col gap-6">
-                    <h3 className="text-[15px] font-bold text-primary mb-1 border-b border-gray-100 pb-3">Penanggung Jawab</h3>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Nama Penanggung Jawab <span className="text-red-500">*</span></label>
-                      <input type="text" name="nama_pic" value={formData.nama_pic} onChange={handleInputChange} placeholder="Masukkan nama lengkap" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Jabatan <span className="text-red-500">*</span></label>
-                      <input type="text" name="jabatan_pic" value={formData.jabatan_pic} onChange={handleInputChange} placeholder="Masukkan jabatan" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Email <span className="text-red-500">*</span></label>
-                      <input type="email" name="email_pic" value={formData.email_pic} onChange={handleInputChange} placeholder="Masukkan email" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">No. Telepon / WhatsApp <span className="text-red-500">*</span></label>
-                      <div className="flex shadow-sm rounded-xl focus-within:ring-4 focus-within:ring-primary/10 transition-all">
-                        <div className="bg-gray-50 border border-gray-200 border-r-0 rounded-l-xl px-4 py-3.5 text-sm font-bold text-gray-700 flex items-center justify-center shrink-0">+62</div>
-                        <input type="tel" name="no_telp_pic" value={formData.no_telp_pic} onChange={handleInputChange} placeholder="Masukkan nomor telepon" className="w-full bg-white text-gray-800 text-sm rounded-r-xl px-4 py-3.5 outline-none transition-all border border-gray-200 border-l-0 focus:border-primary placeholder:text-gray-400" />
-                      </div>
-                    </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Nama Kegiatan <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      name="nama_kegiatan" 
+                      value={formData.nama_kegiatan} 
+                      onChange={handleInputChange} 
+                      placeholder="Masukkan nama kegiatan" 
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Tujuan Kegiatan <span className="text-red-500">*</span></label>
+                    <textarea 
+                      name="tujuan_kegiatan" 
+                      value={formData.tujuan_kegiatan} 
+                      onChange={handleInputChange} 
+                      placeholder="Jelaskan tujuan kegiatan" 
+                      rows={3}
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 resize-none shadow-sm"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Jumlah Peserta (Estimasi) <span className="text-red-500">*</span></label>
+                    <input 
+                      type="number" 
+                      name="jumlah_peserta" 
+                      value={formData.jumlah_peserta} 
+                      onChange={handleInputChange} 
+                      placeholder="Masukkan jumlah peserta" 
+                      min="1" 
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Deskripsi Kegiatan <span className="text-red-500">*</span></label>
+                    <textarea 
+                      name="deskripsi_kegiatan" 
+                      value={formData.deskripsi_kegiatan} 
+                      onChange={handleInputChange} 
+                      placeholder="Jelaskan deskripsi kegiatan" 
+                      rows={4}
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 resize-none shadow-sm"
+                    />
                   </div>
                 </div>
-              )}
 
-              {/* STEP 2: Tema & Kegiatan */}
-              {step === 2 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
-                  <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Tema Kegiatan <span className="text-red-500">*</span></label>
-                      <input type="text" name="tema_kegiatan" value={formData.tema_kegiatan} onChange={handleInputChange} placeholder="Contoh: Sosialisasi QRIS dan CBP Rupiah" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Jumlah Peserta <span className="text-red-500">*</span></label>
-                      <input type="number" name="jumlah_peserta" value={formData.jumlah_peserta} onChange={handleInputChange} placeholder="Perkiraan jumlah peserta" min="1" className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm placeholder:text-gray-400" />
-                    </div>
+                {/* Column 2: Informasi Pelaksanaan */}
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center gap-2 text-[#004f9e] font-bold text-sm mb-1 pb-2 border-b border-blue-50">
+                    <i className="fa-regular fa-calendar-check"></i>
+                    <span>Informasi Pelaksanaan</span>
                   </div>
-                  <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2 flex-1">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Deskripsi Kegiatan <span className="text-red-500">*</span></label>
-                      <textarea name="deskripsi_kegiatan" value={formData.deskripsi_kegiatan} onChange={handleInputChange} placeholder="Jelaskan secara singkat tujuan dan rincian kegiatan..." className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
-                    </div>
-                  </div>
-                </div>
-              )}
 
-              {/* STEP 3: Waktu & Lokasi */}
-              {step === 3 && (
-                <div className="flex flex-col md:flex-row gap-10 animate-fade-in items-stretch">
-                  <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Tanggal Kegiatan <span className="text-red-500">*</span></label>
-                      <input type="date" name="tanggal_kegiatan" value={formData.tanggal_kegiatan} onChange={handleInputChange} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm" />
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="flex-1 flex flex-col gap-2">
-                        <label className="text-[13px] font-bold text-gray-800 ml-1">Waktu Mulai <span className="text-red-500">*</span></label>
-                        <input type="time" name="waktu_mulai" value={formData.waktu_mulai} onChange={handleInputChange} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm" />
-                      </div>
-                      <div className="flex-1 flex flex-col gap-2">
-                        <label className="text-[13px] font-bold text-gray-800 ml-1">Waktu Selesai <span className="text-red-500">*</span></label>
-                        <input type="time" name="waktu_selesai" value={formData.waktu_selesai} onChange={handleInputChange} className="w-full bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm" />
-                      </div>
-                    </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Tanggal Kegiatan <span className="text-red-500">*</span></label>
+                    <input 
+                      type="date" 
+                      name="tanggal_kegiatan" 
+                      value={formData.tanggal_kegiatan} 
+                      onChange={handleInputChange} 
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm"
+                    />
                   </div>
-                  <div className="flex-1 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2 flex-1">
-                      <label className="text-[13px] font-bold text-gray-800 ml-1">Lokasi Kegiatan <span className="text-red-500">*</span></label>
-                      <textarea name="lokasi_kegiatan" value={formData.lokasi_kegiatan} onChange={handleInputChange} placeholder="Nama gedung, ruangan, alamat lengkap..." className="w-full h-full min-h-[120px] bg-white text-gray-800 text-sm rounded-xl px-4 py-3.5 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none shadow-sm placeholder:text-gray-400"></textarea>
-                    </div>
-                  </div>
-                </div>
-              )}
 
-              {/* STEP 4: Unggah Dokumen */}
-              {step === 4 && (
-                <div className="flex flex-col gap-6 animate-fade-in max-w-2xl mx-auto w-full">
-                  <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-sm text-gray-700">
-                    <i className="fa-solid fa-circle-info text-primary mt-0.5"></i>
-                    <p>Opsional: Silakan unggah dokumen proposal kegiatan atau surat permohonan resmi dari instansi Anda jika ada. Format file <strong>PDF</strong> dan maksimal <strong>10MB</strong>.</p>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Waktu Pelaksanaan <span className="text-red-500">*</span></label>
+                    <input 
+                      type="time" 
+                      name="waktu_pelaksanaan" 
+                      value={formData.waktu_pelaksanaan} 
+                      onChange={handleInputChange} 
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm"
+                    />
                   </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[13px] font-bold text-gray-800 ml-1">Dokumen Proposal (PDF) <span className="text-gray-400 font-normal ml-1">(Opsional)</span></label>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Durasi <span className="text-red-500">*</span></label>
                     <div className="relative">
-                      <input 
-                        type="file" 
-                        accept="application/pdf"
-                        onChange={handleFileChange}
-                        className="w-full bg-white text-gray-800 text-sm rounded-xl file:mr-4 file:py-3.5 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-primary hover:file:bg-gray-100 outline-none transition-all border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 shadow-sm cursor-pointer file:cursor-pointer" 
-                      />
+                      <select 
+                        name="durasi" 
+                        value={formData.durasi} 
+                        onChange={handleInputChange} 
+                        className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer"
+                      >
+                        <option value="">Pilih durasi kegiatan</option>
+                        <option value="1 Jam">1 Jam</option>
+                        <option value="2 Jam">2 Jam</option>
+                        <option value="3 Jam">3 Jam</option>
+                        <option value="Setengah Hari (4 Jam)">Setengah Hari (4 Jam)</option>
+                        <option value="Satu Hari Penuh (8 Jam)">Satu Hari Penuh (8 Jam)</option>
+                      </select>
+                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
                     </div>
-                    {formData.dokumen_proposal && (
-                      <p className="text-xs text-green-600 mt-2 font-medium flex items-center gap-1">
-                        <i className="fa-solid fa-check-circle"></i> File terpilih: {formData.dokumen_proposal.name}
-                      </p>
-                    )}
+                  </div>
+
+                  {/* Kota / Kabupaten Field - REQUIRED Dropdown */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Kota / Kabupaten <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select 
+                        name="kota_kabupaten" 
+                        value={formData.kota_kabupaten} 
+                        onChange={handleInputChange} 
+                        required
+                        className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer"
+                      >
+                        <option value="">Pilih Kota / Kabupaten</option>
+                        {WILAYAH_KERJA.map((wil, idx) => (
+                          <option key={idx} value={wil}>{wil}</option>
+                        ))}
+                      </select>
+                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Lokasi Kegiatan <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      name="lokasi_kegiatan" 
+                      value={formData.lokasi_kegiatan} 
+                      onChange={handleInputChange} 
+                      placeholder="Masukkan lokasi kegiatan (nama tempat/alamat)" 
+                      className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm"
+                    />
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* STEP 5: Konfirmasi */}
-              {step === 5 && (
-                <div className="flex flex-col gap-8 animate-fade-in">
-                  <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-sm text-gray-700">
-                    <i className="fa-solid fa-circle-check text-primary mt-0.5"></i>
-                    <p>Pastikan semua data yang Anda masukkan sudah benar sebelum mengirim pengajuan.</p>
+            {/* STEP 2: Informasi Pemohon */}
+            {step === 2 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center gap-2 text-[#004f9e] font-bold text-sm mb-1 pb-2 border-b border-blue-50">
+                    <i className="fa-solid fa-user-check"></i>
+                    <span>Penanggung Jawab (PIC)</span>
                   </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Nama Penanggung Jawab <span className="text-red-500">*</span></label>
+                    <input type="text" name="nama_pic" value={formData.nama_pic} onChange={handleInputChange} placeholder="Masukkan nama lengkap" className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm" />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Jabatan <span className="text-red-500">*</span></label>
+                    <input type="text" name="jabatan_pic" value={formData.jabatan_pic} onChange={handleInputChange} placeholder="Masukkan jabatan" className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm" />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Email <span className="text-red-500">*</span></label>
+                    <input type="email" name="email_pic" value={formData.email_pic} onChange={handleInputChange} placeholder="Masukkan email aktif" className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm" />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">No. Telepon / WhatsApp <span className="text-red-500">*</span></label>
+                    <input type="tel" name="no_telp_pic" value={formData.no_telp_pic} onChange={handleInputChange} placeholder="Contoh: 081234567890" className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center gap-2 text-[#004f9e] font-bold text-sm mb-1 pb-2 border-b border-blue-50">
+                    <i className="fa-solid fa-[#004f9e] fa-building"></i>
+                    <span>Informasi Instansi / Lembaga</span>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Jenis Instansi <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select name="jenis_instansi" value={formData.jenis_instansi} onChange={handleInputChange} className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer">
+                        <option value="">Pilih jenis instansi</option>
+                        <option value="Sekolah / Universitas">Sekolah / Universitas</option>
+                        <option value="Instansi Pemerintah">Instansi Pemerintah</option>
+                        <option value="Perusahaan Swasta">Perusahaan Swasta</option>
+                        <option value="Komunitas / Organisasi">Komunitas / Organisasi</option>
+                      </select>
+                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Nama Instansi <span className="text-red-500">*</span></label>
+                    <input type="text" name="nama_instansi" value={formData.nama_instansi} onChange={handleInputChange} placeholder="Masukkan nama instansi" className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 shadow-sm" />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-700">Alamat Lengkap Instansi <span className="text-red-500">*</span></label>
+                    <textarea name="alamat_instansi" value={formData.alamat_instansi} onChange={handleInputChange} placeholder="Masukkan alamat lengkap instansi" rows={4} className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 resize-none shadow-sm" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Dokumen Pendukung */}
+            {step === 3 && (
+              <div className="flex flex-col gap-6 animate-fade-in max-w-2xl mx-auto w-full py-4">
+                <div className="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 flex items-start gap-3 text-xs sm:text-sm text-gray-700">
+                  <i className="fa-solid fa-circle-info text-[#004f9e] text-base mt-0.5 shrink-0"></i>
+                  <p className="leading-relaxed">
+                    Format file proposal yang didukung adalah <strong>PDF, DOC, DOCX, atau ZIP</strong> dengan ukuran maksimal <strong>10MB</strong>. Unggah berkas proposal permohonan Anda dengan jelas.
+                  </p>
+                </div>
+                
+                {/* Upload File Proposal - WAJIB */}
+                <div className="flex flex-col gap-2 bg-gray-50/60 border-2 border-dashed border-gray-300 hover:border-[#004f9e] rounded-2xl p-6 transition-all text-center">
+                  <label className="text-sm font-bold text-gray-800 mb-1 cursor-pointer">
+                    Upload Berkas Proposal Kegiatan <span className="text-red-500">* (Wajib)</span>
+                  </label>
+                  <p className="text-xs text-gray-400 mb-4">Pilih file PDF/DOCX proposal permohonan Anda</p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-6">
-                      <h3 className="font-bold text-gray-800 mb-5 flex items-center gap-2">
-                        <i className="fa-solid fa-building text-primary"></i> Data Instansi & PIC
-                      </h3>
-                      <div className="flex flex-col gap-4">
-                        <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Nama Instansi</p>
-                          <p className="text-[13px] font-medium text-gray-800">{formData.nama_instansi} <span className="text-gray-500 font-normal">({formData.jenis_instansi})</span></p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Alamat Lengkap</p>
-                          <p className="text-[13px] font-medium text-gray-800 leading-relaxed">{formData.alamat_instansi}</p>
-                        </div>
-                        <div className="pt-4 border-t border-gray-200/60 mt-1">
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Penanggung Jawab (PIC)</p>
-                          <p className="text-[13px] font-medium text-gray-800">{formData.nama_pic} <span className="text-gray-500 font-normal">({formData.jabatan_pic})</span></p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Kontak PIC</p>
-                          <p className="text-[13px] font-medium text-gray-800">+62{formData.no_telp_pic} <span className="text-gray-300 mx-1">|</span> {formData.email_pic}</p>
-                        </div>
-                      </div>
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx,.zip"
+                    onChange={(e) => handleFileChange(e, 'dokumen_proposal')}
+                    className="w-full bg-white text-gray-800 text-xs sm:text-sm rounded-xl file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#004f9e] file:text-white hover:file:bg-blue-900 outline-none border border-gray-200 shadow-sm cursor-pointer" 
+                  />
+                  
+                  {formData.dokumen_proposal && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl text-xs text-green-700 font-semibold flex items-center justify-center gap-2">
+                      <i className="fa-solid fa-file-circle-check text-green-600 text-sm"></i>
+                      <span>{formData.dokumen_proposal.name}</span>
                     </div>
-                    
-                    <div className="bg-gray-50/50 border border-gray-100 rounded-2xl p-6">
-                      <h3 className="font-bold text-gray-800 mb-5 flex items-center gap-2">
-                        <i className="fa-solid fa-calendar-check text-primary"></i> Detail Kegiatan
-                      </h3>
-                      <div className="flex flex-col gap-4">
-                        <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tema Kegiatan</p>
-                          <p className="text-[13px] font-medium text-gray-800">{formData.tema_kegiatan}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tanggal</p>
-                            <p className="text-[13px] font-medium text-gray-800">{formData.tanggal_kegiatan}</p>
-                          </div>
-                          <div>
-                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Waktu</p>
-                            <p className="text-[13px] font-medium text-gray-800">{formData.waktu_mulai} - {formData.waktu_selesai}</p>
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Lokasi & Peserta</p>
-                          <p className="text-[13px] font-medium text-gray-800">{formData.lokasi_kegiatan} <span className="text-gray-400">({formData.jumlah_peserta} Orang)</span></p>
-                        </div>
-                        <div className="pt-4 border-t border-gray-200/60 mt-1">
-                          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dokumen Proposal</p>
-                          <div className="flex items-center gap-2 mt-1.5">
-                            <i className="fa-solid fa-file-pdf text-red-500 text-lg"></i>
-                            <p className="text-[13px] font-medium text-gray-800 line-clamp-1">{formData.dokumen_proposal?.name || '-'}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  )}
+                </div>
+
+                {/* Upload Dokumen Pendukung Lain - Opsional */}
+                <div className="flex flex-col gap-2 bg-gray-50/30 border border-gray-200 rounded-2xl p-5 text-left">
+                  <label className="text-xs font-bold text-gray-700 mb-1">
+                    Upload Dokumen Pendukung Lainnya <span className="text-gray-400 font-normal ml-1">(Opsional, e.g. RAB/Surat Pengantar)</span>
+                  </label>
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx,.zip"
+                    onChange={(e) => handleFileChange(e, 'dokumen_lainnya')}
+                    className="w-full bg-white text-gray-800 text-xs rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 outline-none border border-gray-200 shadow-sm cursor-pointer" 
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4: Konfirmasi */}
+            {step === 4 && (
+              <div className="flex flex-col gap-6 animate-fade-in">
+                <div className="bg-blue-50/70 border border-blue-100 rounded-2xl p-4 flex items-center gap-3 text-xs sm:text-sm text-gray-700">
+                  <i className="fa-solid fa-circle-check text-[#004f9e] text-base shrink-0"></i>
+                  <p>Periksa kembali data pengajuan Anda. Tekan <strong>Kirim Pengajuan</strong> jika data sudah lengkap dan benar.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
+                  <div className="bg-gray-50/70 border border-gray-200/80 rounded-2xl p-5 flex flex-col gap-3">
+                    <h3 className="font-bold text-[#004f9e] border-b border-gray-200 pb-2 flex items-center gap-2">
+                      <i className="fa-solid fa-circle-info"></i> Detail Kegiatan
+                    </h3>
+                    <p><strong>Nama Kegiatan:</strong> {formData.nama_kegiatan}</p>
+                    <p><strong>Tujuan Kegiatan:</strong> {formData.tujuan_kegiatan}</p>
+                    <p><strong>Jumlah Peserta:</strong> {formData.jumlah_peserta} Orang</p>
+                    <p><strong>Tanggal:</strong> {formData.tanggal_kegiatan}</p>
+                    <p><strong>Waktu & Durasi:</strong> {formData.waktu_pelaksanaan} ({formData.durasi})</p>
+                    <p><strong>Kota / Kabupaten:</strong> <span className="font-bold text-primary">{formData.kota_kabupaten}</span></p>
+                    <p><strong>Lokasi Kegiatan:</strong> {formData.lokasi_kegiatan}</p>
+                  </div>
+
+                  <div className="bg-gray-50/70 border border-gray-200/80 rounded-2xl p-5 flex flex-col gap-3">
+                    <h3 className="font-bold text-[#004f9e] border-b border-gray-200 pb-2 flex items-center gap-2">
+                      <i className="fa-solid fa-building"></i> Pemohon & Dokumen
+                    </h3>
+                    <p><strong>Tipe Pengajuan:</strong> {formData.jenis_pengajuan === 'mengunjungi' ? 'Mengunjungi BI' : 'BI Mengunjungi Instansi'}</p>
+                    <p><strong>Penanggung Jawab:</strong> {formData.nama_pic} ({formData.jabatan_pic})</p>
+                    <p><strong>Instansi:</strong> {formData.nama_instansi} ({formData.jenis_instansi})</p>
+                    <p><strong>Alamat Instansi:</strong> {formData.alamat_instansi}</p>
+                    <p><strong>Kontak PIC:</strong> {formData.no_telp_pic} | {formData.email_pic}</p>
+                    <p className="flex items-center gap-2 text-green-700 font-semibold pt-1 border-t border-gray-200">
+                      <i className="fa-solid fa-file-pdf text-red-500"></i> Proposal: {formData.dokumen_proposal?.name}
+                    </p>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="mt-12 flex items-center justify-center md:justify-end gap-4 border-t border-gray-100 pt-8">
+            {/* Navigation Buttons (Bottom) */}
+            <div className="mt-10 flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
               {step > 1 && (
-                <button type="button" onClick={prevStep} className="px-10 py-3.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 hover:border-gray-300 transition-all text-sm w-full md:w-auto">
+                <button 
+                  type="button" 
+                  onClick={prevStep} 
+                  className="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-all text-xs sm:text-sm"
+                >
                   Kembali
                 </button>
               )}
               
-              {step < 5 ? (
-                <button type="button" onClick={nextStep} className="px-10 py-3.5 rounded-xl bg-[#fbbf24] text-white font-bold shadow-[0_6px_20px_rgba(251,191,36,0.4)] hover:shadow-[0_8px_25px_rgba(251,191,36,0.5)] hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-1 w-full md:w-auto">
-                  Selanjutnya <i className="fa-solid fa-arrow-right"></i>
+              {step < 4 ? (
+                <button 
+                  type="button" 
+                  onClick={nextStep} 
+                  className="px-8 py-3 rounded-xl bg-[#fbbf24] hover:bg-yellow-500 text-gray-900 font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 text-xs sm:text-sm"
+                >
+                  <span>Selanjutnya</span>
+                  <i className="fa-solid fa-chevron-right text-xs"></i>
                 </button>
               ) : (
-                <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="px-10 py-3.5 rounded-xl bg-accent-red text-white font-bold shadow-[0_6px_20px_rgba(237,27,36,0.4)] hover:shadow-[0_8px_25px_rgba(237,27,36,0.5)] hover:brightness-110 transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-1 w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed">
+                <button 
+                  type="button" 
+                  onClick={handleSubmit} 
+                  disabled={isSubmitting} 
+                  className="px-8 py-3 rounded-xl bg-accent-red hover:brightness-110 text-white font-bold shadow-md transition-all flex items-center gap-2 text-xs sm:text-sm disabled:opacity-70"
+                >
                   {isSubmitting ? <i className="fa-solid fa-circle-notch animate-spin"></i> : <i className="fa-solid fa-paper-plane"></i>}
-                  Kirim Pengajuan
+                  <span>Kirim Pengajuan</span>
                 </button>
               )}
             </div>
+
           </div>
 
-          {/* Sidebar Area */}
-          <div className="w-full lg:w-[320px] xl:w-[340px] flex flex-col gap-5 shrink-0">
-            {/* Card 1: Tentang */}
-            <div className="bg-white rounded-3xl shadow-[0_5px_20px_rgba(0,51,102,0.03)] border border-gray-100 p-7">
-              <h3 className="text-primary font-bold text-[16px] mb-3">Tentang Pengajuan Kegiatan</h3>
-              <p className="text-gray-500 text-[13px] leading-relaxed">
-                Form ini digunakan untuk mengajukan kegiatan edukasi Bank Indonesia secara online. Pastikan data yang Anda isi sudah benar.
-              </p>
-            </div>
-
-            {/* Card 2: Persyaratan */}
-            <div className="bg-white rounded-3xl shadow-[0_5px_20px_rgba(0,51,102,0.03)] border border-gray-100 p-7">
-              <div className="flex items-center gap-4 mb-5 pb-4 border-b border-gray-50">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-xl shrink-0">
-                  <i className="fa-solid fa-clipboard-list"></i>
+          {/* Sidebar Area (Right Column) - ONLY WILAYAH KERJA AS REQUESTED */}
+          <div className="w-full lg:w-[340px] shrink-0">
+            <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 p-6 sm:p-7 relative overflow-hidden">
+              <div className="flex items-center gap-3.5 mb-4 pb-4 border-b border-gray-100">
+                <div className="w-11 h-11 rounded-2xl bg-blue-50 text-[#004f9e] flex items-center justify-center text-xl shrink-0 shadow-inner">
+                  <i className="fa-solid fa-location-dot"></i>
                 </div>
                 <div>
-                  <h3 className="text-primary font-bold text-[16px]">Persyaratan</h3>
+                  <h3 className="text-[#004f9e] font-extrabold text-base sm:text-lg tracking-tight">Wilayah Kerja</h3>
                 </div>
               </div>
-              <ul className="flex flex-col gap-3.5">
-                <li className="flex items-center gap-3 text-[13px] font-medium text-gray-600">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${step >= 4 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
-                    <i className="fa-solid fa-check"></i>
-                  </div>
-                  Proposal kegiatan (Opsional)
-                </li>
-                <li className="flex items-center gap-3 text-[13px] font-medium text-gray-600">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${step >= 1 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
-                    <i className="fa-solid fa-check"></i>
-                  </div>
-                  Data instansi & PIC
-                </li>
-                <li className="flex items-center gap-3 text-[13px] font-medium text-gray-600">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${step >= 3 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
-                    <i className="fa-solid fa-check"></i>
-                  </div>
-                  Jadwal & Lokasi
-                </li>
-              </ul>
-            </div>
 
-            {/* Card 3: Estimasi Proses */}
-            <div className="bg-white rounded-3xl shadow-[0_5px_20px_rgba(0,51,102,0.03)] border border-gray-100 p-7">
-              <div className="flex items-center gap-4 mb-5 pb-4 border-b border-gray-50">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-xl shrink-0">
-                  <i className="fa-regular fa-clock"></i>
-                </div>
-                <div>
-                  <h3 className="text-primary font-bold text-[16px]">Estimasi Proses</h3>
-                </div>
-              </div>
-              <div className="flex flex-col gap-6 relative ml-3 pl-4 border-l-2 border-gray-100">
-                <div className="relative">
-                  <div className="absolute -left-[21.5px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-white"></div>
-                  <div className="flex justify-between items-center text-[13px]">
-                    <span className="font-bold text-gray-800">1 Hari</span>
-                    <span className="text-gray-500 font-medium">Verifikasi</span>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute -left-[21.5px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-white"></div>
-                  <div className="flex justify-between items-center text-[13px]">
-                    <span className="font-bold text-gray-800">2 Hari</span>
-                    <span className="text-gray-500 font-medium">Penjadwalan</span>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute -left-[21.5px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-white"></div>
-                  <div className="flex justify-between items-center text-[13px]">
-                    <span className="font-bold text-gray-800">Konfirmasi</span>
-                    <span className="text-gray-500 font-medium">Kegiatan</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4: Butuh Bantuan */}
-            <div className="bg-white rounded-3xl shadow-[0_5px_20px_rgba(0,51,102,0.03)] border border-gray-100 p-7 flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-blue-50 text-primary flex items-center justify-center text-2xl mb-4 shadow-inner">
-                <i className="fa-solid fa-headset"></i>
-              </div>
-              <h3 className="text-primary font-bold text-[16px] mb-2">Butuh Bantuan?</h3>
-              <p className="text-gray-500 text-[13px] mb-6 leading-relaxed">
-                Hubungi kami untuk informasi lebih lanjut terkait pengajuan kegiatan edukasi.
+              <p className="text-gray-600 text-xs sm:text-[13px] leading-relaxed mb-5">
+                Pengajuan kegiatan edukasi hanya untuk wilayah kerja Bank Indonesia Pematangsiantar, yaitu:
               </p>
-              <button type="button" className="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 hover:border-gray-300 transition-colors text-[13px] flex items-center justify-center gap-2 shadow-sm">
-                <i className="fa-regular fa-comment-dots text-primary"></i> Hubungi Kami
-              </button>
+
+              {/* Grid 2 Columns for Locations */}
+              <div className="grid grid-cols-2 gap-2.5 mb-6">
+                {WILAYAH_KERJA.map((wilayah, idx) => (
+                  <div 
+                    key={idx} 
+                    className="flex items-center gap-2 bg-gray-50/80 border border-gray-100 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 hover:border-blue-200 transition-colors"
+                  >
+                    <i className="fa-solid fa-location-dot text-[#004f9e] text-[11px] shrink-0"></i>
+                    <span className="truncate">{wilayah}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-blue-50/60 border border-blue-100/80 rounded-xl p-3.5 text-center">
+                <p className="text-[11px] font-semibold text-[#004f9e] leading-snug">
+                  Pengajuan di luar wilayah tersebut tidak dapat diproses.
+                </p>
+              </div>
             </div>
           </div>
-          </div>
+
+        </div>
         )}
       </div>
+
       <Footer />
     </main>
   );
