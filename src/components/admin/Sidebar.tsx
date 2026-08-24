@@ -30,7 +30,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
     {
       category: "Content Management System",
       items: [
-        { name: "Hero Banner", icon: "fa-solid fa-[#1C3281] fa-sliders", href: "/admin/cms/hero-banner" },
+        { name: "Hero Banner", icon: "fa-solid fa-sliders", href: "/admin/cms/hero-banner" },
+        { name: "CMS Footer", icon: "fa-solid fa-table-columns", href: "/admin/cms/footer" },
       ]
     },
     {

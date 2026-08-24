@@ -19,6 +19,33 @@ interface KategoriMateriModalProps {
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+const DEFAULT_CATEGORIES: KategoriMateri[] = [
+  {
+    id: 1,
+    nama: 'Cinta, Bangga, Paham Rupiah',
+    slug: 'cinta-bangga-paham-rupiah',
+    logo: null
+  },
+  {
+    id: 2,
+    nama: 'Kebanksentralan',
+    slug: 'kebanksentralan',
+    logo: null
+  },
+  {
+    id: 3,
+    nama: 'Pelindungan Konsumen (PeKA)',
+    slug: 'pelindungan-konsumen-peka',
+    logo: null
+  },
+  {
+    id: 4,
+    nama: 'QRIS',
+    slug: 'qris',
+    logo: null
+  }
+];
+
 export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriModalProps) {
   const [categories, setCategories] = useState<KategoriMateri[]>([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +53,6 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
 
   useEffect(() => {
     setMounted(true);
-    // Pre-fetch categories on mount
     fetchCategories();
     return () => setMounted(false);
   }, []);
@@ -53,7 +79,55 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
     }
   }, [isOpen]);
 
+  // Helper to format exact titles matching user screenshot
+  const getFormattedCategories = (): KategoriMateri[] => {
+    if (!categories || categories.length === 0) {
+      return DEFAULT_CATEGORIES;
+    }
+
+    const nameMap: Record<string, string> = {
+      'cbp rupiah': 'Cinta, Bangga, Paham Rupiah',
+      'cinta, bangga, paham rupiah': 'Cinta, Bangga, Paham Rupiah',
+      'cinta bangga paham rupiah': 'Cinta, Bangga, Paham Rupiah',
+      'kebanksentralan': 'Kebanksentralan',
+      'peka': 'Pelindungan Konsumen (PeKA)',
+      'perlindungan konsumen': 'Pelindungan Konsumen (PeKA)',
+      'pelindungan konsumen (peka)': 'Pelindungan Konsumen (PeKA)',
+      'qris': 'QRIS'
+    };
+
+    const formatted = categories.map(cat => {
+      const lower = cat.nama.toLowerCase().trim();
+      return {
+        ...cat,
+        nama: nameMap[lower] || cat.nama
+      };
+    });
+
+    const hasKebanksentralan = formatted.some(c => c.nama.toLowerCase().includes('kebanksentralan'));
+    if (!hasKebanksentralan) {
+      formatted.splice(1, 0, {
+        id: 99,
+        nama: 'Kebanksentralan',
+        slug: 'kebanksentralan',
+        logo: null
+      });
+    }
+
+    // Sort to match exact screenshot order: CBP Rupiah -> Kebanksentralan -> PeKA -> QRIS
+    const order = ['cinta, bangga, paham rupiah', 'kebanksentralan', 'pelindungan konsumen (peka)', 'qris'];
+    formatted.sort((a, b) => {
+      const idxA = order.indexOf(a.nama.toLowerCase());
+      const idxB = order.indexOf(b.nama.toLowerCase());
+      return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
+    });
+
+    return formatted.slice(0, 4);
+  };
+
   if (!isOpen || !mounted) return null;
+
+  const displayCategories = getFormattedCategories();
 
   const modalContent = (
     <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md overflow-y-auto">
@@ -95,7 +169,7 @@ export default function KategoriMateriModal({ isOpen, onClose }: KategoriMateriM
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-              {categories.map((kategori) => (
+              {displayCategories.map((kategori) => (
                 <Link 
                   href={`/edukasi/materi-edukasi?kategori=${kategori.slug}`} 
                   key={kategori.id}
