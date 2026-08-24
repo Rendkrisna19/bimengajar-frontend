@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
+import { getImageUrl } from '@/lib/api';
+import { compressImageFile } from '@/lib/imageCompressor';
 
 interface HeroBannerItem {
   id: number;
@@ -22,7 +24,7 @@ interface HeroBannerItem {
   order: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
 
 export default function AdminHeroBannerPage() {
   const [banners, setBanners] = useState<HeroBannerItem[]>([]);
@@ -116,14 +118,23 @@ export default function AdminHeroBannerPage() {
     return /\.(mp4|webm|ogg|mov|quicktime)($|\?)/i.test(urlOrName) || urlOrName.startsWith('data:video');
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+      let file = e.target.files[0];
       if (file.size > 50 * 1024 * 1024) {
         Swal.fire('Ukuran Terlalu Besar', 'Ukuran berkas gambar/video maksimal adalah 50MB. Silakan pilih berkas yang lebih kecil.', 'warning');
         e.target.value = '';
         return;
       }
+
+      if (file.type.startsWith('image/') && !file.type.includes('svg')) {
+        try {
+          file = await compressImageFile(file, 1920, 1920, 0.85);
+        } catch (err) {
+          console.warn('Image compression fallback:', err);
+        }
+      }
+
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
@@ -159,7 +170,11 @@ export default function AdminHeroBannerPage() {
       formData.append('is_active', isActive ? '1' : '0');
 
       if (imageFile) {
-        formData.append('image', imageFile);
+        let fileToUpload = imageFile;
+        if (fileToUpload.type.startsWith('image/') && !fileToUpload.type.includes('svg')) {
+          fileToUpload = await compressImageFile(fileToUpload, 1920, 1920, 0.85);
+        }
+        formData.append('image', fileToUpload);
       }
 
       const url = editingBanner
@@ -325,22 +340,24 @@ export default function AdminHeroBannerPage() {
                       #{item.order}
                     </td>
                     <td className="p-4">
-                      <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shrink-0">
-                        {item.image_url ? (
-                          isVideoFile(item.image_url) ? (
+                      <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                        {item.image_url || item.image ? (
+                          isVideoFile(item.image_url || item.image) ? (
                             <video
-                              src={item.image_url}
+                              src={getImageUrl(item.image_url || item.image)}
                               className="w-full h-full object-cover"
                               muted
                               loop
                               autoPlay
                               playsInline
+                              preload="metadata"
                             />
                           ) : (
                             <img
-                              src={item.image_url}
+                              src={getImageUrl(item.image_url || item.image)}
                               alt={item.title}
                               className="w-full h-full object-contain p-1"
+                              onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                             />
                           )
                         ) : (

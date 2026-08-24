@@ -4,23 +4,9 @@ import path from 'path';
 
 export async function GET() {
   const imagesDir = path.join(process.cwd(), 'public', 'images');
-  const results: string[] = [];
 
-  let sharp: any = null;
-  try {
-    sharp = require('next/dist/compiled/sharp');
-    results.push('Successfully loaded Next.js bundled sharp!');
-  } catch (e: any) {
-    try {
-      sharp = require('sharp');
-      results.push('Successfully loaded sharp!');
-    } catch (e2: any) {
-      results.push('Failed to load sharp: ' + e2.message);
-    }
-  }
-
-  function getLargeImages(dir: string): string[] {
-    let files: string[] = [];
+  function getLargeImages(dir: string): { relativePath: string; sizeKB: number }[] {
+    let files: { relativePath: string; sizeKB: number }[] = [];
     if (!fs.existsSync(dir)) return files;
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
@@ -30,48 +16,62 @@ export async function GET() {
       } else if (/\.(png|jpg|jpeg)$/i.test(item.name)) {
         const stat = fs.statSync(fullPath);
         if (stat.size > 200 * 1024) { // > 200KB
-          files.push(fullPath);
+          const rel = '/' + path.relative(path.join(process.cwd(), 'public'), fullPath).replace(/\\/g, '/');
+          files.push({
+            relativePath: rel,
+            sizeKB: Math.round(stat.size / 1024)
+          });
         }
       }
     }
     return files;
   }
 
-  const largeFiles = getLargeImages(imagesDir);
-  results.push(`Found ${largeFiles.length} files > 200KB`);
+  const files = getLargeImages(imagesDir);
 
-  if (sharp) {
-    for (const filePath of largeFiles) {
-      try {
-        const beforeSize = fs.statSync(filePath).size;
-        const ext = path.extname(filePath).toLowerCase();
-        const buffer = fs.readFileSync(filePath);
-        let outputBuffer: Buffer;
+  return NextResponse.json({
+    status: 'success',
+    files,
+    total: files.length
+  });
+}
 
-        if (ext === '.png') {
-          outputBuffer = await sharp(buffer)
-            .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-            .png({ quality: 80, compressionLevel: 9, palette: true })
-            .toBuffer();
-        } else {
-          outputBuffer = await sharp(buffer)
-            .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-            .jpeg({ quality: 80, progressive: true })
-            .toBuffer();
-        }
-
-        const afterSize = outputBuffer.length;
-        if (afterSize < beforeSize) {
-          fs.writeFileSync(filePath, outputBuffer);
-          results.push(`Compressed ${path.relative(imagesDir, filePath)}: ${(beforeSize/1024).toFixed(0)}KB -> ${(afterSize/1024).toFixed(0)}KB`);
-        } else {
-          results.push(`Skipped ${path.relative(imagesDir, filePath)}`);
-        }
-      } catch (err: any) {
-        results.push(`Error on ${path.relative(imagesDir, filePath)}: ${err.message}`);
-      }
+export async function POST(request: Request) {
+  try {
+    const { relativePath, base64Data } = await request.json();
+    if (!relativePath || !base64Data) {
+      return NextResponse.json({ success: false, error: 'Missing parameters' }, { status: 400 });
     }
-  }
 
-  return NextResponse.json({ results });
+    const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+    const fullPath = path.join(process.cwd(), 'public', cleanPath);
+
+    if (!fs.existsSync(fullPath)) {
+      return NextResponse.json({ success: false, error: 'File not found' }, { status: 404 });
+    }
+
+    const beforeStat = fs.statSync(fullPath);
+    const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return NextResponse.json({ success: false, error: 'Invalid base64 data' }, { status: 400 });
+    }
+
+    const buffer = Buffer.from(matches[2], 'base64');
+    if (buffer.length < beforeStat.size) {
+      fs.writeFileSync(fullPath, buffer);
+      return NextResponse.json({
+        success: true,
+        beforeKB: Math.round(beforeStat.size / 1024),
+        afterKB: Math.round(buffer.length / 1024)
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      skipped: true,
+      message: 'Compressed size was not smaller than original'
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 }

@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import Swal from 'sweetalert2';
 import API, { getImageUrl } from '@/lib/api';
+import { compressImageFile } from '@/lib/imageCompressor';
 
 interface DokItem {
   id: number;
@@ -128,13 +130,17 @@ export default function AdminDokumentasiPage() {
     setIsModalOpen(true);
   };
 
-  const handleSelectFiles = (files: FileList | null) => {
+  const handleSelectFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'));
     if (fileArray.length === 0) return;
 
-    setNewImages(prev => [...prev, ...fileArray]);
-    const previews = fileArray.map(f => URL.createObjectURL(f));
+    const compressed = await Promise.all(
+      fileArray.map(f => compressImageFile(f, 1600, 1600, 0.85))
+    );
+
+    setNewImages(prev => [...prev, ...compressed]);
+    const previews = compressed.map(f => URL.createObjectURL(f));
     setNewImagePreviews(prev => [...prev, ...previews]);
   };
 
@@ -258,7 +264,7 @@ export default function AdminDokumentasiPage() {
               <div className="relative h-44 bg-gray-100 overflow-hidden">
                 {item.images && item.images.length > 0 ? (
                   <img
-                    src={getImageUrl(item.images[0])}
+                    src={getImageUrl(item.images)}
                     alt={item.nama_kegiatan}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
@@ -270,11 +276,11 @@ export default function AdminDokumentasiPage() {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-300"><i className="fa-regular fa-image text-4xl"></i></div>
                 )}
-                <div className="absolute top-3 left-3">
+                <div className="absolute top-3 left-3 z-10">
                   <span className="bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full">{item.kategori}</span>
                 </div>
                 {item.images && item.images.length > 1 && (
-                  <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">+{item.images.length - 1} foto</div>
+                  <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full z-10">+{item.images.length - 1} foto</div>
                 )}
                 {item.video_urls && item.video_urls.length > 0 && (
                   <div className="absolute bottom-3 right-3 bg-red-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">

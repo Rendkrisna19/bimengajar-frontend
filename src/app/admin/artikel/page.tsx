@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import API_URL, { getImageUrl } from '@/lib/api';
+import { compressImageFile } from '@/lib/imageCompressor';
 
 interface Article {
   id: number;
@@ -231,9 +233,10 @@ export default function AdminArtikelPage() {
                     <td className="p-4">
                       <div className="relative w-16 h-12 rounded overflow-hidden bg-gray-100 border border-slate-200 shrink-0">
                         <img 
-                          src={getImageUrl(art.image && art.image.length > 0 ? art.image[0] : null)} 
+                          src={getImageUrl(art.image)} 
                           alt={art.title} 
                           className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                         />
                       </div>
                     </td>
@@ -382,12 +385,16 @@ export default function AdminArtikelPage() {
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={e => {
-                      if (e.target.files) {
-                        setFormData({
-                          ...formData,
-                          new_images: [...formData.new_images, ...Array.from(e.target.files)]
-                        });
+                    onChange={async (e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        const rawFiles = Array.from(e.target.files);
+                        const compressed = await Promise.all(
+                          rawFiles.map(file => compressImageFile(file, 1600, 1600, 0.85))
+                        );
+                        setFormData(prev => ({
+                          ...prev,
+                          new_images: [...prev.new_images, ...compressed]
+                        }));
                       }
                     }}
                     className="hidden" 
