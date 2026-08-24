@@ -126,11 +126,13 @@ export default function ArticleDetailPage() {
                   <div className="mb-8">
                     {/* Main Image Banner */}
                     <div className="relative w-full h-[300px] md:h-[480px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 group">
-                      <img 
+                      <Image 
                         src={getImageUrl(article.image[selectedImageIndex] || article.image[0])} 
                         alt={article.title}
-                        className="w-full h-full object-cover transition-all duration-300"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                        fill
+                        priority
+                        sizes="(max-width: 1024px) 100vw, 800px"
+                        className="object-cover transition-all duration-300"
                       />
 
                       {/* Arrow Navigation (if multiple images) */}
@@ -139,7 +141,7 @@ export default function ArticleDetailPage() {
                           <button
                             type="button"
                             onClick={() => setSelectedImageIndex(prev => (prev === 0 ? article.image.length - 1 : prev - 1))}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md z-10"
                             title="Gambar Sebelumnya"
                           >
                             <i className="fa-solid fa-chevron-left"></i>
@@ -147,12 +149,12 @@ export default function ArticleDetailPage() {
                           <button
                             type="button"
                             onClick={() => setSelectedImageIndex(prev => (prev === article.image.length - 1 ? 0 : prev + 1))}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition-colors shadow-md z-10"
                             title="Gambar Selanjutnya"
                           >
                             <i className="fa-solid fa-chevron-right"></i>
                           </button>
-                          <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                          <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
                             {selectedImageIndex + 1} / {article.image.length} Foto
                           </div>
                         </>
@@ -173,14 +175,15 @@ export default function ArticleDetailPage() {
                                 : 'opacity-70 hover:opacity-100 hover:scale-102 border-2 border-transparent'
                             }`}
                           >
-                            <img 
+                            <Image 
                               src={getImageUrl(img)} 
                               alt={`Galeri ${idx + 1}`} 
-                              className="w-full h-full object-cover" 
-                              onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                              fill
+                              sizes="128px"
+                              className="object-cover" 
                             />
                             {selectedImageIndex === idx && (
-                              <div className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none"></div>
+                              <div className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none z-10"></div>
                             )}
                           </button>
                         ))}
