@@ -123,7 +123,7 @@ export default function AdminPrePostTestPage() {
       }
     } catch (err) {
       console.error('Failed to fetch tests', err);
-    } fontally {
+    } finally {
       setLoading(false);
     }
   };
