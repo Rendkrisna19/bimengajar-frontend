@@ -18,35 +18,24 @@ interface Ulasan {
 }
 
 const DEFAULT_ULASAN: Ulasan[] = [
-  { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5, created_at: new Date().toISOString() },
-  { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5, created_at: new Date().toISOString() },
-  { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5, created_at: new Date().toISOString() },
-  { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5, created_at: new Date().toISOString() }
+  { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5, status: 'disetujui', created_at: new Date().toISOString() }
 ];
-
-let globalUlasanCache: Ulasan[] | null = null;
 
 export default function UlasanPage() {
   const filterActiveUlasan = (list: Ulasan[]) => {
-    return list.filter((u: any) => u.status === 'disetujui' || u.is_approved === true || (u.status !== 'pending' && u.is_approved !== false));
+    return list.filter((u: any) => {
+      if (u.status === 'pending' || u.status === 'nonaktif' || u.is_approved === false) {
+        return false;
+      }
+      return u.status === 'disetujui' || u.is_approved === true || (!u.status && u.is_approved === undefined);
+    });
   };
 
-  const [ulasanList, setUlasanList] = useState<Ulasan[]>(() => {
-    if (globalUlasanCache) return filterActiveUlasan(globalUlasanCache);
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-      if (cached) {
-        try { return filterActiveUlasan(JSON.parse(cached)); } catch (e) {}
-      }
-    }
-    return DEFAULT_ULASAN;
-  });
-
-  const [loading, setLoading] = useState(() => {
-    if (globalUlasanCache && globalUlasanCache.length > 0) return false;
-    if (typeof window !== 'undefined' && (localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache'))) return false;
-    return true;
-  });
+  const [ulasanList, setUlasanList] = useState<Ulasan[]>(DEFAULT_ULASAN);
+  const [loading, setLoading] = useState(true);
   
   // GSAP Refs
   const headerRef = useRef<HTMLDivElement>(null);
@@ -62,39 +51,26 @@ export default function UlasanPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const fetchUlasan = async (silent = false) => {
-    if (!silent) setLoading(true);
+  const fetchUlasan = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/ulasan`, { cache: 'no-store' });
       const data = await res.json();
       if (data.status === 'success') {
         const list = Array.isArray(data.data) ? data.data : data.data.data || [];
         if (list.length > 0) {
-          globalUlasanCache = list;
-          if (typeof window !== 'undefined') {
-            sessionStorage.setItem('ulasan_data_cache', JSON.stringify(list));
-          }
-          setUlasanList(filterActiveUlasan(list));
+          const approved = filterActiveUlasan(list);
+          setUlasanList(approved);
         }
       }
     } catch (error) {
-      if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-        if (cached) {
-          try {
-            setUlasanList(filterActiveUlasan(JSON.parse(cached)));
-          } catch (e) {}
-        }
-      }
+      console.error('Error fetching ulasan:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Initial silent revalidate if cache exists, otherwise full load
-    const hasCache = ulasanList.length > 0 && ulasanList !== DEFAULT_ULASAN;
-    fetchUlasan(hasCache);
+    fetchUlasan();
 
     // GSAP Intro Animations
     if (headerRef.current) {
@@ -124,40 +100,43 @@ export default function UlasanPage() {
     setSubmitting(true);
     setSuccess(false);
 
-    const newUlasanItem: Ulasan = {
-      id: Date.now(),
-      nama,
-      kategori,
-      instansi,
-      komentar,
-      rating,
-      created_at: new Date().toISOString()
-    };
-
-    // Optimistic UI update immediately
-    setUlasanList(prev => [newUlasanItem, ...prev]);
-
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/ulasan`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ nama, kategori, instansi, komentar, rating })
+        body: JSON.stringify({ nama, kategori, instansi, komentar, rating, status: 'disetujui' })
       });
+      
       const data = await res.json();
-      if (data.status === 'success') {
+      if (res.ok && (data.status === 'success' || data.data)) {
         setSuccess(true);
         setNama('');
         setKategori('');
         setInstansi('');
         setKomentar('');
         setRating(5);
-        fetchUlasan(true); // Silent sync in background
+        
+        const newItem: Ulasan = data.data || {
+          id: Date.now(),
+          nama,
+          kategori,
+          instansi,
+          komentar,
+          rating,
+          status: 'disetujui',
+          created_at: new Date().toISOString()
+        };
+
+        setUlasanList(prev => [newItem, ...prev]);
+        fetchUlasan(); // Refresh from backend
+      } else {
+        alert(data.message || 'Gagal mengirim ulasan.');
       }
     } catch (error) {
       console.error('Failed to submit', error);
-      alert('Gagal mengirim ulasan.');
+      alert('Gagal mengirim ulasan. Silakan periksa koneksi internet Anda.');
     } finally {
       setSubmitting(false);
     }
@@ -195,7 +174,7 @@ export default function UlasanPage() {
       <div className="flex-1 max-w-[1400px] mx-auto px-4 md:px-8 py-16 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
         
         {/* LEFT: Form Ulasan */}
-        <div ref={formRef} className="lg:col-span-4 bg-primary rounded-3xl shadow-xl overflow-hidden relative p-8 text-white border border-blue-800">
+        <div ref={formRef} className="lg:col-span-4 bg-primary p-8 text-white border border-blue-800 shadow-xl relative overflow-hidden">
           {/* Form Background Element 1.png */}
           <div 
             className="absolute inset-0 w-full h-full opacity-30 pointer-events-none mix-blend-overlay"
@@ -206,8 +185,8 @@ export default function UlasanPage() {
             <h3 className="text-2xl font-bold text-white mb-6">Tulis Ulasan Anda</h3>
             
             {success && (
-              <div className="mb-6 p-4 bg-green-500/20 border border-green-400 text-green-100 rounded-xl text-sm font-medium backdrop-blur-sm">
-                Terima kasih! Ulasan Anda berhasil dikirim.
+              <div className="mb-6 p-4 bg-green-500/20 border border-green-400 text-green-100 text-sm font-medium backdrop-blur-sm">
+                Terima kasih! Ulasan Anda berhasil dikirim dan ditayangkan.
               </div>
             )}
 
@@ -219,7 +198,7 @@ export default function UlasanPage() {
                   required
                   value={nama}
                   onChange={(e) => setNama(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 rounded-xl px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all"
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all"
                   placeholder="Masukkan nama"
                 />
               </div>
@@ -230,7 +209,7 @@ export default function UlasanPage() {
                   required
                   value={kategori}
                   onChange={(e) => setKategori(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all [&>option]:text-gray-900"
+                  className="w-full bg-white/10 border border-white/20 text-white px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all [&>option]:text-gray-900"
                 >
                   <option value="" disabled>Pilih Kategori</option>
                   <option value="Pelajar">Pelajar</option>
@@ -247,7 +226,7 @@ export default function UlasanPage() {
                   required
                   value={instansi}
                   onChange={(e) => setInstansi(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 rounded-xl px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all"
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all"
                   placeholder="Contoh: SMPN 1 Siantar"
                 />
               </div>
@@ -275,7 +254,7 @@ export default function UlasanPage() {
                   value={komentar}
                   onChange={(e) => setKomentar(e.target.value)}
                   rows={4}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 rounded-xl px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all resize-none"
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/50 px-4 py-3 text-sm outline-none focus:border-white focus:bg-white/20 transition-all resize-none"
                   placeholder="Bagikan pendapat Anda..."
                 ></textarea>
               </div>
@@ -283,7 +262,7 @@ export default function UlasanPage() {
               <button 
                 type="submit" 
                 disabled={submitting}
-                className="mt-4 w-full bg-white text-primary font-extrabold py-3.5 rounded-xl hover:bg-gray-100 shadow-[0_4px_15px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.3)] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                className="mt-4 w-full bg-white text-primary font-extrabold py-3.5 hover:bg-gray-100 shadow-[0_4px_15px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.3)] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Mengirim...' : 'Kirim Ulasan'}
               </button>
@@ -292,7 +271,7 @@ export default function UlasanPage() {
         </div>
 
         {/* RIGHT: Daftar Ulasan */}
-        <div ref={listRef} className="lg:col-span-8 bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-xl relative z-10 flex flex-col h-[760px] overflow-hidden">
+        <div ref={listRef} className="lg:col-span-8 bg-white/95 backdrop-blur-md p-8 border border-gray-200 shadow-xl relative z-10 flex flex-col h-[760px] overflow-hidden">
           <style>{`
             @keyframes marquee-up {
               0% { transform: translateY(0); }
@@ -318,8 +297,8 @@ export default function UlasanPage() {
             </div>
           ) : ulasanList.length === 0 ? (
             <div className="flex justify-center items-center flex-1">
-              <div className="text-center text-gray-500 py-10 px-6 w-full bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
-                Belum ada ulasan. Jadilah yang pertama!
+              <div className="text-center text-gray-500 py-10 px-6 w-full bg-gray-50 border border-gray-100 border-dashed">
+                Belum ada ulasan disetujui. Jadilah yang pertama!
               </div>
             </div>
           ) : (
@@ -329,7 +308,7 @@ export default function UlasanPage() {
                 <div className="h-full relative overflow-hidden">
                   <div className="flex flex-col gap-6 w-full absolute animate-marquee-up hover:[animation-play-state:paused]">
                     {[...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList].filter((_, i) => i % 2 === 0).map((ulasan, idx) => (
-                      <div key={`col1-${ulasan.id}-${idx}`} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
+                      <div key={`col1-${ulasan.id}-${idx}`} className="bg-white border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex gap-1 text-[#fbbf24] text-sm">
                             {[...Array(5)].map((_, i) => (
@@ -337,7 +316,7 @@ export default function UlasanPage() {
                             ))}
                           </div>
                           {ulasan.created_at && (
-                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1">
                               {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </span>
                           )}
@@ -360,7 +339,7 @@ export default function UlasanPage() {
                 <div className="h-full relative overflow-hidden hidden md:block">
                   <div className="flex flex-col gap-6 w-full absolute animate-marquee-down hover:[animation-play-state:paused]">
                     {[...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList].filter((_, i) => i % 2 !== 0).map((ulasan, idx) => (
-                      <div key={`col2-${ulasan.id}-${idx}`} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
+                      <div key={`col2-${ulasan.id}-${idx}`} className="bg-white border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col hover:-translate-y-1 duration-300">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex gap-1 text-[#fbbf24] text-sm">
                             {[...Array(5)].map((_, i) => (
@@ -368,7 +347,7 @@ export default function UlasanPage() {
                             ))}
                           </div>
                           {ulasan.created_at && (
-                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                            <span className="text-[11px] font-semibold text-gray-400 bg-gray-50 px-2 py-1">
                               {new Date(ulasan.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </span>
                           )}

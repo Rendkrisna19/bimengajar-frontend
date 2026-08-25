@@ -77,7 +77,7 @@ export default function AdminUlasanPage() {
     // 1. Get cached statuses from local storage if available
     let cachedMap: Record<number, { status: string; is_approved: boolean }> = {};
     if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
+      const cached = localStorage.getItem('admin_ulasan_cache') || sessionStorage.getItem('admin_ulasan_cache');
       if (cached) {
         try {
           const parsedCache: Ulasan[] = JSON.parse(cached);
@@ -93,7 +93,7 @@ export default function AdminUlasanPage() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`${API_URL}/ulasan`, {
+      const res = await axios.get(`${API_URL}/ulasan?admin=1`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       
@@ -115,8 +115,8 @@ export default function AdminUlasanPage() {
 
       setUlasanList(finalList);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
-        sessionStorage.setItem('ulasan_data_cache', JSON.stringify(finalList));
+        localStorage.setItem('admin_ulasan_cache', JSON.stringify(finalList));
+        sessionStorage.setItem('admin_ulasan_cache', JSON.stringify(finalList));
       }
     } catch {
       // Fallback if API offline
@@ -143,8 +143,10 @@ export default function AdminUlasanPage() {
     });
     setUlasanList(updatedList);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
-      sessionStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+      localStorage.setItem('admin_ulasan_cache', JSON.stringify(updatedList));
+      sessionStorage.setItem('admin_ulasan_cache', JSON.stringify(updatedList));
+      localStorage.removeItem('ulasan_data_cache');
+      sessionStorage.removeItem('ulasan_data_cache');
     }
 
     try {
@@ -179,8 +181,10 @@ export default function AdminUlasanPage() {
       const updatedList = ulasanList.filter(u => u.id !== id);
       setUlasanList(updatedList);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
-        sessionStorage.setItem('ulasan_data_cache', JSON.stringify(updatedList));
+        localStorage.setItem('admin_ulasan_cache', JSON.stringify(updatedList));
+        sessionStorage.setItem('admin_ulasan_cache', JSON.stringify(updatedList));
+        localStorage.removeItem('ulasan_data_cache');
+        sessionStorage.removeItem('ulasan_data_cache');
       }
       try {
         const token = localStorage.getItem('token');

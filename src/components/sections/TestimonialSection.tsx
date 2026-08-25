@@ -18,39 +18,26 @@ interface Ulasan {
 }
 
 const DEFAULT_TESTIMONIALS: Ulasan[] = [
-  { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5, created_at: new Date().toISOString() },
-  { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5, created_at: new Date().toISOString() },
-  { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5, created_at: new Date().toISOString() },
-  { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5, created_at: new Date().toISOString() }
+  { id: 1, nama: 'I GUSTI AGUNG PUTRA MA...', kategori: 'Pelajar', instansi: 'SMPN 2 DENPASAR', komentar: 'Menurut saya lomba ini sangat seru, mengedukasi, dan melatih kemampuan menghafal saya. saya harap...', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 2, nama: 'Steven', kategori: 'Pelajar', instansi: 'SMP', komentar: 'lomba yang menarik', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 3, nama: 'Putu Nayla Anggita Cahyani', kategori: 'Pelajar', instansi: 'SMP Negeri 10 Denpasar', komentar: 'Alur lomba yang menarik, materi lengkap', rating: 5, status: 'disetujui', created_at: new Date().toISOString() },
+  { id: 4, nama: 'Ahmad Faisal', kategori: 'Mahasiswa', instansi: 'Universitas Simalungun', komentar: 'Sangat bermanfaat untuk menambah wawasan kebanksentralan', rating: 5, status: 'disetujui', created_at: new Date().toISOString() }
 ];
-
-let globalTestimonialCache: Ulasan[] | null = null;
 
 export default function TestimonialSection() {
   const { t, lang } = useLanguage();
+
   const filterActiveUlasan = (list: Ulasan[]) => {
-    return list.filter(u => u.status === 'disetujui' || u.is_approved === true || (u.status !== 'pending' && u.is_approved !== false));
+    return list.filter((u: any) => {
+      if (u.status === 'pending' || u.status === 'nonaktif' || u.is_approved === false) {
+        return false;
+      }
+      return u.status === 'disetujui' || u.is_approved === true || (!u.status && u.is_approved === undefined);
+    });
   };
 
-  const [ulasanList, setUlasanList] = useState<Ulasan[]>(() => {
-    if (globalTestimonialCache) return filterActiveUlasan(globalTestimonialCache);
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-      if (cached) {
-        try { 
-          const parsed = JSON.parse(cached);
-          return filterActiveUlasan(parsed);
-        } catch (e) {}
-      }
-    }
-    return DEFAULT_TESTIMONIALS;
-  });
-
-  const [loading, setLoading] = useState(() => {
-    if (globalTestimonialCache && globalTestimonialCache.length > 0) return false;
-    if (typeof window !== 'undefined' && (localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache'))) return false;
-    return true;
-  });
+  const [ulasanList, setUlasanList] = useState<Ulasan[]>(DEFAULT_TESTIMONIALS);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUlasan = async () => {
@@ -60,43 +47,17 @@ export default function TestimonialSection() {
         if (data.status === 'success') {
           const list = Array.isArray(data.data) ? data.data : data.data.data || [];
           if (list.length > 0) {
-            globalTestimonialCache = list;
-            if (typeof window !== 'undefined') {
-              sessionStorage.setItem('ulasan_data_cache', JSON.stringify(list));
-            }
             setUlasanList(filterActiveUlasan(list));
           }
         }
       } catch (error) {
-        // Fallback to local storage if API is not available
-        if (typeof window !== 'undefined') {
-          const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-          if (cached) {
-            try {
-              setUlasanList(filterActiveUlasan(JSON.parse(cached)));
-            } catch (e) {}
-          }
-        }
+        console.error('Error fetching ulasan for home page:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUlasan();
-
-    const handleStorageChange = () => {
-      if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem('ulasan_data_cache') || sessionStorage.getItem('ulasan_data_cache');
-        if (cached) {
-          try {
-            setUlasanList(filterActiveUlasan(JSON.parse(cached)));
-          } catch (e) {}
-        }
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const duplicatedUlasan = ulasanList.length > 0 ? [...ulasanList, ...ulasanList, ...ulasanList, ...ulasanList] : [];
@@ -129,7 +90,7 @@ export default function TestimonialSection() {
         {/* Content Container */}
         <div className="relative flex items-center min-h-[400px]">
           
-          <div className="w-full md:w-[65%] lg:w-[65%] relative z-10 overflow-hidden rounded-r-3xl py-4">
+          <div className="w-full md:w-[65%] lg:w-[65%] relative z-10 overflow-hidden py-4">
             {loading ? (
                <div className="flex justify-center items-center h-48">
                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
