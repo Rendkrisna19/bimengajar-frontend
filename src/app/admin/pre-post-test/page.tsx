@@ -49,7 +49,14 @@ export default function AdminPrePostTestPage() {
   const [activeTab, setActiveTab] = useState<'tests' | 'submissions'>('tests');
   const [tests, setTests] = useState<PrePostTest[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [summary, setSummary] = useState({ total_peserta: 0, rata_rata_skor: 0, total_lulus: 0, persentase_lulus: 0 });
+  const [summary, setSummary] = useState<{
+    total_peserta: number;
+    rata_rata_skor: number;
+    total_lulus: number;
+    persentase_lulus: number;
+    top_5?: Submission[];
+  }>({ total_peserta: 0, rata_rata_skor: 0, total_lulus: 0, persentase_lulus: 0, top_5: [] });
+  
   const [loading, setLoading] = useState(true);
 
   // Modal States
@@ -116,7 +123,7 @@ export default function AdminPrePostTestPage() {
       }
     } catch (err) {
       console.error('Failed to fetch tests', err);
-    } finally {
+    } fontally {
       setLoading(false);
     }
   };
@@ -412,6 +419,15 @@ export default function AdminPrePostTestPage() {
     return matchSearch;
   });
 
+  // Calculate Top 5 from current submissions if summary.top_5 is not set
+  const top5List = summary.top_5 && summary.top_5.length > 0 
+    ? summary.top_5 
+    : [...submissions].sort((a, b) => {
+        const pctA = a.skor_maksimal > 0 ? (a.skor_total / a.skor_maksimal) : 0;
+        const pctB = b.skor_maksimal > 0 ? (b.skor_total / b.skor_maksimal) : 0;
+        return pctB - pctA;
+      }).slice(0, 5);
+
   return (
     <div className="flex flex-col gap-6">
       {/* Page Title & Main Action */}
@@ -585,16 +601,95 @@ export default function AdminPrePostTestPage() {
             </div>
           </div>
 
-          {/* Table Area */}
+          {/* TOP 5 RANKING LEADERBOARD WIDGET */}
+          <div className="bg-gradient-to-br from-slate-900 via-primary to-blue-950 rounded-2xl p-6 text-white shadow-xl border border-blue-900/50">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-blue-800/60 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-xl shadow-inner">
+                  <i className="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
+                    <span>Top 5 Ranking Nilai Tertinggi</span>
+                    <span className="text-[10px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Leaderboard</span>
+                  </h3>
+                  <p className="text-xs text-blue-200/80">Peserta dengan perolehan skor teratas pada pre-test & post-test</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {top5List.map((top, rankIdx) => {
+                const percentage = top.skor_maksimal > 0 ? Math.round((top.skor_total / top.skor_maksimal) * 100) : 0;
+                const rankBadges = [
+                  { title: '#1 Juara Pertama', icon: 'fa-solid fa-crown', badgeColor: 'bg-amber-400 text-slate-950 font-black' },
+                  { title: '#2 Runner Up', icon: 'fa-solid fa-medal', badgeColor: 'bg-slate-200 text-slate-900 font-bold' },
+                  { title: '#3 Peringkat 3', icon: 'fa-solid fa-award', badgeColor: 'bg-amber-700 text-white font-bold' },
+                  { title: `#4 Peringkat 4`, icon: 'fa-solid fa-star', badgeColor: 'bg-blue-400/30 text-blue-200 border border-blue-400/40' },
+                  { title: `#5 Peringkat 5`, icon: 'fa-solid fa-star', badgeColor: 'bg-blue-400/30 text-blue-200 border border-blue-400/40' },
+                ];
+                const badge = rankBadges[rankIdx] || rankBadges[3];
+
+                return (
+                  <div key={top.id} className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:bg-white/15 transition-all shadow-xs">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs flex items-center gap-1 ${badge.badgeColor}`}>
+                          <i className={`${badge.icon} text-[10px]`}></i> Rank #{rankIdx + 1}
+                        </span>
+                        <span className="text-[10px] font-semibold text-blue-200/80">
+                          {top.tanggal_bi_mengajar 
+                            ? new Date(top.tanggal_bi_mengajar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                            : ''}
+                        </span>
+                      </div>
+
+                      <h4 className="font-extrabold text-sm text-white line-clamp-1">{top.nama_peserta}</h4>
+                      <p className="text-[11px] text-blue-200/80 line-clamp-1 mb-3">{top.instansi || 'Umum'}</p>
+
+                      <div className="bg-black/30 p-2.5 rounded-lg border border-white/10 text-center mb-3">
+                        <span className="text-[10px] text-blue-200 font-medium block">Skor Perolehan</span>
+                        <span className="text-lg font-black text-amber-300 block">{top.skor_total} <span className="text-xs text-white opacity-70">/ {top.skor_maksimal}</span></span>
+                        <span className="text-[10px] font-extrabold text-emerald-400">{percentage}%</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setSelectedSubmission(top)}
+                      className="w-full py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <i className="fa-solid fa-eye text-[10px]"></i> Lihat Jawaban
+                    </button>
+                  </div>
+                );
+              })}
+
+              {top5List.length === 0 && (
+                <div className="col-span-full py-8 text-center text-blue-200/60 text-xs font-medium">
+                  Belum ada partisipan hasil tes yang tercatat.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* HISTORY TABLE AREA */}
           <div className="bg-white dark:bg-[#1e1e1e] rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-800 overflow-hidden">
             <div className="flex flex-col md:flex-row gap-3 mb-5 justify-between items-center">
+              <div>
+                <h3 className="text-base font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                  <i className="fa-solid fa-clock-rotate-left text-primary"></i>
+                  <span>Riwayat Seluruh Hasil Tes Peserta (History Table)</span>
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daftar riwayat pengerjaan pre-test & post-test peserta</p>
+              </div>
+
               <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 <input
                   type="text"
                   placeholder="Cari nama peserta atau instansi..."
                   value={searchSubmission}
                   onChange={e => setSearchSubmission(e.target.value)}
-                  className="w-full sm:w-64 p-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-xs bg-gray-50 dark:bg-black outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full sm:w-56 p-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-xs bg-gray-50 dark:bg-black outline-none focus:ring-2 focus:ring-primary"
                 />
 
                 <select
@@ -694,7 +789,7 @@ export default function AdminPrePostTestPage() {
                   {filteredSubmissions.length === 0 && (
                     <tr>
                       <td colSpan={6} className="p-8 text-center text-gray-400">
-                        Belum ada data penampung hasil tes peserta untuk filter ini.
+                        Belum ada data riwayat penampung hasil tes peserta untuk filter ini.
                       </td>
                     </tr>
                   )}
