@@ -25,13 +25,16 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "BI Mengajar - Platform Edukasi Bank Indonesia",
-  description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematangsiantar",
+  title: {
+    default: "PLAT-BK BI Siantar",
+    template: "%s | PLAT-BK BI Siantar",
+  },
+  description: "Platform Edukasi dan Layanan Publik Bank Indonesia Pematangsiantar (PLAT-BK)",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "BI Mengajar",
+    title: "PLAT-BK BI Siantar",
   },
   icons: {
     icon: [
@@ -56,7 +59,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/images/logo.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="BI Mengajar" />
+        <meta name="apple-mobile-web-app-title" content="PLAT-BK BI Siantar" />
         <meta name="theme-color" content="#003366" />
 
         {/* Preconnect & DNS Prefetch to Cloudflare CDN to eliminate TCP/TLS latency */}

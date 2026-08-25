@@ -177,7 +177,7 @@ export default function PengajuanEdukasiPage() {
             Ajukan Kegiatan <span className="relative inline-block">Edukasi<span className="absolute left-0 bottom-0 w-full h-1.5 bg-[#fbbf24] rounded-full"></span></span>
           </h1>
           <p className="text-blue-100 max-w-2xl mx-auto text-sm md:text-base font-medium leading-relaxed drop-shadow-sm">
-            Ajukan kegiatan edukasi yang ingin Anda selenggarakan bersama Bank Indonesia. Lengkapi informasi berikut dengan benar.
+            Mau belajar langsung bersama Bank Indonesia? Datang ke kantor kami atau undang kami ke tempat Anda. Ajukan kegiatan dengan mudah melalui PLAT-BK.
           </p>
         </div>
       </section>
