@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getImageUrl } from '@/lib/api';
@@ -108,13 +109,15 @@ export default function NewsSection() {
                 className="w-[320px] md:w-[380px] bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="relative w-full h-[220px] overflow-hidden bg-gray-100">
-                  <img 
+                  <Image 
                     src={getCardImage(article.image)}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                    fill
+                    sizes="(max-width: 768px) 320px, 380px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                   />
-                  <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900">
+                  <div className="absolute top-4 left-4 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-sm uppercase tracking-wider border-b-[3px] border-blue-900 z-10">
                     {t('news.articleBadge')}
                   </div>
                 </div>

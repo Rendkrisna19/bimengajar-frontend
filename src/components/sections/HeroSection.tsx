@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getImageUrl } from '@/lib/api';
 
 const translateText = (text: string | null, lang: 'ID' | 'EN'): string => {
   if (!text) return '';
@@ -84,7 +85,7 @@ export default function HeroSection() {
     let isApiActive = true;
     const fetchHeroBanners = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
         const res = await fetch(`${apiUrl}/hero-banners?t=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
         if (isApiActive && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
@@ -96,7 +97,7 @@ export default function HeroSection() {
             button_primary_url: item.button_primary_url,
             button_secondary_text: lang === 'EN' ? (item.button_secondary_text_en || translateText(item.button_secondary_text, 'EN')) : item.button_secondary_text,
             button_secondary_url: item.button_secondary_url,
-            image: item.image_url || item.image || '/images/banner/hero1.png',
+            image: getImageUrl(item.image_url || item.image || '/images/banner/hero1.png'),
           }));
           memoryHeroCache = mapped;
           if (typeof window !== 'undefined') {
@@ -210,19 +211,21 @@ export default function HeroSection() {
                           loop
                           muted
                           playsInline
-                          preload="auto"
-                          onLoadedData={(e) => {
-                            e.currentTarget.play().catch(() => {});
-                          }}
+                          preload="metadata"
                           className="w-full h-full object-cover rounded-2xl"
                         />
                       ) : (
-                        <img
-                          src={slide.image}
-                          alt={slide.title || 'Plat-BK'}
-                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-700"
-                          draggable={false}
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={slide.image}
+                            alt={slide.title || 'Plat-BK'}
+                            fill
+                            priority={index === 0}
+                            sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
+                            className="object-contain p-2 group-hover:scale-105 transition-transform duration-700"
+                            draggable={false}
+                          />
+                        </div>
                       )}
                     </div>
                   </div>

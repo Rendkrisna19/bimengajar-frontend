@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getImageUrl } from '@/lib/api';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -152,30 +153,32 @@ export default function DokumentasiDetailPage() {
                 </h2>
 
                 {/* Main Photo */}
-                <div className="relative w-full rounded-xl overflow-hidden bg-gray-100 mb-4" style={{paddingTop: '56.25%'}}>
-                  <img
+                <div className="relative w-full rounded-xl overflow-hidden bg-gray-100 mb-4 h-[320px] md:h-[480px]">
+                  <Image
                     src={getImageUrl(dok.images[activePhoto])}
                     alt={`${dok.nama_kegiatan} - foto ${activePhoto + 1}`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 800px"
+                    className="object-cover"
                   />
                   {dok.images.length > 1 && (
                     <>
                       <button
                         onClick={() => setActivePhoto(p => Math.max(p - 1, 0))}
                         disabled={activePhoto === 0}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 disabled:opacity-30 transition-all"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 disabled:opacity-30 transition-all z-10"
                       >
                         <i className="fa-solid fa-chevron-left"></i>
                       </button>
                       <button
                         onClick={() => setActivePhoto(p => Math.min(p + 1, dok.images.length - 1))}
                         disabled={activePhoto === dok.images.length - 1}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 disabled:opacity-30 transition-all"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 disabled:opacity-30 transition-all z-10"
                       >
                         <i className="fa-solid fa-chevron-right"></i>
                       </button>
-                      <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                      <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full z-10 font-semibold">
                         {activePhoto + 1} / {dok.images.length}
                       </div>
                     </>
@@ -191,11 +194,12 @@ export default function DokumentasiDetailPage() {
                         onClick={() => setActivePhoto(i)}
                         className={`relative shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${activePhoto === i ? 'border-primary shadow-md scale-105' : 'border-gray-200 hover:border-gray-400'}`}
                       >
-                        <img
+                        <Image
                           src={getImageUrl(img)}
                           alt={`thumb-${i}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
                         />
                       </button>
                     ))}

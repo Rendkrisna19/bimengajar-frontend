@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { getImageUrl } from '@/lib/api';
 
@@ -162,13 +163,15 @@ export default function GallerySection() {
                   onClick={() => openModal(item)}
                   className="relative h-48 md:h-56 rounded-2xl overflow-hidden shadow-lg bg-white/10 group cursor-pointer border border-white/10"
                 >
-                  <img 
+                  <Image 
                     src={fullImgUrl} 
                     alt={item.nama_kegiatan}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 300px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                   />
-                  <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
+                  <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap z-10">
                     <span className="bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded-md backdrop-blur-sm">
                       {item.kategori || 'Kegiatan'}
                     </span>
