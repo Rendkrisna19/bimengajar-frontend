@@ -77,12 +77,12 @@ export default function NewsSection() {
 
   return (
     <section className="bg-[#f2f6fa] py-16 overflow-hidden relative">
-      {/* Background Element 2.png (80% Opacity) */}
+      {/* Background Element 2.png (70% Opacity) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <img 
           src="/images/element/2.png" 
           alt="News Background Element" 
-          className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0"
+          className="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none z-0"
         />
       </div>
 

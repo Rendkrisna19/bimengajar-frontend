@@ -84,12 +84,12 @@ export default function GallerySection() {
   return (
     <section className="py-12 md:py-16 bg-[#f2f6fa] text-[#0a2540] relative overflow-hidden">
       
-      {/* Background Element section.png (100% Opacity) */}
+      {/* Background Element section.png (70% Opacity) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <img 
           src="/images/element/section.png" 
           alt="Dokumentasi Background Element" 
-          className="absolute inset-0 w-full h-full object-cover opacity-100 pointer-events-none z-0"
+          className="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none z-0"
         />
       </div>
 
