@@ -77,15 +77,6 @@ export default function NewsSection() {
 
   return (
     <section className="bg-[#f2f6fa] py-16 overflow-hidden relative">
-      {/* Background Element 2.png (70% Opacity) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <img 
-          src="/images/element/2.png" 
-          alt="News Background Element" 
-          className="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none z-0"
-        />
-      </div>
-
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 mb-8 flex items-center justify-between relative z-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{t('news.articlesTitle')}</h2>
         <Link href="/artikel" className="bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2 px-5 rounded flex items-center gap-2 border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1 mt-1">
