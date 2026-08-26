@@ -82,26 +82,32 @@ export default function GallerySection() {
   };
 
   return (
-    <section className="py-12 md:py-16 bg-[#f2f6fa] text-[#0a2540] relative overflow-hidden">
-      
+    <section className="py-12 md:py-16 bg-primary text-white relative overflow-hidden">
+      {/* Background Element 1.png Overlay (Matching Ulasan Section) */}
+      <img 
+        src="/images/element/1.png" 
+        alt="Gallery Background Element" 
+        className="absolute inset-0 w-full h-full object-cover opacity-75 mix-blend-overlay pointer-events-none z-0"
+      />
+
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
-        {/* Header Bar - Bright Blue Text & Standout Button */}
+        {/* Header Bar - White Text & Standout Button */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#003975] tracking-tight drop-shadow-sm">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-sm">
               Dokumentasi Kegiatan BI Mengajar
             </h2>
-            <p className="text-sm text-[#004f9e] mt-1 font-semibold">
+            <p className="text-sm text-blue-100/90 mt-1 font-semibold">
               Kumpulan dokumentasi foto & video kegiatan edukasi kebanksentralan.
             </p>
           </div>
 
           <Link 
             href="/aktivitas"
-            className="text-sm font-extrabold text-white bg-[#003975] hover:bg-[#00264d] px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 border border-blue-400/30"
+            className="bg-accent-yellow text-white hover:brightness-110 font-bold text-sm transition-all py-2.5 px-6 rounded flex items-center gap-2 border-b-4 border-yellow-600 shadow-md shadow-accent-yellow/30 active:border-b-0 active:translate-y-1 shrink-0"
           >
-            Lihat Semua &gt;
+            Lihat Semua <i className="fa-solid fa-arrow-right text-xs"></i>
           </Link>
         </div>
 
