@@ -84,15 +84,6 @@ export default function GallerySection() {
   return (
     <section className="py-12 md:py-16 bg-[#f2f6fa] text-[#0a2540] relative overflow-hidden">
       
-      {/* Background Element section.png (70% Opacity) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <img 
-          src="/images/element/section.png" 
-          alt="Dokumentasi Background Element" 
-          className="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none z-0"
-        />
-      </div>
-
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
         {/* Header Bar - Bright Blue Text & Standout Button */}

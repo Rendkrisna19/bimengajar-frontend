@@ -69,21 +69,17 @@ export default function Footer() {
           
           {/* Logo & Tagline & Deskripsi */}
           <div className="flex flex-col gap-4">
-            <Link href="/" className="flex items-end gap-3.5 shrink-0 py-1 group cursor-pointer">
-              <div className="h-14 w-auto flex items-center justify-start shrink-0">
+            <Link href="/" className="flex items-center shrink-0 py-1 group cursor-pointer">
+              <div className="h-20 md:h-24 w-auto flex items-center justify-start shrink-0">
                 <Image 
                   src="/images/logo.png?v=2" 
                   alt="Logo BI Mengajar" 
-                  width={200} 
-                  height={58} 
+                  width={380} 
+                  height={110} 
                   className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
                   priority
                   unoptimized
                 />
-              </div>
-              <div className="flex flex-col text-left leading-tight tracking-tight pb-1" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-                <span className="whitespace-nowrap text-[11px] font-bold text-gray-700">by Kantor Perwakilan Bank Indonesia</span>
-                <span className="text-primary font-black text-[13px] whitespace-nowrap -mt-0.5">Pematangsiantar</span>
               </div>
             </Link>
             <p className="text-gray-600 text-sm leading-relaxed mt-1">

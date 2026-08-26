@@ -78,24 +78,20 @@ export default function Navbar() {
       {/* ======================= */}
       {/* DESKTOP LAYOUT (xl up)  */}
       {/* ======================= */}
-      <div className="hidden xl:flex items-center justify-between w-full max-w-[1400px] mx-auto px-4 md:px-8 h-20">
+      <div className="hidden xl:flex items-center justify-between w-full max-w-[1400px] mx-auto px-4 md:px-8 h-26">
         
-        {/* KIRI - Logo & Tagline (Logo di Kiri, Teks di Kanan Bawah Logo) */}
-        <Link href="/" className="flex items-end gap-3.5 shrink-0 py-1 group cursor-pointer">
-          <div className="h-14 md:h-16 w-auto flex items-center justify-start shrink-0">
+        {/* KIRI - Logo Gambar (Ekstra Besar & Sangat Jelas) */}
+        <Link href="/" className="flex items-center shrink-0 py-1 group cursor-pointer">
+          <div className="h-20 md:h-24 w-auto flex items-center justify-start shrink-0">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={220} 
-              height={65} 
+              width={380} 
+              height={110} 
               className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               priority
               unoptimized
             />
-          </div>
-          <div className="flex flex-col text-left leading-tight tracking-tight pb-1" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-            <span className="whitespace-nowrap text-[11px] font-bold text-gray-700">by Kantor Perwakilan Bank Indonesia</span>
-            <span className="text-primary font-black text-[13px] whitespace-nowrap -mt-0.5">Pematangsiantar</span>
           </div>
         </Link>
 
@@ -198,23 +194,19 @@ export default function Navbar() {
       {/* ================================== */}
       {/* MOBILE / TABLET LAYOUT (< xl)      */}
       {/* ================================== */}
-      <div className="flex xl:hidden items-center justify-between w-full px-4 h-16">
-        {/* Mobile Logo & Tagline */}
-        <Link href="/" className="flex items-end gap-2 shrink-0 z-50 py-1">
-          <div className="h-10 w-auto flex items-center justify-start shrink-0">
+      <div className="flex xl:hidden items-center justify-between w-full px-4 h-20">
+        {/* Mobile Logo Only (Ekstra Besar) */}
+        <Link href="/" className="flex items-center shrink-0 z-50 py-1">
+          <div className="h-15 md:h-16 w-auto flex items-center justify-start shrink-0">
             <Image 
               src="/images/logo.png?v=2" 
               alt="Logo BI Mengajar" 
-              width={145} 
-              height={42} 
+              width={260} 
+              height={75} 
               className="h-full w-auto object-contain"
               priority
               unoptimized
             />
-          </div>
-          <div className="flex flex-col text-left leading-tight tracking-tight pb-0.5" style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
-            <span className="whitespace-nowrap text-[8.5px] font-bold text-gray-700">by Kantor Perwakilan Bank Indonesia</span>
-            <span className="text-primary font-black text-[9.5px] whitespace-nowrap -mt-0.5">Pematangsiantar</span>
           </div>
         </Link>
 
