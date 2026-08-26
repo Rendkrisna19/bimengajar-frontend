@@ -92,9 +92,6 @@ export default function PerpustakaanPage() {
 
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
               <div className="max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 text-xs font-extrabold text-yellow-300 uppercase tracking-wider mb-4">
-                  <i className="fa-solid fa-landmark text-yellow-400"></i> Literasi Kebanksentralan
-                </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-3 drop-shadow-md">
                   PROFIL PERPUSTAKAAN
                 </h1>
