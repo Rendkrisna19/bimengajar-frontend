@@ -50,9 +50,33 @@ const DEFAULT_SLIDES = [
     button_primary_url: '/edukasi/pengajuan',
     button_secondary_text: 'Jelajahi Materi',
     button_secondary_url: '/edukasi/materi-edukasi',
-    image: '/images/banner/hero1.png',
+    image: '',
   }
 ];
+
+function HeroVideoPlayer({ src }: { src: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-2xl">
+      {!loaded && (
+        <div className="absolute inset-0 bg-blue-50/70 rounded-2xl flex flex-col items-center justify-center gap-2 animate-pulse z-10">
+          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+      <video
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onCanPlay={() => setLoaded(true)}
+        onLoadedData={() => setLoaded(true)}
+        className={`w-full h-full object-cover rounded-2xl transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </div>
+  );
+}
 
 let memoryHeroCache: any = null;
 
@@ -68,15 +92,23 @@ export default function HeroSection() {
 
   useEffect(() => {
     setIsMounted(true);
-    if (memoryHeroCache) {
-      setDynamicSlides(memoryHeroCache);
+    if (memoryHeroCache && Array.isArray(memoryHeroCache) && memoryHeroCache.length > 0) {
+      const cleaned = memoryHeroCache.map((item: any) => ({
+        ...item,
+        image: item.image?.includes('hero1.png') ? '' : item.image
+      }));
+      setDynamicSlides(cleaned);
     } else if (typeof window !== 'undefined') {
       const cached = sessionStorage.getItem('hero_banners_cache');
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setDynamicSlides(parsed);
+            const cleaned = parsed.map((item: any) => ({
+              ...item,
+              image: item.image?.includes('hero1.png') ? '' : item.image
+            }));
+            setDynamicSlides(cleaned);
           }
         } catch (e) {}
       }
@@ -85,20 +117,24 @@ export default function HeroSection() {
     let isApiActive = true;
     const fetchHeroBanners = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
         const res = await fetch(`${apiUrl}/hero-banners?t=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
         if (isApiActive && data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
-          const mapped = data.data.map((item: any) => ({
-            id: item.id,
-            title: lang === 'EN' ? (item.title_en || translateText(item.title, 'EN')) : item.title,
-            subtitle: lang === 'EN' ? (item.subtitle_en || translateText(item.subtitle, 'EN')) : item.subtitle,
-            button_primary_text: lang === 'EN' ? (item.button_primary_text_en || translateText(item.button_primary_text, 'EN')) : item.button_primary_text,
-            button_primary_url: item.button_primary_url,
-            button_secondary_text: lang === 'EN' ? (item.button_secondary_text_en || translateText(item.button_secondary_text, 'EN')) : item.button_secondary_text,
-            button_secondary_url: item.button_secondary_url,
-            image: getImageUrl(item.image_url || item.image || '/images/banner/hero1.png'),
-          }));
+          const mapped = data.data.map((item: any) => {
+            const rawImg = item.image_url || item.image || '';
+            const fullImg = rawImg ? getImageUrl(rawImg) : '';
+            return {
+              id: item.id,
+              title: lang === 'EN' ? (item.title_en || translateText(item.title, 'EN')) : item.title,
+              subtitle: lang === 'EN' ? (item.subtitle_en || translateText(item.subtitle, 'EN')) : item.subtitle,
+              button_primary_text: lang === 'EN' ? (item.button_primary_text_en || translateText(item.button_primary_text, 'EN')) : item.button_primary_text,
+              button_primary_url: item.button_primary_url,
+              button_secondary_text: lang === 'EN' ? (item.button_secondary_text_en || translateText(item.button_secondary_text, 'EN')) : item.button_secondary_text,
+              button_secondary_url: item.button_secondary_url,
+              image: fullImg.includes('hero1.png') ? '' : fullImg,
+            };
+          });
           memoryHeroCache = mapped;
           if (typeof window !== 'undefined') {
             sessionStorage.setItem('hero_banners_cache', JSON.stringify(mapped));
@@ -205,16 +241,8 @@ export default function HeroSection() {
                   <div className="relative mb-6 sm:mb-8 flex items-center justify-center">
                     <div className="relative w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 bg-white/95 rounded-[2.5rem] shadow-2xl border-4 border-white/40 overflow-hidden flex items-center justify-center p-3 sm:p-4 group backdrop-blur-md">
                       {isVideoFile(slide.image) ? (
-                        <video
-                          src={slide.image}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="metadata"
-                          className="w-full h-full object-cover rounded-2xl"
-                        />
-                      ) : (
+                        <HeroVideoPlayer src={slide.image} />
+                      ) : slide.image ? (
                         <div className="relative w-full h-full">
                           <Image
                             src={slide.image}
@@ -225,6 +253,10 @@ export default function HeroSection() {
                             className="object-contain p-2 group-hover:scale-105 transition-transform duration-700"
                             draggable={false}
                           />
+                        </div>
+                      ) : (
+                        <div className="w-full h-full rounded-2xl bg-blue-50/60 flex flex-col items-center justify-center animate-pulse">
+                          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
                         </div>
                       )}
                     </div>
