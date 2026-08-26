@@ -142,9 +142,9 @@ export default function GallerySection() {
                     {sample.kat}
                   </span>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 transition-opacity flex flex-col justify-end p-4">
-                  <span className="text-xs font-bold text-white">{sample.title}</span>
-                  <span className="text-[10px] text-gray-200">Kegiatan BI Mengajar</span>
+                <div className="absolute inset-x-0 bottom-0 bg-black/75 backdrop-blur-sm p-3.5 flex flex-col justify-end z-10 border-t border-white/10">
+                  <span className="text-xs font-bold text-white line-clamp-1">{sample.title}</span>
+                  <span className="text-[10px] text-gray-300 mt-0.5">Kegiatan BI Mengajar</span>
                 </div>
               </div>
             ))}
@@ -183,7 +183,7 @@ export default function GallerySection() {
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-90 transition-opacity flex flex-col justify-end p-4">
+                  <div className="absolute inset-x-0 bottom-0 bg-black/75 backdrop-blur-sm p-3.5 flex flex-col justify-end z-10 border-t border-white/10">
                     <h4 className="text-xs md:text-sm font-bold text-white line-clamp-1">
                       {item.nama_kegiatan}
                     </h4>

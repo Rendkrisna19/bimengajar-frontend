@@ -44,7 +44,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
   'hero.slide3.title': { ID: 'Layanan Penukaran\nUang Logam', EN: 'Coin Exchange\nServices' },
   'hero.slide3.subtitle': {
-    ID: 'Gunakan platform Titik Temu untuk menukarkan uang logam dengan mudah dan bantu sirkulasi koin di masyarakat.',
+    ID: 'Gunakan platform Titik Temu untuk menukarkan uang logam dengan mudah dan bantu sirkulasi logam di masyarakat.',
     EN: 'Use the Titik Temu platform to easily exchange coins and help coin circulation in the community.'
   },
   'hero.btnRequest': { ID: 'Ajukan Edukasi', EN: 'Request Education' },
