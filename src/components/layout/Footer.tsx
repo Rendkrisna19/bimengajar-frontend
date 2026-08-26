@@ -195,7 +195,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-blue-200/60 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-600 text-sm">
-            &copy; {new Date().getFullYear()} {data.copyright_text || 'Bank Indonesia. Hak Cipta Dilindungi.'}
+            &copy; {new Date().getFullYear()} {data.copyright_text || 'kantor perwakilan bank indonesia pematangsiantar. Hak Cipta Dilindungi.'}
           </p>
           <div className="flex gap-4">
           </div>
