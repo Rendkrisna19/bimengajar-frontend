@@ -98,7 +98,7 @@ export default function Footer() {
               <li><Link href="/" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Beranda</Link></li>
               <li><Link href="/tentang-kami" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Tentang Kami</Link></li>
               <li><Link href="/edukasi" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Edukasi</Link></li>
-              <li><Link href="/titik-temu" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Pojok Koin</Link></li>
+              <li><Link href="/titik-temu" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Titik Temu</Link></li>
               <li><Link href="/berita" className="text-gray-600 hover:text-primary transition-colors text-sm font-medium">Aktivitas</Link></li>
             </ul>
           </div>
@@ -198,7 +198,6 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} {data.copyright_text || 'Bank Indonesia. Hak Cipta Dilindungi.'}
           </p>
           <div className="flex gap-4">
-            <span className="text-primary font-bold text-sm">Indonesia Maju</span>
           </div>
         </div>
       </div>
