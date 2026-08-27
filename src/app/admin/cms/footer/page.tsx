@@ -135,7 +135,10 @@ export default function CmsFooterPage() {
         </div>
         <button
           type="button"
-          onClick={handleSubmit}
+          onClick={() => {
+            const form = document.getElementById('footer-form') as HTMLFormElement;
+            if (form) form.requestSubmit();
+          }}
           disabled={submitting}
           className="px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-xl shadow-md hover:bg-blue-900 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 shrink-0"
         >
@@ -151,7 +154,7 @@ export default function CmsFooterPage() {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form id="footer-form" onSubmit={handleSubmit} className="space-y-8">
         {/* Section 1: Informasi Utama Footer */}
         <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 space-y-6">
           <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-4">
