@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://platbkbi.id'),
   title: {
-    default: "PLAT-BK | Platform Belajar dan Kolaborasi Bank Indonesia Pematangsiantar",
+    default: "PLAT-BK | Platform Belajar dan Kolaborasi Bank Indonesia",
     template: "%s | PLAT-BK Bank Indonesia Pematangsiantar",
   },
   description: "PLAT-BK hadir sebagai ruang belajar dan kolaborasi yang diinisiasi oleh Bank Indonesia Pematangsiantar untuk meningkatkan literasi dan pemahaman masyarakat mengenai peran, fungsi, serta kebijakan Bank Indonesia sebagai bank sentral.",
