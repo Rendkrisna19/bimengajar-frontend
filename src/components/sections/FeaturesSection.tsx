@@ -40,7 +40,7 @@ export default function FeaturesSection() {
     },
     {
       title: t('features.kalender'),
-      image: '/images/menu-cepat/6.jpg',
+      image: '/images/menu-cepat/6.png',
       link: '/kalender'
     }
   ];

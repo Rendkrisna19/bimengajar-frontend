@@ -68,7 +68,7 @@ export default function PWAInstaller() {
           />
         </div>
         <div>
-          <h4 className="font-extrabold text-sm text-white leading-tight">Install BI Mengajar</h4>
+          <h4 className="font-extrabold text-sm text-white leading-tight">Install PLAT-BK</h4>
           <p className="text-[11px] text-blue-100/90 leading-tight">Pasang aplikasi di HP/Android Anda untuk akses lebih cepat!</p>
         </div>
       </div>
