@@ -109,7 +109,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'pk.title': { ID: 'Titik', EN: 'Meeting' },
   'pk.titleAccent': { ID: 'Temu', EN: 'Point' },
   'pk.subtitle': {
-    ID: 'Platform matching antara pihak yang membutuhkan dan memiliki uang logam, untuk meningkatkan sirkulasi koin di masyarakat.',
+    ID: 'Platform matching antara pihak yang membutuhkan dan memiliki uang logam, untuk meningkatkan sirkulasi logam di masyarakat.',
     EN: 'A matching platform between those who need and those who have coins, to improve coin circulation in the community.',
   },
   'pk.tab.need': { ID: 'Saya Membutuhkan', EN: 'I Need Coins' },
