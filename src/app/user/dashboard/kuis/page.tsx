@@ -55,24 +55,31 @@ export default function UserDashboardKuis() {
     setActivePin(undefined);
   };
 
-  const handleJoinPinSubmit = (pinCode: string, nickname: string, avatarId: string) => {
-    const result = joinLiveSession(pinCode, nickname, avatarId);
+  const handleJoinPinSubmit = async (pinCode: string, nickname: string, avatarId: string) => {
+    const result = await joinLiveSession(pinCode, nickname, avatarId);
     
     if (!result.success || !result.session) {
       Swal.fire({
         icon: 'error',
         title: 'Gagal Bergabung!',
-        text: result.message || 'Game PIN tidak valid atau Live Room sudah ditutup.'
+        text: result.message || 'Game PIN tidak valid atau Live Room sudah ditutup.',
+        confirmButtonText: 'Coba Lagi',
+        confirmButtonColor: '#0054a7'
       });
-      return;
+      return; // keep modal open — do NOT close
     }
 
+    const session = result.session;
     setIsPinModalOpen(false);
     setUserNickname(nickname);
     setActivePin(pinCode);
 
-    // Pick target quiz from session
-    const targetQuiz = quizzes.find(q => q.id === result.session?.quiz_id) || quizzes[0];
+    // Pick target quiz from session object or fallback to matching quiz/first quiz
+    const targetQuiz = session?.quiz || quizzes.find(q => String(q.id) === String(session?.quiz_id)) || quizzes[0];
+    if (!targetQuiz) {
+      Swal.fire({ icon: 'warning', title: 'Kuis tidak ditemukan', text: 'Silakan muat ulang halaman.' });
+      return;
+    }
     setActiveQuiz(targetQuiz);
     setQuizMode('multiplayer');
   };

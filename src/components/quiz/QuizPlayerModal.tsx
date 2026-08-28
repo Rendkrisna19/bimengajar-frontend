@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QuizItem, QuizQuestion, calculateQuestionScore, PLAYER_AVATARS, saveQuizScoreRecord } from '@/lib/quizData';
 import { quizAudio, BGM_TRACKS } from '@/lib/quizAudio';
-import { getActiveLiveSession } from '@/lib/quizLiveSession';
+import { getActiveLiveSession, syncActiveSessionFromApi } from '@/lib/quizLiveSession';
 
 function triggerVictoryConfetti() {
   if (typeof window === 'undefined') return;
@@ -97,6 +97,10 @@ export default function QuizPlayerModal({
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const autoNextTimerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(Date.now());
+  // Refs to avoid stale closures in the polling syncRoom function
+  const isGameStartedRef = useRef<boolean>(false);
+  const countdownNumRef = useRef<number | null>(null);
+  const gameStartCalledRef = useRef<boolean>(false);
 
   const currentQ: QuizQuestion | undefined = quiz.questions[currentIdx];
 
@@ -108,6 +112,9 @@ export default function QuizPlayerModal({
   };
 
   const handleStartGame = () => {
+    if (gameStartCalledRef.current) return; // guard double-fire
+    gameStartCalledRef.current = true;
+    countdownNumRef.current = 3;
     setCountdownNum(3);
     quizAudio.playCorrectSound();
 
@@ -116,36 +123,46 @@ export default function QuizPlayerModal({
       count -= 1;
       if (count <= 0) {
         clearInterval(cdInterval);
+        countdownNumRef.current = null;
         setCountdownNum(null);
+        isGameStartedRef.current = true;
         setIsGameStarted(true);
       } else {
+        countdownNumRef.current = count;
         setCountdownNum(count);
         quizAudio.playTickSound();
       }
     }, 800);
   };
 
-  // Sync Live Room session for Multiplayer
+  // Sync Live Room session for Multiplayer – runs once, reads state via refs
   useEffect(() => {
     if (mode !== 'multiplayer') return;
 
-    const syncRoom = () => {
-      const session = getActiveLiveSession();
+    const syncRoom = async () => {
+      const session = (await syncActiveSessionFromApi()) || getActiveLiveSession();
       if (session) {
         setLiveSessionStatus(session.status);
-        setConnectedParticipants(session.participants || []);
+        setConnectedParticipants([...(session.participants || [])]);
 
-        if (session.status === 'playing' && !isGameStarted && countdownNum === null) {
+        // Trigger game start when host presses "Mulai" – use refs, not state closure
+        if (
+          session.status === 'playing' &&
+          !isGameStartedRef.current &&
+          countdownNumRef.current === null &&
+          !gameStartCalledRef.current
+        ) {
           handleStartGame();
         }
       } else {
-        setLiveSessionStatus('finished');
+        setLiveSessionStatus('waiting');
       }
     };
 
     syncRoom();
     window.addEventListener('quiz_session_update', syncRoom);
     window.addEventListener('storage', syncRoom);
+    // Poll every 1000ms for cross-browser / cross-device DB sync
     const interval = setInterval(syncRoom, 1000);
 
     return () => {
@@ -153,7 +170,8 @@ export default function QuizPlayerModal({
       window.removeEventListener('storage', syncRoom);
       clearInterval(interval);
     };
-  }, [mode, pinCode, isGameStarted, countdownNum]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   // Start Timer & Audio on mount / question change
   useEffect(() => {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getDocThumbnail } from '@/lib/api';
 
 interface DokItem {
   id: number;
@@ -171,8 +171,7 @@ export default function GallerySection() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             {items.slice(0, 4).map((item) => {
-              const imgPath = item.images && item.images.length > 0 ? item.images[0] : '';
-              const fullImgUrl = getImageUrl(imgPath);
+              const fullImgUrl = getDocThumbnail(item);
               const imgCount = item.images?.length || 0;
               const videoCount = item.video_urls?.length || 0;
 
@@ -182,13 +181,12 @@ export default function GallerySection() {
                   onClick={() => openModal(item)}
                   className="relative h-48 md:h-56 rounded-2xl overflow-hidden shadow-lg bg-white/10 group cursor-pointer border border-white/10"
                 >
-                  <Image 
+                  <img 
                     src={fullImgUrl} 
                     alt={item.nama_kegiatan}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 300px"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
                   <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap z-10">
                     <span className="bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded-md backdrop-blur-sm">
@@ -223,14 +221,14 @@ export default function GallerySection() {
 
       </div>
 
-      {/* Lightbox / Preview Modal - High Z-index & Top Padded to prevent navbar overlay */}
+      {/* Lightbox / Preview Modal - Perfectly Centered Viewport */}
       {selectedItem && (
         <div 
-          className="fixed inset-0 z-[999999] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 md:p-6 pt-24 md:pt-28"
+          className="fixed inset-0 z-[999999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto"
           onClick={() => setSelectedItem(null)}
         >
           <div 
-            className="relative bg-white text-slate-800 rounded-3xl overflow-hidden border border-slate-100 shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-3xl max-h-[82vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 my-auto"
+            className="relative bg-white text-slate-800 rounded-3xl overflow-hidden border border-slate-100 shadow-[0_25px_60px_rgba(0,0,0,0.35)] w-full max-w-3xl max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}

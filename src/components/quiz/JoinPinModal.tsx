@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { PLAYER_AVATARS } from '@/lib/quizData';
-import { getActiveLiveSession } from '@/lib/quizLiveSession';
+import { getActiveLiveSession, syncActiveSessionFromApi } from '@/lib/quizLiveSession';
 
 interface JoinPinModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onJoin: (pinCode: string, nickname: string, avatarId: string) => void;
+  onJoin: (pinCode: string, nickname: string, avatarId: string) => Promise<void> | void;
 }
 
 export default function JoinPinModal({ isOpen, onClose, onJoin }: JoinPinModalProps) {
@@ -15,28 +15,65 @@ export default function JoinPinModal({ isOpen, onClose, onJoin }: JoinPinModalPr
   const [nickname, setNickname] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(PLAYER_AVATARS[0].id);
   const [activeSessionPin, setActiveSessionPin] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Live-sync: poll DB server every 2000ms and listen to local updates without triggering infinite fetch loop
   useEffect(() => {
-    const session = getActiveLiveSession();
-    if (session && session.pin_code) {
-      setActiveSessionPin(session.pin_code);
-      setPinCode(session.pin_code);
-    }
-  }, []);
+    if (!isOpen) return;
+
+    let isMounted = true;
+
+    const updateLocalPin = () => {
+      const session = getActiveLiveSession();
+      if (session && session.pin_code && session.status !== 'finished') {
+        setActiveSessionPin(session.pin_code);
+        setPinCode(prev => (prev === '' || prev === session.pin_code) ? session.pin_code : prev);
+      } else {
+        setActiveSessionPin(null);
+      }
+    };
+
+    const pollApi = async () => {
+      const session = await syncActiveSessionFromApi();
+      if (!isMounted) return;
+      if (session && session.pin_code && session.status !== 'finished') {
+        setActiveSessionPin(session.pin_code);
+        setPinCode(prev => (prev === '' || prev === session.pin_code) ? session.pin_code : prev);
+      } else {
+        setActiveSessionPin(null);
+      }
+    };
+
+    updateLocalPin();
+    pollApi();
+    window.addEventListener('quiz_session_update', updateLocalPin);
+    const interval = setInterval(pollApi, 2000);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('quiz_session_update', updateLocalPin);
+      clearInterval(interval);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pinCode.trim() || pinCode.length < 6) {
-      alert('Masukkan 6-Digit Game PIN yang valid!');
+      alert('Masukkan 6-Digit Game PIN yang valid! (tepat 6 angka)');
       return;
     }
-    if (!nickname.trim()) {
-      alert('Silakan isi nama / nickname Anda!');
+    if (!nickname.trim() || nickname.trim().length < 2) {
+      alert('Nama / Nickname minimal 2 karakter!');
       return;
     }
-    onJoin(pinCode.trim(), nickname.trim(), selectedAvatar);
+    try {
+      setIsSubmitting(true);
+      await onJoin(pinCode.trim(), nickname.trim(), selectedAvatar);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -129,10 +166,20 @@ export default function JoinPinModal({ isOpen, onClose, onJoin }: JoinPinModalPr
 
           <button
             type="submit"
-            className="w-full py-4 bg-primary hover:bg-sky-600 text-white font-black text-sm rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 cursor-pointer border-b-4 border-yellow-400 active:border-b-0 active:translate-y-0.5"
+            disabled={isSubmitting}
+            className="w-full py-4 bg-primary hover:bg-sky-600 disabled:opacity-50 text-white font-black text-sm rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 cursor-pointer border-b-4 border-yellow-400 active:border-b-0 active:translate-y-0.5"
           >
-            <span>Gabung ke Live Room</span>
-            <i className="fa-solid fa-arrow-right"></i>
+            {isSubmitting ? (
+              <>
+                <i className="fa-solid fa-spinner animate-spin"></i>
+                <span>Menghubungkan...</span>
+              </>
+            ) : (
+              <>
+                <span>Gabung ke Live Room</span>
+                <i className="fa-solid fa-arrow-right"></i>
+              </>
+            )}
           </button>
         </form>
       </div>

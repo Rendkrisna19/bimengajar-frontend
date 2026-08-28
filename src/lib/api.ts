@@ -78,4 +78,58 @@ export function getImageUrl(input: any): string {
   return `${backendUrl}/storage/${raw}`;
 }
 
+/**
+ * Extract thumbnail URL for documentation items.
+ * If images are present, returns the main image URL.
+ * If only video_urls (YouTube or Google Drive) are present, extracts and returns the video thumbnail.
+ */
+export function getDocThumbnail(item: { images?: any; video_urls?: any }): string {
+  if (!item) return '/images/banner/hero1.png';
+
+  // 1. Check images array
+  let rawImgs = item.images;
+  if (typeof rawImgs === 'string') {
+    try {
+      rawImgs = JSON.parse(rawImgs);
+    } catch {}
+  }
+  if (Array.isArray(rawImgs) && rawImgs.length > 0 && rawImgs[0]) {
+    const imgUrl = getImageUrl(rawImgs[0]);
+    if (imgUrl && imgUrl !== '/images/banner/hero1.png') {
+      return imgUrl;
+    }
+  }
+
+  // 2. Check video_urls array
+  let rawVideos = item.video_urls;
+  if (typeof rawVideos === 'string') {
+    try {
+      rawVideos = JSON.parse(rawVideos);
+    } catch {
+      rawVideos = [rawVideos];
+    }
+  }
+
+  if (Array.isArray(rawVideos) && rawVideos.length > 0) {
+    for (const v of rawVideos) {
+      if (!v || typeof v !== 'string') continue;
+      const urlStr = v.trim();
+
+      // YouTube Match
+      const ytMatch = urlStr.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      if (ytMatch && ytMatch[1]) {
+        return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+      }
+
+      // Google Drive Match
+      const driveMatch = urlStr.match(/\/d\/([^/]+)/) || urlStr.match(/[?&]id=([^&]+)/);
+      if (driveMatch && driveMatch[1]) {
+        return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w800`;
+      }
+    }
+  }
+
+  return '/images/banner/hero1.png';
+}
+
 export default API_URL;

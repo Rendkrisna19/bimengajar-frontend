@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 import { gsap } from 'gsap';
 import dynamic from 'next/dynamic';
 import KalenderView from '@/components/ui/KalenderView';
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getDocThumbnail } from '@/lib/api';
 
 const MapSection = dynamic(() => import('@/components/sections/MapSection'), {
   ssr: false,
@@ -234,29 +234,22 @@ export default function AktivitasPage() {
             <i className="fa-regular fa-images text-5xl mb-4 block"></i>
             <p>Belum ada dokumentasi kegiatan.</p>
           </div>
-        ) : dokumentasi.map((item) => (
-          <Link href={`/aktivitas/dokumentasi/${item.id}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
-            <div className="relative h-52 w-full overflow-hidden bg-gray-100">
-              {item.images && item.images.length > 0 ? (
-                <Image src={getImageUrl(item.images[0])} alt={item.nama_kegiatan} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              ) : item.video_urls && item.video_urls.length > 0 ? (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white gap-2">
-                  <i className="fa-brands fa-youtube text-5xl text-red-500"></i>
-                  <span className="text-xs text-gray-300">{item.video_urls.length} video tersedia</span>
-                </div>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-300"><i className="fa-regular fa-image text-5xl"></i></div>
-              )}
-              <div className="absolute top-3 left-3"><span className="bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full">{item.kategori}</span></div>
-              {item.images && item.images.length > 1 && (
-                <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">+{item.images.length - 1} foto</div>
-              )}
-              {item.video_urls && item.video_urls.length > 0 && (
-                <div className="absolute bottom-3 right-3 bg-red-600/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                  <i className="fa-brands fa-youtube"></i> {item.video_urls.length} video
-                </div>
-              )}
-            </div>
+        ) : dokumentasi.map((item) => {
+          const docThumb = getDocThumbnail(item);
+          return (
+            <Link href={`/aktivitas/dokumentasi/${item.id}`} key={item.id} className="aktivitas-card block bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 group hover:-translate-y-1 hover:shadow-[4px_4px_0_#003366]">
+              <div className="relative h-52 w-full overflow-hidden bg-gray-100">
+                <img src={docThumb} alt={item.nama_kegiatan} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }} />
+                <div className="absolute top-3 left-3"><span className="bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full">{item.kategori}</span></div>
+                {item.images && item.images.length > 1 && (
+                  <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">+{item.images.length - 1} foto</div>
+                )}
+                {item.video_urls && item.video_urls.length > 0 && (
+                  <div className="absolute bottom-3 right-3 bg-red-600/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <i className="fa-brands fa-youtube"></i> {item.video_urls.length} video
+                  </div>
+                )}
+              </div>
             <div className="p-5">
               <h3 className="font-bold text-gray-800 text-base mb-1 line-clamp-1 group-hover:text-primary transition-colors">{item.nama_kegiatan}</h3>
               <p className="text-sm text-gray-500 line-clamp-2 mb-3">{item.deskripsi || '-'}</p>
@@ -268,7 +261,8 @@ export default function AktivitasPage() {
               </div>
             </div>
           </Link>
-        ))}
+        );
+      })}
       </div>
       {renderPagination(page, totalPages, setPage)}
     </>

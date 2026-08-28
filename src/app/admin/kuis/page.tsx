@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { INITIAL_QUIZZES, QuizItem, QuizQuestion, generateGamePin, LiveRoomSession, getQuizScoresHistory, clearQuizScoresHistory, QuizHistoryRecord, fetchQuizzesFromApi, fetchScoresFromApi } from '@/lib/quizData';
-import { getActiveLiveSession, createLiveSession, startLiveSessionGame, closeLiveSession } from '@/lib/quizLiveSession';
+import { getActiveLiveSession, createLiveSession, startLiveSessionGame, closeLiveSession, syncActiveSessionFromApi } from '@/lib/quizLiveSession';
 import Swal from 'sweetalert2';
 import CustomSelect from '@/components/ui/CustomSelect';
 
@@ -38,9 +38,12 @@ export default function AdminKuisPage() {
   const [activeSession, setActiveSession] = useState<LiveRoomSession | null>(null);
 
   useEffect(() => {
-    // Load initial active session from storage
+    // Load initial active session from storage & API
     const current = getActiveLiveSession();
     if (current) setActiveSession(current);
+    syncActiveSessionFromApi().then(sess => {
+      if (sess) setActiveSession(sess);
+    });
 
     // Load quizzes & score history from API / local fallback
     const loadData = async () => {
@@ -51,15 +54,15 @@ export default function AdminKuisPage() {
     };
     loadData();
 
-    const handleUpdate = () => {
-      const updated = getActiveLiveSession();
+    const handleUpdate = async () => {
+      const updated = await syncActiveSessionFromApi();
       setActiveSession(updated);
     };
 
     window.addEventListener('quiz_session_update', handleUpdate);
     window.addEventListener('quiz_scores_update', loadData);
     window.addEventListener('storage', handleUpdate);
-    const interval = setInterval(handleUpdate, 1000);
+    const interval = setInterval(handleUpdate, 1500);
 
     return () => {
       window.removeEventListener('quiz_session_update', handleUpdate);
@@ -254,14 +257,18 @@ export default function AdminKuisPage() {
 
   const handleStartGameLive = () => {
     if (!activeSession) return;
-    startLiveSessionGame(activeSession.pin_code);
-    const updated = getActiveLiveSession();
-    if (updated) setActiveSession(updated);
-    Swal.fire({
-      icon: 'success',
-      title: 'Live Room Dimulai!',
-      text: 'Soal sinkron telah aktif. Seluruh peserta yang bergabung akan masuk ke permainan secara serentak!'
-    });
+    const ok = startLiveSessionGame();
+    if (ok) {
+      const updated = getActiveLiveSession();
+      if (updated) setActiveSession(updated);
+      Swal.fire({
+        icon: 'success',
+        title: '🎮 Live Game Dimulai!',
+        text: 'Semua peserta di ruang tunggu akan otomatis masuk ke soal pertama secara serentak!',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    }
   };
 
   const handleCloseLiveRoom = () => {

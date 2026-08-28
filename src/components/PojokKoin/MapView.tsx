@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useId } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CoinProvider {
   id: number;
@@ -25,8 +25,7 @@ interface MapViewProps {
   mapId?: string;
 }
 
-export default function MapView({ center, providers, searchMarker, radius, mode, onPinSet, pinPosition, mapId }: MapViewProps) {
-  const reactId = useId();
+export default function MapView({ center, providers, searchMarker, radius, mode, onPinSet, pinPosition }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const leafletRef = useRef<any>(null);
@@ -35,19 +34,35 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
   const pinMarkerRef = useRef<any>(null);
   const providerMarkersRef = useRef<any[]>([]);
 
+  // Store latest props in refs so effects always read current values
+  const centerRef = useRef(center);
+  const onPinSetRef = useRef(onPinSet);
+  useEffect(() => { centerRef.current = center; }, [center]);
+  useEffect(() => { onPinSetRef.current = onPinSet; }, [onPinSet]);
+
+  // ── Initialize Leaflet map (runs once) ──────────────────────────────────────
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (mapRef.current) return; // already initialized
+    if (mapRef.current) return;
 
     let isMounted = true;
 
-    import('leaflet').then(L => {
+    // Inject Leaflet CSS (once per page)
+    if (!document.getElementById('leaflet-css')) {
+      const link = document.createElement('link');
+      link.id = 'leaflet-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    import('leaflet').then((L) => {
       if (!isMounted) return;
       if (mapRef.current) return;
 
       leafletRef.current = L;
 
-      // Fix default icon
+      // Fix default icon paths broken by webpack
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -58,56 +73,53 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
       const container = mapContainerRef.current;
       if (!container) return;
 
+      // Clear stale Leaflet ID if container was reused
       if ((container as any)._leaflet_id) {
         (container as any)._leaflet_id = null;
       }
 
       const map = L.map(container, {
-        center,
+        center: centerRef.current,
         zoom: 13,
         scrollWheelZoom: true,
+        zoomControl: true,
       });
 
-      L.tileLayer('/api/tiles/{s}/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+      // ── Tile layer: OpenStreetMap (no API key required) ──────────────────
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
       }).addTo(map);
 
       mapRef.current = map;
 
-      // Pin mode: click to set location
+      // Pin mode: click map to set coordinate
       if (mode === 'pin') {
         map.on('click', (e: any) => {
-          onPinSet(e.latlng.lat, e.latlng.lng);
+          onPinSetRef.current(e.latlng.lat, e.latlng.lng);
         });
       }
     });
-
-    // Inject Leaflet CSS
-    if (!document.getElementById('leaflet-css')) {
-      const link = document.createElement('link');
-      link.id = 'leaflet-css';
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-    }
 
     return () => {
       isMounted = false;
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+        leafletRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update map center
+  // ── Re-center map when center prop changes ──────────────────────────────────
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setView(center, 13);
-    }
-  }, [center]);
+    const map = mapRef.current;
+    if (!map) return;
+    map.setView(center, map.getZoom() || 13, { animate: true });
+  }, [center[0], center[1]]); // compare primitives, not array reference
 
-  // Update search marker + radius circle
+  // ── Update search marker + radius circle ────────────────────────────────────
   useEffect(() => {
     const L = leafletRef.current;
     const map = mapRef.current;
@@ -123,7 +135,9 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
         iconSize: [18, 18],
         iconAnchor: [9, 9],
       });
-      searchMarkerRef.current = L.marker(searchMarker, { icon: youIcon }).addTo(map).bindPopup('<b>Lokasi Anda</b>');
+      searchMarkerRef.current = L.marker(searchMarker, { icon: youIcon })
+        .addTo(map)
+        .bindPopup('<b>📍 Lokasi Anda</b>');
 
       if (radius > 0) {
         circleRef.current = L.circle(searchMarker, {
@@ -135,19 +149,21 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
           dashArray: '6,4',
         }).addTo(map);
       }
-    }
-  }, [searchMarker, radius]);
 
-  // Update provider markers
+      map.setView(searchMarker, 13, { animate: true });
+    }
+  }, [searchMarker?.[0], searchMarker?.[1], radius]);
+
+  // ── Update provider markers ──────────────────────────────────────────────────
   useEffect(() => {
     const L = leafletRef.current;
     const map = mapRef.current;
     if (!L || !map) return;
 
-    providerMarkersRef.current.forEach(m => m.remove());
+    providerMarkersRef.current.forEach((m) => m.remove());
     providerMarkersRef.current = [];
 
-    providers.forEach(p => {
+    providers.forEach((p) => {
       const coinIcon = L.divIcon({
         html: `<div style="background:linear-gradient(135deg,#f59e0b,#d97706);width:38px;height:38px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
@@ -156,8 +172,10 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
         </div>`,
         className: '',
         iconSize: [38, 38],
-        iconAnchor: [19, 19],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38],
       });
+
       const m = L.marker([p.latitude, p.longitude], { icon: coinIcon })
         .addTo(map)
         .bindPopup(`
@@ -165,13 +183,13 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
           <small>📍 ${p.address}</small><br/>
           <small>💰 Rp${p.total_coins.toLocaleString('id-ID')}</small><br/>
           ${p.distance !== undefined ? `<small>📏 ${p.distance.toFixed(2)} KM</small><br/>` : ''}
-          <a href="https://wa.me/${p.whatsapp.replace(/\D/g,'').replace(/^0/,'62')}" target="_blank" style="color:#16a34a;font-weight:bold;font-size:12px">💬 Hubungi via WA</a>
+          <a href="https://wa.me/${p.whatsapp.replace(/\D/g, '').replace(/^0/, '62')}" target="_blank" style="color:#16a34a;font-weight:bold;font-size:12px">💬 Hubungi via WA</a>
         `);
       providerMarkersRef.current.push(m);
     });
   }, [providers]);
 
-  // Update pin marker for registration mode
+  // ── Update pin marker (registration mode) ───────────────────────────────────
   useEffect(() => {
     const L = leafletRef.current;
     const map = mapRef.current;
@@ -185,10 +203,20 @@ export default function MapView({ center, providers, searchMarker, radius, mode,
         className: '',
         iconSize: [28, 28],
         iconAnchor: [14, 28],
+        popupAnchor: [0, -28],
       });
-      pinMarkerRef.current = L.marker(pinPosition, { icon: pinIcon }).addTo(map).bindPopup('<b>Lokasi Anda</b>').openPopup();
+      pinMarkerRef.current = L.marker(pinPosition, { icon: pinIcon })
+        .addTo(map)
+        .bindPopup('<b>📍 Titik Lokasi Anda</b>')
+        .openPopup();
+      map.setView(pinPosition, 15, { animate: true });
     }
   }, [pinPosition]);
 
-  return <div ref={mapContainerRef} style={{ width: '100%', height: '100%', minHeight: '300px' }} />;
+  return (
+    <div
+      ref={mapContainerRef}
+      style={{ width: '100%', height: '100%', minHeight: '300px' }}
+    />
+  );
 }

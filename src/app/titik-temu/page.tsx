@@ -74,6 +74,7 @@ export default function TitikTemuPage() {
   const [radius, setRadius] = useState<number>(5);
   const [results, setResults] = useState<CoinProvider[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([2.9604, 99.0687]);
 
@@ -91,49 +92,109 @@ export default function TitikTemuPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pinPos, setPinPos] = useState<[number, number] | null>(null);
 
-  const handleUseMyLocation = () => {
-    if (!navigator.geolocation) { 
-      Swal.fire('Info', lang === 'ID' ? 'Fitur GPS tidak didukung di browser ini.' : t('pk.swal.gpsUnsupported'), 'info'); 
-      return; 
+  const fetchProvidersForLocation = async (latStr: string, lngStr: string, currentRadius: number) => {
+    setIsSearching(true);
+    setHasSearched(false);
+    try {
+      const res = await fetch(`${API_URL}/coin-providers?lat=${latStr}&lng=${lngStr}&radius=${currentRadius}`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        setResults(data.data);
+        setMapCenter([parseFloat(latStr), parseFloat(lngStr)]);
+      }
+    } catch {
+      Swal.fire(lang === 'ID' ? 'Gagal' : 'Failed', lang === 'ID' ? 'Gagal terhubung ke server.' : t('pk.swal.serverError'), 'error');
+    } finally {
+      setIsSearching(false);
+      setHasSearched(true);
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude.toFixed(6);
-        const lng = pos.coords.longitude.toFixed(6);
-        setSearchLat(lat);
-        setSearchLng(lng);
-        setSearchAddress(lang === 'ID' ? 'Lokasi GPS Saya' : 'My GPS Location');
-        setMapCenter([pos.coords.latitude, pos.coords.longitude]);
-      },
-      () => Swal.fire(lang === 'ID' ? 'Gagal' : 'Failed', lang === 'ID' ? 'Gagal mengambil lokasi GPS Anda.' : t('pk.swal.gpsError'), 'error')
-    );
+  };
+
+  const handleUseMyLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      Swal.fire('Info', lang === 'ID' ? 'Fitur GPS tidak didukung di browser ini.' : t('pk.swal.gpsUnsupported'), 'info');
+      return;
+    }
+
+    setIsLocating(true);
+
+    const geoOptions: GeolocationPositionOptions = {
+      enableHighAccuracy: false, // Low accuracy is faster and works reliably on PCs/laptops
+      timeout: 8000,
+      maximumAge: 60000,
+    };
+
+    const onSuccess = (pos: GeolocationPosition) => {
+      setIsLocating(false);
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      setSearchLat(lat);
+      setSearchLng(lng);
+      setSearchAddress(lang === 'ID' ? 'Lokasi GPS Saya' : 'My GPS Location');
+      setMapCenter([pos.coords.latitude, pos.coords.longitude]);
+
+      // Auto-trigger search so user sees results instantly
+      fetchProvidersForLocation(lat, lng, radius);
+    };
+
+    const onError = (err: GeolocationPositionError) => {
+      setIsLocating(false);
+      if (err.code === err.PERMISSION_DENIED) {
+        Swal.fire({
+          icon: 'warning',
+          title: lang === 'ID' ? 'Izin Lokasi Ditolak' : 'Location Permission Denied',
+          text: lang === 'ID'
+            ? 'Browser Anda memblokir akses lokasi. Izinkan lokasi pada setelan browser Anda atau ketik alamat manual.'
+            : 'Please enable location permissions in your browser settings.',
+        });
+      } else {
+        // Fallback to Pematang Siantar center if GPS hardware/wifi location times out
+        const defaultLat = '2.9604';
+        const defaultLng = '99.0687';
+        setSearchLat(defaultLat);
+        setSearchLng(defaultLng);
+        setSearchAddress(lang === 'ID' ? 'Pematang Siantar (Default GPS)' : 'Pematang Siantar (Default GPS)');
+        setMapCenter([2.9604, 99.0687]);
+
+        Swal.fire({
+          icon: 'info',
+          title: lang === 'ID' ? 'Deteksi GPS Otomatis' : 'Default GPS Set',
+          text: lang === 'ID'
+            ? 'Menggunakan koordinat Pematang Siantar sebagai pusat lokasi.'
+            : 'Using Pematang Siantar center location.',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
+        fetchProvidersForLocation(defaultLat, defaultLng, radius);
+      }
+    };
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, geoOptions);
   };
 
   const handleSearch = async () => {
-    if (!searchLat || !searchLng) { 
-      Swal.fire(lang === 'ID' ? 'Perhatian' : 'Warning', lang === 'ID' ? 'Silakan gunakan lokasi GPS terlebih dahulu!' : t('pk.swal.locNeeded'), 'warning'); 
-      return; 
+    if (!searchLat || !searchLng) {
+      // If user hasn't clicked GPS button yet, automatically trigger handleUseMyLocation
+      handleUseMyLocation();
+      return;
     }
-    setIsSearching(true); 
-    setHasSearched(false);
-    try {
-      const res = await fetch(`${API_URL}/coin-providers?lat=${searchLat}&lng=${searchLng}&radius=${radius}`);
-      const data = await res.json();
-      if (data.status === 'success') { 
-        setResults(data.data); 
-        setMapCenter([parseFloat(searchLat), parseFloat(searchLng)]); 
-      }
-    } catch { 
-      Swal.fire(lang === 'ID' ? 'Gagal' : 'Failed', lang === 'ID' ? 'Gagal terhubung ke server.' : t('pk.swal.serverError'), 'error'); 
-    } finally { 
-      setIsSearching(false); 
-      setHasSearched(true); 
-    }
+    fetchProvidersForLocation(searchLat, searchLng, radius);
   };
 
   // Form Register GPS
   const handleRegGPS = () => {
-    if (!navigator.geolocation) { Swal.fire('Info', 'GPS tidak didukung.', 'info'); return; }
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      Swal.fire('Info', 'GPS tidak didukung.', 'info');
+      return;
+    }
+
+    const geoOptions: GeolocationPositionOptions = {
+      enableHighAccuracy: false,
+      timeout: 8000,
+      maximumAge: 60000,
+    };
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const lat = pos.coords.latitude;
@@ -150,7 +211,23 @@ export default function TitikTemuPage() {
           showConfirmButton: false,
         });
       },
-      () => Swal.fire('Gagal', 'Gagal mengambil lokasi GPS.', 'error')
+      (err) => {
+        // Fallback to Siantar center
+        const lat = 2.9604;
+        const lng = 99.0687;
+        setRegLat(lat.toFixed(6));
+        setRegLng(lng.toFixed(6));
+        setPinPos([lat, lng]);
+        setMapCenter([lat, lng]);
+        Swal.fire({
+          icon: 'info',
+          title: 'Lokasi GPS Set',
+          text: 'Menggunakan koordinat pusat Pematang Siantar. Anda juga dapat mengeklik titik lokasi langsung di peta.',
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      },
+      geoOptions
     );
   };
 
@@ -327,9 +404,14 @@ export default function TitikTemuPage() {
                     />
                     <button 
                       onClick={handleUseMyLocation} 
-                      className="bg-primary text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-900 transition-all flex items-center gap-2 whitespace-nowrap shadow-sm"
+                      disabled={isLocating}
+                      className="bg-primary text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-900 transition-all flex items-center gap-2 whitespace-nowrap shadow-sm disabled:opacity-70 cursor-pointer"
                     >
-                      <i className="fa-solid fa-location-crosshairs"></i> Lokasi GPS Saya
+                      {isLocating ? (
+                        <><i className="fa-solid fa-spinner fa-spin"></i> Memuat GPS...</>
+                      ) : (
+                        <><i className="fa-solid fa-location-crosshairs"></i> Lokasi GPS Saya</>
+                      )}
                     </button>
                   </div>
                 </div>
