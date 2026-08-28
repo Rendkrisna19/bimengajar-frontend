@@ -139,7 +139,7 @@ export default function LoginPage() {
               <i className="fa-solid fa-shield-halved text-yellow-400"></i> Portal Resmi BI
             </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold text-white leading-tight tracking-tight">
-              BI - MENGAJAR
+              PLAT-BK
             </h2>
             <p className="text-xs lg:text-sm text-blue-100/80 mt-2 leading-relaxed">
               Cinta, Bangga, Paham Rupiah bersama Bank Indonesia Kantor Perwakilan Pematangsiantar.
@@ -172,7 +172,7 @@ export default function LoginPage() {
             <div className="h-20 w-auto flex items-center justify-center mb-2">
               <Image
                 src="/images/logo.png?v=2"
-                alt="Logo BI Mengajar"
+                alt="Logo PLAT-BK"
                 width={250}
                 height={80}
                 className="h-full w-auto object-contain scale-[1.5] origin-center"
@@ -182,7 +182,7 @@ export default function LoginPage() {
             </div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Masuk ke Akun Anda</h1>
             <p className="text-xs text-gray-500 mt-1.5 max-w-sm">
-              Silakan masukkan kredensial akun Anda untuk mengakses dashboard dan layanan BI Mengajar.
+              Silakan masukkan kredensial akun Anda untuk mengakses dashboard dan layanan PLAT-BK.
             </p>
           </div>
 

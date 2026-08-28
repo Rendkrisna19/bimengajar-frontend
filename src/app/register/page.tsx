@@ -79,7 +79,7 @@ export default function RegisterPage() {
         if (errors.email) {
           Swal.fire({
             title: 'Email Sudah Terdaftar!',
-            text: errors.email[0] || 'Email ini sudah terdaftar di sistem BI Mengajar. Silakan gunakan email lain atau langsung masuk ke akun Anda.',
+            text: errors.email[0] || 'Email ini sudah terdaftar di sistem PLAT-BK. Silakan gunakan email lain atau langsung masuk ke akun Anda.',
             icon: 'warning',
             confirmButtonText: 'Masuk ke Halaman Login',
             showCancelButton: true,
@@ -131,7 +131,7 @@ export default function RegisterPage() {
               <i className="fa-solid fa-user-plus text-yellow-400"></i> Registrasi Akun
             </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold text-white leading-tight tracking-tight">
-              BI - MENGAJAR
+              PLAT-BK
             </h2>
             <p className="text-xs lg:text-sm text-blue-100/80 mt-2 leading-relaxed">
               Bergabung bersama kami untuk meningkatkan literasi Cinta, Bangga, dan Paham Rupiah.
@@ -164,7 +164,7 @@ export default function RegisterPage() {
             <div className="h-20 w-auto flex items-center justify-center mb-2">
               <Image
                 src="/images/logo.png?v=2"
-                alt="Logo BI Mengajar"
+                alt="Logo PLAT-BK"
                 width={250}
                 height={80}
                 className="h-full w-auto object-contain scale-[1.5] origin-center"
@@ -174,7 +174,7 @@ export default function RegisterPage() {
             </div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Daftar Akun Baru</h1>
             <p className="text-xs text-gray-500 mt-1 max-w-sm">
-              Lengkapi data diri Anda di bawah ini untuk membuat akun platform BI Mengajar.
+              Lengkapi data diri Anda di bawah ini untuk membuat akun platform PLAT-BK.
             </p>
           </div>
 

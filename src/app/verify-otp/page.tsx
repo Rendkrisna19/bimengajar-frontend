@@ -178,7 +178,7 @@ function VerifyOtpContent() {
               <i className="fa-solid fa-shield-halved text-yellow-400"></i> Verifikasi Keamanan
             </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold text-white leading-tight tracking-tight">
-              BI - MENGAJAR
+              PLAT-BK
             </h2>
             <p className="text-xs lg:text-sm text-blue-100/80 mt-2 leading-relaxed">
               Silakan masukkan 6 digit kode OTP yang telah dikirimkan ke email Anda untuk mengaktifkan akun.
@@ -210,7 +210,7 @@ function VerifyOtpContent() {
             <div className="h-20 w-auto flex items-center justify-center mb-2">
               <Image
                 src="/images/logo.png?v=2"
-                alt="Logo BI Mengajar"
+                alt="Logo PLAT-BK"
                 width={250}
                 height={80}
                 className="h-full w-auto object-contain scale-[1.5] origin-center"

@@ -73,7 +73,7 @@ export default function Footer() {
               <div className="h-20 md:h-24 w-auto flex items-center justify-start shrink-0">
                 <Image 
                   src="/images/logo.png?v=2" 
-                  alt="Logo BI Mengajar" 
+                  alt="Logo PLAT-BK" 
                   width={380} 
                   height={110} 
                   className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" 

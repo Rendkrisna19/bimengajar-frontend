@@ -317,7 +317,7 @@ export default function Header({ toggleSidebar }: HeaderProps) {
                     {user?.name || 'Administrator'}
                   </h4>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {user?.email || 'admin@bimengajar.com'}
+                    {user?.email || 'admin@plat-bk.com'}
                   </p>
                   <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/50 text-[#003366] dark:text-blue-300 rounded-md capitalize">
                     {user?.role || 'Admin'}

@@ -132,7 +132,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
         </div>
         {!isCollapsed && (
           <span className="font-bold text-[15px] text-white whitespace-nowrap tracking-wide">
-            BI Mengajar
+            PLAT-BK
           </span>
         )}
       </div>

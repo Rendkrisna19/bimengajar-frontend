@@ -306,7 +306,7 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
                 <span className="bg-accent-yellow text-primary text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">AI</span>
               </div>
               <p className="text-blue-100 text-xs flex items-center gap-1.5 mt-0.5">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online • BI Mengajar
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> Online • PLAT-BK
               </p>
             </div>
           </div>
@@ -340,13 +340,13 @@ export default function Chatbot({ isOpen, onClose }: ChatbotProps) {
               </div>
               <h4 className="font-bold text-gray-800 text-base">Halo! Saya BI Assistant 🏛️</h4>
               <p className="text-xs text-gray-500 leading-relaxed max-w-[280px]">
-                Ada yang bisa saya bantu terkait program <b>BI Mengajar</b>, edukasi Rupiah, atau layanan kas <b>Titik Temu</b>?
+                Ada yang bisa saya bantu terkait program <b>PLAT-BK</b>, edukasi Rupiah, atau layanan kas <b>Titik Temu</b>?
               </p>
               
               {/* Quick Prompt Chips */}
               <div className="flex flex-wrap gap-2 justify-center mt-2">
                 {[
-                  "Apa itu BI Mengajar?",
+                  "Apa itu PLAT-BK?",
                   "Cara daftar pengajuan?",
                   "Apa itu Titik Temu?",
                   "Tips merawat Rupiah"

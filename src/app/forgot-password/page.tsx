@@ -85,7 +85,7 @@ function ForgotPasswordContent() {
               <i className="fa-solid fa-key text-yellow-400"></i> Pemulihan Password
             </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold text-white leading-tight tracking-tight">
-              BI - MENGAJAR
+              PLAT-BK
             </h2>
             <p className="text-xs lg:text-sm text-blue-100/80 mt-2 leading-relaxed">
               Lupa kata sandi Anda? Jangan khawatir, kami akan membantu Anda mereset password dengan aman melalui verifikasi OTP.
@@ -117,7 +117,7 @@ function ForgotPasswordContent() {
             <div className="h-20 w-auto flex items-center justify-center mb-2">
               <Image
                 src="/images/logo.png?v=2"
-                alt="Logo BI Mengajar"
+                alt="Logo PLAT-BK"
                 width={250}
                 height={80}
                 className="h-full w-auto object-contain scale-[1.5] origin-center"

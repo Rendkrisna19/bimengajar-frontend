@@ -17,14 +17,14 @@ const translations: Record<string, Record<Lang, string>> = {
   'nav.home': { ID: 'Beranda', EN: 'Home' },
   'nav.about': { ID: 'Tentang Kami', EN: 'About Us' },
   'nav.edukasi': { ID: 'Edukasi', EN: 'Education' },
-  'nav.pengajuan': { ID: 'Pengajuan kegiatan BI Mengajar', EN: 'Activity Request' },
+  'nav.pengajuan': { ID: 'Pengajuan kegiatan PLAT-BK', EN: 'Activity Request' },
   'nav.materi': { ID: 'Materi Edukasi', EN: 'Educational Materials' },
   'nav.mitra': { ID: 'Mitra Edukasi', EN: 'Education Partners' },
   'nav.titikTemu': { ID: 'Titik Temu', EN: 'Coin Corner' },
   'nav.aktivitas': { ID: 'Aktivitas', EN: 'Activities' },
   'nav.perpustakaan': { ID: 'Perpustakaan', EN: 'Library' },
   'nav.gameKuis': { ID: 'Game & Kuis', EN: 'Games & Quizzes' },
-  'nav.prePostTest': { ID: 'Pre/Post Test BI Mengajar', EN: 'Pre/Post Test BI Mengajar' },
+  'nav.prePostTest': { ID: 'Pre/Post Test PLAT-BK', EN: 'Pre/Post Test PLAT-BK' },
   'nav.login': { ID: 'Masuk', EN: 'Login' },
   'nav.logout': { ID: 'Keluar', EN: 'Logout' },
   'nav.loggedInAs': { ID: 'Masuk sebagai', EN: 'Logged in as' },
@@ -34,8 +34,8 @@ const translations: Record<string, Record<Lang, string>> = {
   // --- Hero Section ---
   'hero.slide1.title': { ID: 'Cinta, Bangga, Paham Rupiah', EN: 'Love, Pride, Understanding of Rupiah' },
   'hero.slide1.subtitle': {
-    ID: 'Uang Rupiah bukan sekadar alat pembayaran, melainkan simbol kedaulatan negara. Bersama BI Mengajar Siantar, kita sebarkan semangat kebanksentralan ke seluruh penjuru daerah.',
-    EN: 'Rupiah currency is not merely a means of payment, but a symbol of national sovereignty. Together with BI Mengajar Siantar, we spread the central banking spirit across every region.'
+    ID: 'Uang Rupiah bukan sekadar alat pembayaran, melainkan simbol kedaulatan negara. Bersama PLAT-BK Siantar, kita sebarkan semangat kebanksentralan ke seluruh penjuru daerah.',
+    EN: 'Rupiah currency is not merely a means of payment, but a symbol of national sovereignty. Together with PLAT-BK Siantar, we spread the central banking spirit across every region.'
   },
   'hero.slide2.title': { ID: 'Kenali & Pahami\nRupiah Kita', EN: 'Know & Understand\nOur Rupiah' },
   'hero.slide2.subtitle': {
@@ -75,7 +75,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'about.noDataContent': { ID: 'Admin belum mengisi konten untuk bagian ini.', EN: 'Admin has not filled in content for this section yet.' },
 
   // --- Map Section ---
-  'map.title': { ID: 'Peta Edukasi BI Mengajar', EN: 'BI Mengajar Educational Map' },
+  'map.title': { ID: 'Peta Edukasi PLAT-BK', EN: 'PLAT-BK Educational Map' },
   'map.year2026': { ID: 'Tahun 2026', EN: 'Year 2026' },
   'map.year2025': { ID: 'Tahun 2025', EN: 'Year 2025' },
   'map.legend.sd': { ID: 'SD', EN: 'Elementary' },
@@ -100,7 +100,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // --- Testimonial Section ---
   'testi.title': { ID: 'Ulasan', EN: 'Testimonials' },
-  'testi.subtitle': { ID: 'Apa kata mereka tentang edukasi BI Mengajar', EN: 'What they say about BI Mengajar education' },
+  'testi.subtitle': { ID: 'Apa kata mereka tentang edukasi PLAT-BK', EN: 'What they say about PLAT-BK education' },
   'testi.viewAll': { ID: 'Lihat Semua', EN: 'View All' },
   'testi.noUlasan': { ID: 'Belum ada ulasan.', EN: 'No testimonials available yet.' },
 

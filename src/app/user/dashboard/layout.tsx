@@ -82,7 +82,7 @@ export default function UserDashboardLayout({
               <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white shadow-md border border-sky-400/30 group-hover:scale-105 transition-transform">
                 <Image
                   src="/images/logo.png?v=2"
-                  alt="Logo BI Mengajar"
+                  alt="Logo PLAT-BK"
                   width={36}
                   height={36}
                   className="w-7 h-7 object-contain"
