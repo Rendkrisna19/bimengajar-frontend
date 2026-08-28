@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import dynamic from 'next/dynamic';
@@ -232,6 +232,22 @@ export default function TitikTemuPage() {
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const inputCls = 'w-full p-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white';
 
   return (
@@ -263,7 +279,7 @@ export default function TitikTemuPage() {
         ]}
       />
 
-      <div className="max-w-[1150px] mx-auto px-4 md:px-8 py-10">
+      <div className="max-w-[1150px] mx-auto px-4 md:px-8 py-10 animate-on-scroll">
 
         {/* Navigation Tabs */}
         <div className="flex justify-center mb-8">

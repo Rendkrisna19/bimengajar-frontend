@@ -129,6 +129,22 @@ export default function AktivitasPage() {
     }
   }, [loading, activeTab, page]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const renderPagination = (cur: number, total: number, onSet: any) =>
     total > 1 ? (
       <div className="flex justify-center gap-2 mt-8">
@@ -306,7 +322,7 @@ export default function AktivitasPage() {
       </section>
 
       {/* Content Area */}
-      <section className="max-w-[1200px] mx-auto w-full px-4 md:px-8 -mt-16 relative z-20 pb-20 flex-1">
+      <section className="max-w-[1200px] mx-auto w-full px-4 md:px-8 -mt-16 relative z-20 pb-20 flex-1 animate-on-scroll">
         {loading ? (
           <div className="flex justify-center items-center py-32">
             <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>

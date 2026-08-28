@@ -1,11 +1,27 @@
 'use client';
 
+import { useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function PerpustakaanPage() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
   const stats = [
     { number: '8.650', label: 'Judul Buku Tercetak', icon: 'fa-solid fa-book' },
     { number: '9.245', label: 'Eksemplar Koleksi', icon: 'fa-solid fa-layer-group' },
@@ -135,7 +151,7 @@ export default function PerpustakaanPage() {
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 space-y-16">
           
           {/* SECTION 1: GAMBARAN UMUM & FOTO PROFIL PERPUSTAKAAN */}
-          <section className="bg-white/95 backdrop-blur-sm p-6 md:p-10 shadow-[0_10px_30px_rgba(0,51,102,0.06)] border border-blue-100/80">
+          <section className="bg-white/95 backdrop-blur-sm p-6 md:p-10 shadow-[0_10px_30px_rgba(0,51,102,0.06)] border border-blue-100/80 animate-on-scroll">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               
               {/* Featured Image Column */}
@@ -185,10 +201,10 @@ export default function PerpustakaanPage() {
           </section>
 
           {/* SECTION 2: VISI & MISI */}
-          <section className="space-y-6">
+          <section className="space-y-6 animate-on-scroll">
             <div className="text-center max-w-2xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-primary/10 text-primary text-xs font-bold mb-2 border border-primary/20">
-                <i className="fa-solid fa-compass"></i> Arah & Tujuan
+                <i className="fa-solid fa-compass"></i> Arah &amp; Tujuan
               </div>
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#003366]">Visi dan Misi Perpustakaan</h2>
               <p className="text-xs md:text-sm text-gray-500 mt-1">Landasan utama pengelolaan dan pelayanan Perpustakaan Bank Indonesia Pematangsiantar.</p>
@@ -227,7 +243,7 @@ export default function PerpustakaanPage() {
           </section>
 
           {/* SECTION 3: KOLEKSI & STATISTIK */}
-          <section className="bg-[#003366] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+          <section className="bg-[#003366] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden animate-on-scroll">
             <div className="absolute right-0 bottom-0 pointer-events-none opacity-10">
               <i className="fa-solid fa-book-bookmark text-[250px] text-white"></i>
             </div>
@@ -255,7 +271,7 @@ export default function PerpustakaanPage() {
           </section>
 
           {/* SECTION 4: LAYANAN DIGITAL iBI LIBRARY */}
-          <section className="bg-gradient-to-r from-blue-900 via-[#003366] to-indigo-900 p-8 md:p-12 text-white shadow-2xl border border-blue-700/50 relative overflow-hidden">
+          <section className="bg-gradient-to-r from-blue-900 via-[#003366] to-indigo-900 p-8 md:p-12 text-white shadow-2xl border border-blue-700/50 relative overflow-hidden animate-on-scroll">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               <div className="lg:col-span-8 space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-400/20 text-yellow-300 text-xs font-bold border border-yellow-400/30">
