@@ -91,14 +91,14 @@ export default function UserDashboardLayout({
                 />
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="font-black text-sm text-primary tracking-tight leading-none">PLATFORM</span>
-                <span className="text-[10px] text-slate-400 font-semibold mt-0.5">Dashboard Edukasi</span>
+                <span className="font-bold text-sm text-primary tracking-tight leading-none">PLATFORM</span>
+                <span className="text-[10px] text-slate-400 font-medium mt-0.5">Dashboard Edukasi</span>
               </div>
             </Link>
 
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
-            <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+            <h1 className="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
               {getHeaderTitle()}
             </h1>
           </div>
@@ -111,7 +111,7 @@ export default function UserDashboardLayout({
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                     isActive
                       ? 'bg-primary text-white shadow-sm'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -128,7 +128,7 @@ export default function UserDashboardLayout({
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-colors"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition-colors"
             >
               <i className="fa-solid fa-arrow-left text-xs"></i>
               <span>Ke Landing Page</span>
@@ -138,13 +138,13 @@ export default function UserDashboardLayout({
             <div className="flex items-center gap-2 bg-slate-50 p-1 pr-3 rounded-full border border-slate-200/80">
               <Link 
                 href="/user/dashboard/profil" 
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary flex items-center justify-center text-xs font-black text-white shadow-sm border-2 border-white cursor-pointer hover:scale-105 transition-transform"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shadow-sm border-2 border-white cursor-pointer hover:scale-105 transition-transform"
               >
                 {initials}
               </Link>
               <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-extrabold text-slate-800 leading-none truncate max-w-[110px]">{userName}</span>
-                <span className="text-[10px] font-bold text-sky-700 mt-0.5">Peserta BI</span>
+                <span className="text-xs font-bold text-slate-800 leading-none truncate max-w-[110px]">{userName}</span>
+                <span className="text-[10px] font-medium text-sky-700 mt-0.5">Peserta BI</span>
               </div>
             </div>
 

@@ -21,7 +21,7 @@ export default function FeaturesSection() {
     {
       title: t('features.game'),
       image: '/images/menu-cepat/2.jpg',
-      link: '/game'
+      link: '/user/dashboard/kuis'
     },
     {
       title: t('features.pengajuan'),

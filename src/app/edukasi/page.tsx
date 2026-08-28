@@ -48,7 +48,7 @@ export default function EdukasiPage() {
       title: 'Game & Kuis',
       description: 'Belajar sambil bermain dengan game dan kuis interaktif yang seru dan menyenangkan.',
       icon: 'fa-solid fa-gamepad',
-      link: '/edukasi/game',
+      link: '/user/dashboard/kuis',
       buttonText: 'Main Sekarang',
       color: 'green'
     },
