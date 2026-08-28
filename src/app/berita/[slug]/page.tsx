@@ -125,14 +125,21 @@ export default function ArticleDetailPage() {
                 {article.image && article.image.length > 0 && (
                   <div className="mb-8">
                     {/* Main Image Banner */}
-                    <div className="relative w-full h-[300px] md:h-[480px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 group">
+                    <div className="relative w-full h-[300px] md:h-[480px] rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-900 group flex items-center justify-center">
+                      {/* Blurred Background to handle any aspect ratio seamlessly */}
+                      <Image 
+                        src={getImageUrl(article.image[selectedImageIndex] || article.image[0])} 
+                        alt=""
+                        fill
+                        className="object-cover blur-2xl opacity-40 scale-105 pointer-events-none"
+                      />
                       <Image 
                         src={getImageUrl(article.image[selectedImageIndex] || article.image[0])} 
                         alt={article.title}
                         fill
                         priority
                         sizes="(max-width: 1024px) 100vw, 800px"
-                        className="object-cover transition-all duration-300"
+                        className="object-contain transition-all duration-300 z-10"
                       />
 
                       {/* Arrow Navigation (if multiple images) */}

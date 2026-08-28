@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 interface ImageCropperModalProps {
   isOpen: boolean;
@@ -239,6 +240,23 @@ export default function ImageCropperModal({
       if (!blob) return;
       const file = new File([blob], fileName.replace(/\.[^/.]+$/, "") + '.jpg', { type: 'image/jpeg' });
       const previewUrl = URL.createObjectURL(blob);
+      
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+      Toast.fire({
+        icon: 'success',
+        title: 'Gambar berhasil dipotong!'
+      });
+
       onCropComplete(file, previewUrl);
       onClose();
     }, 'image/jpeg', 0.92);
@@ -274,6 +292,8 @@ export default function ImageCropperModal({
             {[
               { label: '16:9 (Beranda)', val: 16 / 9 },
               { label: '4:3 (Berita)', val: 4 / 3 },
+              { label: '3:4 (Potret)', val: 3 / 4 },
+              { label: '9:16 (Story/Potret)', val: 9 / 16 },
               { label: '1:1 (Persegi)', val: 1 },
               { label: 'Bebas', val: 3 / 2 },
             ].map((ratio) => (
