@@ -51,6 +51,13 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6.5rem; /* Offsets anchor scroll below fixed navbar */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
   body {
     background-color: var(--color-base-gray);
     color: #171717; /* Default dark text */

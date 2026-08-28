@@ -42,8 +42,8 @@ export default function Home() {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
-            start: "top 85%", // Mulai animasi ketika bagian atas elemen mencapai 85% viewport
-            toggleActions: "play none none reverse", // Play saat masuk, reverse HANYA ketika scroll naik ke atas elemen ini lagi
+            start: "top 88%",
+            once: true, // Run animation once to keep scroll thread 100% lightweight & smooth
           }
         }
       );
