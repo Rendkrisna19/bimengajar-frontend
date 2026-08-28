@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,19 +11,35 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl' }: ModalProps) {
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 pt-20 bg-black/50 backdrop-blur-sm">
+    <div 
+      className="fixed inset-0 z-[999999] flex items-center justify-center p-4 pt-24 md:pt-28 bg-slate-900/70 backdrop-blur-md"
+      onClick={onClose}
+    >
       <div 
-        className={`bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl w-full ${maxWidth} flex flex-col overflow-hidden max-h-[90vh]`}
+        className={`bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-2xl w-full ${maxWidth} flex flex-col overflow-hidden max-h-[82vh] border border-slate-100 animate-in fade-in zoom-in-95 duration-200 my-auto`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-sky-50/80 to-blue-50/40 dark:bg-gray-900 shrink-0 relative z-20">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white pr-4">{title}</h3>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 dark:hover:bg-red-900/30"
+            className="text-slate-500 hover:text-white hover:bg-red-500 transition-all w-9 h-9 flex items-center justify-center rounded-full shadow-sm border border-slate-200 dark:hover:bg-red-900/30 cursor-pointer text-base font-bold shrink-0 z-30"
+            title="Tutup Modal"
           >
             <i className="fa-solid fa-xmark"></i>
           </button>

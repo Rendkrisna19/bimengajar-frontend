@@ -42,6 +42,29 @@ export default function GallerySection() {
   const [selectedItem, setSelectedItem] = useState<DokItem | null>(null);
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
 
+  // Prevent background scrolling when modal is active
+  useEffect(() => {
+    if (selectedItem) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedItem]);
+
+  // ESC key listener to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedItem(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   useEffect(() => {
     // Quick cache check first for instant loading
     if (typeof window !== 'undefined') {
@@ -83,7 +106,7 @@ export default function GallerySection() {
 
   return (
     <section className="py-12 md:py-16 bg-primary text-white relative overflow-hidden">
-      {/* Background Element 1.png Overlay (Matching Ulasan Section) */}
+      {/* Background Overlay */}
       <img 
         src="/images/element/1.png" 
         alt="Gallery Background Element" 
@@ -92,7 +115,7 @@ export default function GallerySection() {
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         
-        {/* Header Bar - White Text & Standout Button */}
+        {/* Header Bar */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-sm">
@@ -117,7 +140,6 @@ export default function GallerySection() {
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
           </div>
         ) : items.length === 0 ? (
-          /* Fallback Sample Gallery Items if DB is empty */
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             {[
               { id: 1, title: 'Sosialisasi QRIS Pasar', kat: 'Sosialisasi', img: 'https://images.unsplash.com/photo-1556742049-0a679246c5a7?auto=format&fit=crop&w=800&q=80' },
@@ -201,67 +223,68 @@ export default function GallerySection() {
 
       </div>
 
-      {/* Lightbox / Preview Modal - Premium Blue Theme */}
+      {/* Lightbox / Preview Modal - High Z-index & Top Padded to prevent navbar overlay */}
       {selectedItem && (
         <div 
-          className="fixed inset-0 z-[9999] bg-[#001d3d]/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto"
+          className="fixed inset-0 z-[999999] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 md:p-6 pt-24 md:pt-28"
           onClick={() => setSelectedItem(null)}
         >
           <div 
-            className="relative bg-gradient-to-b from-[#003366] via-[#004f9e] to-[#00264d] text-white rounded-3xl overflow-hidden border border-blue-400/30 shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-4xl max-h-[90vh] flex flex-col"
+            className="relative bg-white text-slate-800 rounded-3xl overflow-hidden border border-slate-100 shadow-[0_25px_60px_rgba(0,0,0,0.3)] w-full max-w-3xl max-h-[82vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-5 md:p-6 border-b border-blue-300/20 flex items-start justify-between bg-[#001d3d]/40 shrink-0">
-              <div>
-                <span className="text-[11px] font-extrabold text-[#00264d] bg-amber-400 px-3 py-1 rounded-full shadow-sm">
+            <div className="p-4 md:p-6 border-b border-slate-100 flex items-start justify-between bg-gradient-to-r from-sky-50/90 via-blue-50/50 to-indigo-50/60 shrink-0 relative z-20">
+              <div className="pr-4">
+                <span className="text-[11px] font-extrabold text-sky-700 bg-sky-100/90 border border-sky-200/80 px-3 py-1 rounded-full shadow-2xs inline-block">
                   {selectedItem.kategori}
                 </span>
-                <h3 className="text-xl md:text-2xl font-extrabold text-white mt-2 drop-shadow-sm tracking-tight">
+                <h3 className="text-lg md:text-2xl font-bold text-slate-800 mt-2 tracking-tight leading-snug">
                   {selectedItem.nama_kegiatan}
                 </h3>
-                <p className="text-xs text-blue-200/90 mt-1 font-medium flex items-center gap-1.5">
-                  <i className="fa-regular fa-calendar text-amber-400"></i>
+                <p className="text-xs text-slate-500 mt-1 font-medium flex items-center gap-1.5">
+                  <i className="fa-regular fa-calendar-check text-sky-600"></i>
                   {new Date(selectedItem.tanggal_kegiatan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               </div>
               
               <button 
                 onClick={() => setSelectedItem(null)}
-                className="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-red-500 transition-all duration-300 shrink-0 shadow-sm border border-white/10"
+                className="w-10 h-10 rounded-full bg-white text-slate-500 hover:text-white hover:bg-red-500 hover:rotate-90 transition-all duration-200 flex items-center justify-center shrink-0 shadow-md border border-slate-200 cursor-pointer text-lg font-bold z-30"
+                title="Tutup Modal"
               >
-                <i className="fa-solid fa-xmark text-lg"></i>
+                <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="overflow-y-auto p-5 md:p-6 space-y-6 flex-1">
+            <div className="overflow-y-auto p-4 md:p-6 space-y-5 flex-1">
               
               {/* Photo Carousel Slider */}
               {selectedItem.images && selectedItem.images.length > 0 && (
-                <div className="relative bg-[#001833]/80 rounded-2xl overflow-hidden border border-blue-300/20 group flex items-center justify-center min-h-[260px] max-h-[52vh] shadow-inner">
+                <div className="relative bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 group flex items-center justify-center min-h-[240px] max-h-[44vh] shadow-inner">
                   <img 
                     src={getImageUrl(selectedItem.images[currentImgIndex])} 
                     alt={`Foto ${currentImgIndex + 1}`}
-                    className="max-w-full max-h-[52vh] object-contain mx-auto"
+                    className="max-w-full max-h-[44vh] object-contain mx-auto"
                     onError={(e) => { (e.target as HTMLImageElement).src = '/images/banner/hero1.png'; }}
                   />
 
-                  {/* Previous / Next Arrow Buttons */}
+                  {/* Arrow Buttons */}
                   {selectedItem.images.length > 1 && (
                     <>
                       <button
                         onClick={() => setCurrentImgIndex((prev) => (prev > 0 ? prev - 1 : selectedItem.images.length - 1))}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#001d3d]/80 text-white flex items-center justify-center hover:bg-amber-400 hover:text-[#00264d] transition-all shadow-lg border border-white/10"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center hover:bg-sky-600 hover:text-white transition-all shadow-md border border-slate-100 cursor-pointer z-10"
                       >
-                        <i className="fa-solid fa-chevron-left text-sm"></i>
+                        <i className="fa-solid fa-chevron-left text-xs"></i>
                       </button>
                       
                       <button
                         onClick={() => setCurrentImgIndex((prev) => (prev < selectedItem.images.length - 1 ? prev + 1 : 0))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#001d3d]/80 text-white flex items-center justify-center hover:bg-amber-400 hover:text-[#00264d] transition-all shadow-lg border border-white/10"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center hover:bg-sky-600 hover:text-white transition-all shadow-md border border-slate-100 cursor-pointer z-10"
                       >
-                        <i className="fa-solid fa-chevron-right text-sm"></i>
+                        <i className="fa-solid fa-chevron-right text-xs"></i>
                       </button>
 
                       <div className="absolute bottom-3 inset-x-0 flex justify-center gap-1.5 z-10">
@@ -269,8 +292,8 @@ export default function GallerySection() {
                           <button
                             key={idx}
                             onClick={() => setCurrentImgIndex(idx)}
-                            className={`h-2 rounded-full transition-all ${
-                              currentImgIndex === idx ? 'w-6 bg-amber-400' : 'w-2 bg-white/40'
+                            className={`h-2 rounded-full transition-all cursor-pointer ${
+                              currentImgIndex === idx ? 'w-6 bg-sky-500' : 'w-2 bg-white/60'
                             }`}
                           />
                         ))}
@@ -282,16 +305,16 @@ export default function GallerySection() {
 
               {/* Description */}
               {selectedItem.deskripsi && (
-                <div className="text-blue-50 text-sm leading-relaxed bg-[#001d3d]/50 p-4 md:p-5 rounded-2xl border border-blue-300/20 shadow-sm font-medium">
+                <div className="text-slate-700 text-sm leading-relaxed bg-sky-50/60 p-4 md:p-5 rounded-2xl border border-sky-100 font-normal">
                   {selectedItem.deskripsi}
                 </div>
               )}
 
-              {/* YouTube / Video Links Below Carousel */}
+              {/* Video Documentation */}
               {selectedItem.video_urls && selectedItem.video_urls.length > 0 && (
-                <div className="space-y-3 pt-2">
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <i className="fa-brands fa-youtube text-red-400 text-lg"></i>
+                <div className="space-y-3 pt-1">
+                  <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <i className="fa-brands fa-youtube text-red-500 text-lg"></i>
                     Video Dokumentasi ({selectedItem.video_urls.length})
                   </h4>
 
@@ -299,7 +322,7 @@ export default function GallerySection() {
                     {selectedItem.video_urls.map((url, i) => {
                       const embed = getEmbedUrl(url);
                       return embed ? (
-                        <div key={i} className="relative w-full rounded-2xl overflow-hidden border border-blue-300/20 shadow-md bg-black" style={{ paddingTop: '56.25%' }}>
+                        <div key={i} className="relative w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-black" style={{ paddingTop: '56.25%' }}>
                           <iframe 
                             src={embed} 
                             className="absolute inset-0 w-full h-full" 
@@ -314,9 +337,9 @@ export default function GallerySection() {
                           href={url} 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="flex items-center gap-2 text-xs text-blue-200 bg-[#001d3d]/50 p-3 rounded-xl hover:bg-[#001d3d] transition-colors border border-blue-300/20"
+                          className="flex items-center gap-2 text-xs text-slate-700 bg-sky-50/60 p-3 rounded-xl hover:bg-sky-100 transition-colors border border-sky-100"
                         >
-                          <i className="fa-solid fa-link text-amber-400"></i> {url}
+                          <i className="fa-solid fa-link text-sky-600"></i> {url}
                         </a>
                       );
                     })}
