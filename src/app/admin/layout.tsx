@@ -20,12 +20,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Sidebar isCollapsed={isSidebarCollapsed} toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
           
           {/* Main Content Area */}
-          <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white dark:bg-[#121212] relative z-0">
+          <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white dark:bg-[#121212] relative">
             <div 
               className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] pointer-events-none bg-no-repeat bg-right-bottom"
               style={{ backgroundImage: 'url("/images/element/2.png")', backgroundSize: '50%' }} 
             ></div>
-            <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-hidden relative">
               <Header 
                 toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
               />

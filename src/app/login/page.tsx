@@ -67,6 +67,20 @@ export default function LoginPage() {
         }
 
         setFieldErrors(newErrors);
+
+        const alertText = newErrors.email || newErrors.password || 'Gagal masuk. Silakan periksa kredensial Anda.';
+        Swal.fire({
+          title: 'Kredensial Tidak Sesuai',
+          text: alertText,
+          icon: 'error',
+          confirmButtonColor: '#0054a7',
+          confirmButtonText: 'Coba Lagi',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-3xl shadow-2xl',
+            confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs'
+          }
+        });
       } else if (res.status === 403 && data.requires_otp) {
         Swal.fire({
           title: 'Verifikasi Diperlukan',

@@ -55,12 +55,18 @@ const DEFAULT_SLIDES = [
 ];
 
 function HeroVideoPlayer({ src }: { src: string }) {
-  const [loaded, setLoaded] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
   return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-2xl">
-      {!loaded && (
-        <div className="absolute inset-0 bg-blue-50/70 rounded-2xl flex flex-col items-center justify-center gap-2 animate-pulse z-10">
-          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-2xl bg-white/95">
+      {/* Show Logo when video is downloading or buffering */}
+      {!isVideoLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center p-3 z-10 bg-white">
+          <img
+            src="/images/logo.png"
+            alt="Logo Placeholder"
+            className="w-full h-full object-contain p-2"
+          />
         </div>
       )}
       <video
@@ -70,9 +76,12 @@ function HeroVideoPlayer({ src }: { src: string }) {
         muted
         playsInline
         preload="auto"
-        onCanPlay={() => setLoaded(true)}
-        onLoadedData={() => setLoaded(true)}
-        className={`w-full h-full object-cover rounded-2xl transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        onCanPlay={() => setIsVideoLoaded(true)}
+        onLoadedData={() => setIsVideoLoaded(true)}
+        onPlay={() => setIsVideoLoaded(true)}
+        className={`w-full h-full object-cover rounded-2xl transition-opacity duration-500 ${
+          isVideoLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
       />
     </div>
   );
@@ -255,8 +264,13 @@ export default function HeroSection() {
                           />
                         </div>
                       ) : (
-                        <div className="w-full h-full rounded-2xl bg-blue-50/60 flex flex-col items-center justify-center animate-pulse">
-                          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          <img
+                            src="/images/logo.png"
+                            alt={slide.title || 'PLAT-BK'}
+                            className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-700"
+                            draggable={false}
+                          />
                         </div>
                       )}
                     </div>

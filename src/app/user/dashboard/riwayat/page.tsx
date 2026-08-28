@@ -49,7 +49,7 @@ export default function UserDashboardRiwayat() {
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Tabs */}
-      <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full max-w-md border border-slate-200 overflow-x-auto custom-scrollbar gap-1">
+      <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full max-w-xl border border-slate-200 overflow-x-auto custom-scrollbar gap-1">
         {tabOptions.map((tab) => (
           <button
             key={tab}

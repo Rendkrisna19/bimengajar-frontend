@@ -55,13 +55,13 @@ export default function UserDashboardProfil() {
   ];
 
   const group2 = [
-    { label: 'Tentang BI-MENGAJAR', icon: 'fa-solid fa-circle-info' },
+    { label: 'Tentang Platform Edukasi', icon: 'fa-solid fa-circle-info' },
     { label: 'Kebijakan Privasi', icon: 'fa-solid fa-shield-halved' },
     { label: 'Bantuan & Dukungan', icon: 'fa-solid fa-circle-question' },
   ];
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
+    <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto">
       {/* Top Profile Card */}
       <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
         {/* Avatar */}

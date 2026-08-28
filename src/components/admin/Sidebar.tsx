@@ -65,6 +65,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
           ]
         },
         { name: "Pre & Post Test", icon: "fa-solid fa-square-poll-vertical", href: "/admin/pre-post-test" },
+        { name: "Kuis Interaktif BI", icon: "fa-solid fa-gamepad", href: "/admin/kuis" },
         { name: "Kunjungan", icon: "fa-solid fa-building-circle-arrow-right", href: "/admin/kunjungan" },
         { name: "Ulasan Edukasi", icon: "fa-solid fa-star", href: "/admin/ulasan" },
       ]
@@ -114,7 +115,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: { isCollapsed: b
 
   return (
     <aside 
-      className={`relative h-full bg-primary dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-40 overflow-hidden`}
+      className={`relative h-full bg-primary dark:bg-[#0a1930] transition-all duration-300 flex flex-col ${isCollapsed ? 'w-[72px]' : 'w-64'} z-20 overflow-hidden`}
     >
       {/* Logo Area */}
       <div className="relative z-10 h-16 flex items-center justify-center border-b border-white/10 px-3 shrink-0 overflow-hidden gap-2">

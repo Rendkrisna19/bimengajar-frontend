@@ -406,74 +406,125 @@ export default function DashboardPage() {
       </div>
 
       {/* TOP 5 RANKING NILAI TERTINGGI LEADERBOARD */}
-      <div className="bg-gradient-to-br from-slate-900 via-primary to-blue-950 rounded-2xl p-6 text-white shadow-xl border border-blue-900/50">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-blue-800/60 pb-4">
+      <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-gray-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-xl shadow-inner">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 flex items-center justify-center text-amber-500 text-xl shadow-xs">
               <i className="fa-solid fa-trophy"></i>
             </div>
             <div>
-              <h3 className="text-lg font-extrabold tracking-tight flex items-center gap-2">
+              <h3 className="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
                 <span>Top 5 Ranking Nilai Tertinggi (Pre/Post Test)</span>
-                <span className="text-[10px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Leaderboard</span>
+                <span className="text-[10px] bg-amber-500 text-white font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Leaderboard</span>
               </h3>
-              <p className="text-xs text-blue-200/80">Peserta dengan perolehan skor teratas pada kegiatan BI Mengajar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Grafik &amp; daftar peserta dengan perolehan skor teratas pada kegiatan edukasi</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {top5Submissions.map((top, rankIdx) => {
-            const percentage = top.skor_maksimal > 0 ? Math.round((top.skor_total / top.skor_maksimal) * 100) : 0;
-            const rankBadges = [
-              { icon: 'fa-solid fa-crown', badgeColor: 'bg-amber-400 text-slate-950 font-black' },
-              { icon: 'fa-solid fa-medal', badgeColor: 'bg-slate-200 text-slate-900 font-bold' },
-              { icon: 'fa-solid fa-award', badgeColor: 'bg-amber-700 text-white font-bold' },
-              { icon: 'fa-solid fa-star', badgeColor: 'bg-blue-400/30 text-blue-200 border border-blue-400/40' },
-              { icon: 'fa-solid fa-star', badgeColor: 'bg-blue-400/30 text-blue-200 border border-blue-400/40' }
-            ];
-            const badge = rankBadges[rankIdx] || rankBadges[3];
+        {top5Submissions.length > 0 ? (
+          <div className="space-y-6">
+            {/* Horizontal Bar Chart for Top 5 */}
+            <div className="space-y-3.5 bg-slate-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/60">
+              <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                <i className="fa-solid fa-chart-simple text-primary"></i> Grafik Skor Teratas
+              </h4>
+              <div className="space-y-3">
+                {top5Submissions.map((top, rankIdx) => {
+                  const percentage = top.skor_maksimal > 0 ? Math.round((top.skor_total / top.skor_maksimal) * 100) : 0;
+                  const rankColors = [
+                    'from-amber-400 to-amber-500',
+                    'from-slate-400 to-slate-500',
+                    'from-amber-600 to-amber-700',
+                    'from-sky-400 to-blue-500',
+                    'from-sky-400 to-blue-500'
+                  ];
+                  const color = rankColors[rankIdx] || rankColors[3];
 
-            return (
-              <div key={top.id} className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between hover:bg-white/15 transition-all shadow-xs">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs flex items-center gap-1 ${badge.badgeColor}`}>
-                      <i className={`${badge.icon} text-[10px]`}></i> Rank #{rankIdx + 1}
-                    </span>
-                    <span className="text-[10px] font-semibold text-blue-200/80">
-                      {top.tanggal_bi_mengajar ? new Date(top.tanggal_bi_mengajar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : ''}
-                    </span>
-                  </div>
-
-                  <h4 className="font-extrabold text-sm text-white line-clamp-1">{top.nama_peserta}</h4>
-                  <p className="text-[11px] text-blue-200/80 line-clamp-1 mb-3">{top.instansi || 'Umum'}</p>
-
-                  <div className="bg-black/30 p-2.5 rounded-lg border border-white/10 text-center mb-3">
-                    <span className="text-[10px] text-blue-200 font-medium block">Skor Perolehan</span>
-                    <span className="text-lg font-black text-amber-300 block">
-                      {top.skor_total} <span className="text-xs text-white opacity-70">/ {top.skor_maksimal}</span>
-                    </span>
-                    <span className="text-[10px] font-extrabold text-emerald-400">{percentage}%</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setSelectedSubmissionModal(top)}
-                  className="w-full py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <i className="fa-solid fa-eye text-[10px]"></i> Detail Jawaban
-                </button>
+                  return (
+                    <div key={top.id} className="space-y-1">
+                      <div className="flex justify-between items-center text-xs font-bold">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] text-gray-700 dark:text-gray-200 shrink-0 font-extrabold">
+                            #{rankIdx + 1}
+                          </span>
+                          <span className="text-gray-800 dark:text-gray-200 font-bold truncate">{top.nama_peserta}</span>
+                          <span className="text-[10px] text-gray-400 font-normal truncate hidden sm:inline">({top.instansi || 'Umum'})</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-black text-gray-900 dark:text-white">{top.skor_total} <span className="text-[10px] text-gray-400 font-normal">/ {top.skor_maksimal}</span></span>
+                          <span className="text-xs font-extrabold text-primary min-w-[36px] text-right">{percentage}%</span>
+                        </div>
+                      </div>
+                      <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-700`}
+                          style={{ width: `${Math.max(5, percentage)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-
-          {top5Submissions.length === 0 && (
-            <div className="col-span-full py-8 text-center text-blue-200/60 text-xs font-medium">
-              Belum ada data skor hasil tes yang tercatat.
             </div>
-          )}
-        </div>
+
+            {/* Grid List Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {top5Submissions.map((top, rankIdx) => {
+                const percentage = top.skor_maksimal > 0 ? Math.round((top.skor_total / top.skor_maksimal) * 100) : 0;
+                const rankBadges = [
+                  { icon: 'fa-solid fa-crown', badgeColor: 'bg-amber-100 text-amber-800 border-amber-300' },
+                  { icon: 'fa-solid fa-medal', badgeColor: 'bg-slate-100 text-slate-800 border-slate-300' },
+                  { icon: 'fa-solid fa-award', badgeColor: 'bg-amber-50 text-amber-900 border-amber-400' },
+                  { icon: 'fa-solid fa-star', badgeColor: 'bg-sky-50 text-sky-800 border-sky-200' },
+                  { icon: 'fa-solid fa-star', badgeColor: 'bg-sky-50 text-sky-800 border-sky-200' }
+                ];
+                const badge = rankBadges[rankIdx] || rankBadges[3];
+
+                return (
+                  <div key={top.id} className="bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-700/60 rounded-xl p-4 flex flex-col justify-between hover:border-primary/40 transition-all shadow-2xs">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold border flex items-center gap-1 ${badge.badgeColor}`}>
+                          <i className={`${badge.icon} text-[10px]`}></i> Rank #{rankIdx + 1}
+                        </span>
+                        <span className="text-[10px] font-semibold text-gray-400">
+                          {top.tanggal_bi_mengajar ? new Date(top.tanggal_bi_mengajar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : ''}
+                        </span>
+                      </div>
+
+                      <h4 className="font-extrabold text-sm text-gray-900 dark:text-white line-clamp-1">{top.nama_peserta}</h4>
+                      <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 mb-3">{top.instansi || 'Umum'}</p>
+
+                      <div className="bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-gray-100 dark:border-gray-700 text-center mb-3">
+                        <span className="text-[10px] text-gray-400 font-medium block">Skor Perolehan</span>
+                        <span className="text-lg font-black text-gray-900 dark:text-white block">
+                          {top.skor_total} <span className="text-xs text-gray-400 font-normal">/ {top.skor_maksimal}</span>
+                        </span>
+                        <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">{percentage}%</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setSelectedSubmissionModal(top)}
+                      className="w-full py-1.5 bg-white dark:bg-gray-800 hover:bg-primary hover:text-white text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                    >
+                      <i className="fa-solid fa-eye text-[10px]"></i> Detail Jawaban
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="py-12 bg-slate-50 dark:bg-gray-800/40 border border-dashed border-gray-200 dark:border-gray-700 rounded-2xl flex flex-col items-center justify-center text-center">
+            <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center mb-3 text-xl">
+              <i className="fa-solid fa-trophy"></i>
+            </div>
+            <h4 className="text-gray-800 dark:text-gray-200 font-bold text-sm">Belum ada data skor hasil tes yang tercatat.</h4>
+            <p className="text-gray-400 text-xs mt-1">Data ranking Pre/Post test peserta akan otomatis muncul di sini setelah tes dilakukan.</p>
+          </div>
+        )}
       </div>
 
       {/* HISTORY TABLE HASIL TES (PRE-POST TEST) */}
@@ -565,7 +616,7 @@ export default function DashboardPage() {
 
       {/* SUBMISSION DETAIL MODAL */}
       {selectedSubmissionModal && (
-        <div className="fixed inset-y-0 right-0 left-0 lg:left-64 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 md:p-8 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 md:p-8 overflow-y-auto">
           <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-100 dark:border-gray-800 my-auto">
             <div className="px-6 py-4 bg-primary text-white flex items-center justify-between">
               <h3 className="text-base font-bold flex items-center gap-2">
