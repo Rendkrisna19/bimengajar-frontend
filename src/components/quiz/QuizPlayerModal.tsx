@@ -95,9 +95,17 @@ export default function QuizPlayerModal({
   const [showAudioMenu, setShowAudioMenu] = useState<boolean>(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoNextTimerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(Date.now());
 
   const currentQ: QuizQuestion | undefined = quiz.questions[currentIdx];
+
+  const triggerAutoNext = () => {
+    if (autoNextTimerRef.current) clearTimeout(autoNextTimerRef.current);
+    autoNextTimerRef.current = setTimeout(() => {
+      handleNextQuestion();
+    }, 1200);
+  };
 
   const handleStartGame = () => {
     setCountdownNum(3);
@@ -123,14 +131,14 @@ export default function QuizPlayerModal({
 
     const syncRoom = () => {
       const session = getActiveLiveSession();
-      if (session && session.pin_code === pinCode) {
+      if (session) {
         setLiveSessionStatus(session.status);
         setConnectedParticipants(session.participants || []);
 
         if (session.status === 'playing' && !isGameStarted && countdownNum === null) {
           handleStartGame();
         }
-      } else if (!session || session.status === 'finished') {
+      } else {
         setLiveSessionStatus('finished');
       }
     };
@@ -178,6 +186,7 @@ export default function QuizPlayerModal({
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (autoNextTimerRef.current) clearTimeout(autoNextTimerRef.current);
     };
   }, [isGameStarted, currentIdx, isFinished]);
 
@@ -185,6 +194,7 @@ export default function QuizPlayerModal({
   useEffect(() => {
     return () => {
       quizAudio.stopBGM();
+      if (autoNextTimerRef.current) clearTimeout(autoNextTimerRef.current);
     };
   }, []);
 
@@ -201,6 +211,7 @@ export default function QuizPlayerModal({
         [currentQ.id]: { selectedOptionId: '', isCorrect: false, timeTaken: currentQ.time_limit_seconds, points: 0 }
       }));
     }
+    triggerAutoNext();
   };
 
   const handleSelectOption = (option: { id: string; text: string; is_correct: boolean }) => {
@@ -247,6 +258,8 @@ export default function QuizPlayerModal({
         [currentQ.id]: { selectedOptionId: option.id, isCorrect: false, timeTaken, points: 0 }
       }));
     }
+
+    triggerAutoNext();
   };
 
   const handleNextQuestion = () => {
@@ -429,40 +442,45 @@ export default function QuizPlayerModal({
 
                 {/* Multiplayer Joined Participants list preview */}
                 {mode === 'multiplayer' && (
-                  <div className="pt-3 border-t border-slate-800 space-y-2 text-left">
+                  <div className="pt-3 border-t border-slate-800 space-y-3 text-left">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-extrabold text-slate-300">
-                        <i className="fa-solid fa-users text-sky-400 mr-1.5"></i>
-                        Peserta Terhubung ({connectedParticipants.length})
+                      <span className="font-extrabold text-slate-200 flex items-center gap-1.5">
+                        <i className="fa-solid fa-users text-sky-400"></i>
+                        Ruang Tunggu Peserta ({connectedParticipants.length})
                       </span>
-                      <span className="text-[10px] text-amber-400 font-extrabold">PIN: {pinCode}</span>
+                      <span className="px-2.5 py-0.5 bg-yellow-400/20 text-yellow-300 font-black rounded-full border border-yellow-400/30 text-[11px] tracking-wider">
+                        PIN: {pinCode}
+                      </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-1">
+                    {/* Participant Avatar Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-36 overflow-y-auto pr-1">
                       {connectedParticipants.map(p => (
-                        <span key={p.id} className="px-3 py-1 bg-slate-800 rounded-full border border-slate-700 text-xs text-sky-200 font-semibold flex items-center gap-1.5">
-                          <i className="fa-solid fa-circle-user text-amber-400 text-xs"></i>
-                          {p.nickname}
-                        </span>
+                        <div key={p.id} className="px-3 py-2 bg-slate-800/90 rounded-xl border border-slate-700 text-xs text-sky-200 font-semibold flex items-center gap-2 shadow-xs">
+                          <div className="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center justify-center text-[10px]">
+                            <i className="fa-solid fa-user-astronaut"></i>
+                          </div>
+                          <span className="truncate font-bold text-slate-100">{p.nickname}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
                 )}
 
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 px-2">
-                  <span>Pemain: <strong className="text-white">{userNickname}</strong></span>
-                  {mode === 'multiplayer' && <span className="text-emerald-400 font-extrabold flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Sync</span>}
+                  <span>Pemain Saya: <strong className="text-amber-300">{userNickname}</strong></span>
+                  {mode === 'multiplayer' && <span className="text-emerald-400 font-extrabold flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Sync No-Reload</span>}
                 </div>
               </div>
 
               {mode === 'multiplayer' ? (
-                <div className="w-full py-4 bg-sky-950/80 border border-sky-500/40 rounded-2xl p-4 text-center space-y-2 animate-pulse">
+                <div className="w-full py-4 bg-sky-950/80 border border-sky-500/40 rounded-2xl p-4 text-center space-y-2">
                   <div className="flex items-center justify-center gap-2 text-sky-300 font-black text-sm uppercase tracking-wider">
-                    <i className="fa-solid fa-spinner fa-spin"></i>
-                    <span>MENUNGGU HOST MEMULAI KUIS...</span>
+                    <i className="fa-solid fa-spinner fa-spin text-amber-400"></i>
+                    <span>MENUNGGU ADMIN MEMULAI KUIS...</span>
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    Begitu Edukator BI / Host menekan tombol <strong>"Mulai Game Live"</strong> di Admin Host Panel, kuis akan otomatis dimulai!
+                    Kuis akan otomatis dimulai serentak untuk seluruh peserta saat Host menekan <strong>"Mulai Game Live"</strong> di Admin Panel.
                   </p>
                 </div>
               ) : (

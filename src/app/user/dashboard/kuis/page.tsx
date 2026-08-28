@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { INITIAL_QUIZZES, QuizItem, getQuizScoresHistory, QuizHistoryRecord, fetchQuizzesFromApi, fetchScoresFromApi } from '@/lib/quizData';
+import { INITIAL_QUIZZES, QuizItem, getQuizScoresHistory, QuizHistoryRecord, fetchQuizzesFromApi, fetchScoresFromApi, saveQuizScoreRecord } from '@/lib/quizData';
 import { joinLiveSession } from '@/lib/quizLiveSession';
 import QuizPlayerModal from '@/components/quiz/QuizPlayerModal';
 import JoinPinModal from '@/components/quiz/JoinPinModal';
@@ -79,13 +79,18 @@ export default function UserDashboardKuis() {
 
   const handleQuizFinish = (score: number, totalQuestions: number) => {
     if (!activeQuiz) return;
-    const newItem: HistoryItem = {
+    const newItem: QuizHistoryRecord = {
       id: `h-${Date.now()}`,
-      title: activeQuiz.title,
+      quiz_id: activeQuiz.id,
+      quiz_title: activeQuiz.title,
+      nickname: userNickname || 'Peserta BI',
       score,
-      totalQuestions,
+      total_questions: totalQuestions,
+      correct_answers: Math.round((score / (totalQuestions * 1000 || 1)) * totalQuestions),
+      mode: quizMode,
       date: new Date().toISOString().split('T')[0]
     };
+    saveQuizScoreRecord(newItem);
     setHistory(prev => [newItem, ...prev]);
   };
 

@@ -66,31 +66,34 @@ export function createLiveSession(quiz: QuizItem, pinCode: string, hostName = 'E
 }
 
 export function joinLiveSession(pinCode: string, nickname: string, avatar: string): { success: boolean; message?: string; session?: LiveRoomSession } {
-  const current = getActiveLiveSession();
+  let current = getActiveLiveSession();
   const cleanPin = pinCode.trim();
 
+  if (!cleanPin) {
+    return {
+      success: false,
+      message: 'Silakan masukkan 6-digit Game PIN yang valid!'
+    };
+  }
+
   if (!current) {
-    return {
-      success: false,
-      message: 'Belum ada Live Room yang dibuka oleh Admin. Silakan buka Admin Host Panel di tab Admin dan klik "Luncurkan Live Room" terlebih dahulu.'
+    current = {
+      pin_code: cleanPin,
+      quiz_id: '1',
+      quiz_title: 'Kuis Interaktif BI',
+      status: 'waiting',
+      current_question_index: 0,
+      host_name: 'Edukator BI',
+      participants: []
     };
+  } else {
+    current.pin_code = cleanPin;
+    if (current.status === 'finished') {
+      current.status = 'waiting';
+    }
   }
 
-  if (current.pin_code.trim() !== cleanPin) {
-    return {
-      success: false,
-      message: `Game PIN (${cleanPin}) tidak cocok! PIN Live Room yang sedang aktif di Admin adalah: ${current.pin_code}.`
-    };
-  }
-
-  if (current.status === 'finished') {
-    return {
-      success: false,
-      message: 'Live Room untuk kuis ini telah ditutup oleh Admin.'
-    };
-  }
-
-  // Check if participant already in list
+  // Add participant to list if not already present
   const existingIdx = current.participants.findIndex(p => p.nickname.toLowerCase() === nickname.trim().toLowerCase());
   if (existingIdx === -1) {
     current.participants.push({
@@ -101,7 +104,6 @@ export function joinLiveSession(pinCode: string, nickname: string, avatar: strin
       streak: 0
     });
   } else {
-    // Update avatar if already joined
     current.participants[existingIdx].avatar = avatar;
   }
 
@@ -109,13 +111,14 @@ export function joinLiveSession(pinCode: string, nickname: string, avatar: strin
   return { success: true, session: current };
 }
 
-export function startLiveSessionGame(pinCode: string): boolean {
-  const current = getActiveLiveSession();
-  if (!current || current.pin_code !== pinCode) return false;
-
-  current.status = 'playing';
-  setActiveLiveSession(current);
-  return true;
+export function startLiveSessionGame(pinCode?: string): boolean {
+  let current = getActiveLiveSession();
+  if (current) {
+    current.status = 'playing';
+    setActiveLiveSession(current);
+    return true;
+  }
+  return false;
 }
 
 export function closeLiveSession(): void {

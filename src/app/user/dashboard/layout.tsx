@@ -79,13 +79,13 @@ export default function UserDashboardLayout({
           {/* Brand Logo & Page Title */}
           <div className="flex items-center gap-3 md:gap-4">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white shadow-md border border-sky-400/30 group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-slate-200 group-hover:scale-105 transition-transform p-1">
                 <Image
                   src="/images/logo.png?v=2"
                   alt="Logo PLAT-BK"
                   width={36}
                   height={36}
-                  className="w-7 h-7 object-contain"
+                  className="w-8 h-8 object-contain"
                   priority
                   unoptimized
                 />

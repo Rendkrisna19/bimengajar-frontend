@@ -6,6 +6,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import API_URL, { getImageUrl } from '@/lib/api';
 import { compressImageFile } from '@/lib/imageCompressor';
+import ImageCropperModal from '@/components/ui/ImageCropperModal';
 
 interface NewsItem {
   id: number;
@@ -23,6 +24,21 @@ export default function AdminBeritaPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [view, setView] = useState<'list' | 'form'>('list');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Image Cropper State
+  const [cropperState, setCropperState] = useState<{
+    isOpen: boolean;
+    imageSrc: string | null;
+    fileName: string;
+    editIndex: number | null;
+    isExisting: boolean;
+  }>({
+    isOpen: false,
+    imageSrc: null,
+    fileName: 'berita_image.jpg',
+    editIndex: null,
+    isExisting: false,
+  });
   
   const [formData, setFormData] = useState({
     id: null as number | null,
@@ -381,7 +397,9 @@ export default function AdminBeritaPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="block text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider px-1">Upload Gambar (Bisa lebih dari 1)</label>
+                <label className="block text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider px-1">
+                  Upload Gambar Berita (Wajib Potong / Crop foto agar pas di Beranda)
+                </label>
                 <div className="relative w-full">
                   <input 
                     type="file"
@@ -390,13 +408,15 @@ export default function AdminBeritaPage() {
                     onChange={async (e) => {
                       if (e.target.files && e.target.files.length > 0) {
                         const rawFiles = Array.from(e.target.files);
-                        const compressed = await Promise.all(
-                          rawFiles.map(file => compressImageFile(file, 1600, 1600, 0.85))
-                        );
-                        setFormData(prev => ({
-                          ...prev,
-                          new_images: [...prev.new_images, ...compressed]
-                        }));
+                        const firstFile = rawFiles[0];
+                        const previewUrl = URL.createObjectURL(firstFile);
+                        setCropperState({
+                          isOpen: true,
+                          imageSrc: previewUrl,
+                          fileName: firstFile.name,
+                          editIndex: null,
+                          isExisting: false
+                        });
                       }
                     }}
                     className="hidden" 
@@ -404,9 +424,9 @@ export default function AdminBeritaPage() {
                   />
                   <label 
                     htmlFor="berita-image-upload"
-                    className="w-full py-3 px-4 border-2 border-dashed border-slate-200 hover:border-primary/40 rounded-xl bg-slate-50/50 dark:bg-gray-700 hover:bg-slate-50 flex items-center justify-center gap-2 cursor-pointer transition-all text-xs font-bold text-slate-500 hover:text-primary"
+                    className="w-full py-3.5 px-4 border-2 border-dashed border-sky-300 hover:border-sky-500 rounded-2xl bg-sky-50/50 dark:bg-gray-800 hover:bg-sky-50 flex items-center justify-center gap-2 cursor-pointer transition-all text-xs font-extrabold text-sky-700 dark:text-sky-300 shadow-xs"
                   >
-                    <i className="fa-regular fa-image text-sm"></i> Klik untuk Memilih File Gambar
+                    <i className="fa-solid fa-crop-simple text-sm text-sky-500"></i> Klik untuk Memilih &amp; Crop Gambar Berita
                   </label>
                 </div>
                 
@@ -415,20 +435,36 @@ export default function AdminBeritaPage() {
                   <div className="mt-3 flex flex-wrap gap-3 p-3 bg-slate-50 dark:bg-gray-800 rounded-xl border border-slate-100">
                     {/* Existing Images */}
                     {formData.existing_images.map((img, idx) => (
-                      <div key={`existing-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden group shadow-sm border border-slate-200">
+                      <div key={`existing-${idx}`} className="relative w-28 h-24 rounded-lg overflow-hidden group shadow-sm border border-slate-200">
                         <img 
                           src={getImageUrl(img)} 
                           alt={`Gambar ${idx}`} 
                           className="w-full h-full object-cover" 
                         />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[1px]">
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              setCropperState({
+                                isOpen: true,
+                                imageSrc: getImageUrl(img),
+                                fileName: `cropped_existing_${idx}.jpg`,
+                                editIndex: idx,
+                                isExisting: true
+                              });
+                            }} 
+                            className="bg-sky-500 hover:bg-sky-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                            title="Crop / Edit Foto ini"
+                          >
+                            <i className="fa-solid fa-crop-simple text-xs"></i>
+                          </button>
                           <button 
                             type="button" 
                             onClick={() => removeExistingImage(idx)} 
                             className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                             title="Hapus gambar ini"
                           >
-                            <i className="fa-solid fa-trash-can text-sm"></i>
+                            <i className="fa-solid fa-trash-can text-xs"></i>
                           </button>
                         </div>
                       </div>
@@ -436,21 +472,37 @@ export default function AdminBeritaPage() {
                     
                     {/* New Images */}
                     {formData.new_images.map((file, idx) => (
-                      <div key={`new-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden group shadow-sm border border-green-200">
+                      <div key={`new-${idx}`} className="relative w-28 h-24 rounded-lg overflow-hidden group shadow-sm border border-emerald-300">
                         <img 
                           src={URL.createObjectURL(file)} 
                           alt={`New Gambar ${idx}`} 
                           className="w-full h-full object-cover" 
                         />
-                        <div className="absolute top-1 left-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">Baru</div>
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                        <div className="absolute top-1 left-1 bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm z-10">Hasil Crop</div>
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[1px]">
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              setCropperState({
+                                isOpen: true,
+                                imageSrc: URL.createObjectURL(file),
+                                fileName: file.name,
+                                editIndex: idx,
+                                isExisting: false
+                              });
+                            }} 
+                            className="bg-sky-500 hover:bg-sky-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+                            title="Edit / Re-crop Foto"
+                          >
+                            <i className="fa-solid fa-crop-simple text-xs"></i>
+                          </button>
                           <button 
                             type="button" 
                             onClick={() => removeNewImage(idx)} 
                             className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
                             title="Batal upload"
                           >
-                            <i className="fa-solid fa-trash-can text-sm"></i>
+                            <i className="fa-solid fa-trash-can text-xs"></i>
                           </button>
                         </div>
                       </div>
@@ -483,6 +535,46 @@ export default function AdminBeritaPage() {
           </form>
         </div>
       )}
+
+      {/* IMAGE CROPPER MODAL */}
+      <ImageCropperModal
+        isOpen={cropperState.isOpen}
+        imageSrc={cropperState.imageSrc}
+        fileName={cropperState.fileName}
+        onClose={() => setCropperState(prev => ({ ...prev, isOpen: false }))}
+        onCropComplete={(croppedFile) => {
+          if (cropperState.editIndex !== null && cropperState.editIndex >= 0) {
+            if (cropperState.isExisting) {
+              // Remove from existing_images and add croppedFile to new_images
+              setFormData(prev => ({
+                ...prev,
+                existing_images: prev.existing_images.filter((_, i) => i !== cropperState.editIndex),
+                new_images: [...prev.new_images, croppedFile]
+              }));
+            } else {
+              // Replace item at editIndex in new_images
+              setFormData(prev => ({
+                ...prev,
+                new_images: prev.new_images.map((f, i) => i === cropperState.editIndex ? croppedFile : f)
+              }));
+            }
+          } else {
+            // Append to new_images
+            setFormData(prev => ({
+              ...prev,
+              new_images: [...prev.new_images, croppedFile]
+            }));
+          }
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Gambar Berita Berhasil Dipotong!',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        }}
+      />
     </div>
   );
 }
