@@ -122,7 +122,7 @@ export default function AdminDokumentasiPage() {
       nama_kegiatan: item.nama_kegiatan,
       kategori: item.kategori,
       deskripsi: item.deskripsi || '',
-      tanggal_kegiatan: item.tanggal_kegiatan,
+      tanggal_kegiatan: item.tanggal_kegiatan ? item.tanggal_kegiatan.substring(0, 10) : '',
       posted_by: item.posted_by,
       video_url_input: '',
       video_urls: item.video_urls || [],

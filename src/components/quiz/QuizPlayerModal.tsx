@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QuizItem, QuizQuestion, calculateQuestionScore, PLAYER_AVATARS, saveQuizScoreRecord } from '@/lib/quizData';
 import { quizAudio, BGM_TRACKS } from '@/lib/quizAudio';
-import { getActiveLiveSession, syncActiveSessionFromApi } from '@/lib/quizLiveSession';
+import { getActiveLiveSession, syncActiveSessionFromApi, updateParticipantScoreInSession } from '@/lib/quizLiveSession';
 
 function triggerVictoryConfetti() {
   if (typeof window === 'undefined') return;
@@ -221,6 +221,7 @@ export default function QuizPlayerModal({
     setIsAnswered(true);
     setIsCorrect(false);
     setStreakCount(0);
+    setLastEarnedPoints(0);
     quizAudio.playWrongSound();
 
     if (currentQ) {
@@ -229,6 +230,11 @@ export default function QuizPlayerModal({
         [currentQ.id]: { selectedOptionId: '', isCorrect: false, timeTaken: currentQ.time_limit_seconds, points: 0 }
       }));
     }
+
+    if (mode === 'multiplayer' && pinCode && userNickname) {
+      updateParticipantScoreInSession(pinCode, userNickname, totalScore, 0);
+    }
+
     triggerAutoNext();
   };
 
@@ -244,9 +250,12 @@ export default function QuizPlayerModal({
     setSelectedOptionId(option.id);
     setIsAnswered(true);
 
+    let newTotalScore = totalScore;
+    let newStreak = 0;
+
     if (option.is_correct) {
       setIsCorrect(true);
-      const newStreak = streakCount + 1;
+      newStreak = streakCount + 1;
       setStreakCount(newStreak);
 
       const scoreResult = calculateQuestionScore(
@@ -257,8 +266,9 @@ export default function QuizPlayerModal({
         newStreak
       );
 
+      newTotalScore = totalScore + scoreResult.total;
       setLastEarnedPoints(scoreResult.total);
-      setTotalScore(prev => prev + scoreResult.total);
+      setTotalScore(newTotalScore);
       quizAudio.playCorrectSound();
 
       setUserAnswers(prev => ({
@@ -275,6 +285,10 @@ export default function QuizPlayerModal({
         ...prev,
         [currentQ.id]: { selectedOptionId: option.id, isCorrect: false, timeTaken, points: 0 }
       }));
+    }
+
+    if (mode === 'multiplayer' && pinCode && userNickname) {
+      updateParticipantScoreInSession(pinCode, userNickname, newTotalScore, newStreak);
     }
 
     triggerAutoNext();
@@ -295,6 +309,10 @@ export default function QuizPlayerModal({
 
     // Trigger Custom Confetti
     triggerVictoryConfetti();
+
+    if (mode === 'multiplayer' && pinCode && userNickname) {
+      updateParticipantScoreInSession(pinCode, userNickname, totalScore, streakCount);
+    }
 
     // Save score record to persistent score history
     saveQuizScoreRecord({
@@ -517,27 +535,27 @@ export default function QuizPlayerModal({
         <div className="flex-1 flex flex-col justify-between max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
           
           {/* TIMER & STREAK HEADER */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-xs font-bold text-slate-400">
-              <span className="bg-slate-800 px-3 py-1 rounded-lg border border-slate-700">
-                Soal {currentIdx + 1} dari {quiz.questions.length}
+          <div className="space-y-2.5">
+            <div className="flex justify-between items-center text-xs font-bold text-slate-300">
+              <span className="bg-slate-800/90 text-white font-extrabold px-3 py-1.5 rounded-xl border border-slate-700/80 shadow-xs flex items-center gap-2">
+                <i className="fa-solid fa-list-check text-sky-400"></i> Soal {currentIdx + 1} dari {quiz.questions.length}
               </span>
               
               {streakCount > 1 && (
-                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-lg animate-pulse flex items-center gap-1.5">
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-xl animate-pulse flex items-center gap-1.5">
                   <i className="fa-solid fa-fire text-amber-400"></i> Streak {streakCount}x Combo!
                 </span>
               )}
 
-              <span className={`px-3 py-1 rounded-lg border font-black ${
-                timeLeft <= 5 ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-bounce' : 'bg-slate-800 border-slate-700 text-sky-400'
+              <span className={`px-3.5 py-1.5 rounded-xl border font-black flex items-center gap-1.5 shadow-xs ${
+                timeLeft <= 5 ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-bounce' : 'bg-slate-800/90 border-slate-700/80 text-sky-300'
               }`}>
-                ⏱️ {timeLeft} Detik
+                <i className="fa-solid fa-clock text-amber-400"></i> {timeLeft} Detik
               </span>
             </div>
 
             {/* Progress Bar Timer */}
-            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+            <div className="w-full h-2.5 bg-slate-800/90 rounded-full overflow-hidden border border-slate-700/80">
               <div
                 className={`h-full transition-all duration-1000 ease-linear rounded-full ${
                   timeLeft <= 5 ? 'bg-red-500' : 'bg-gradient-to-r from-sky-400 to-amber-400'
@@ -548,17 +566,17 @@ export default function QuizPlayerModal({
           </div>
 
           {/* QUESTION BOX */}
-          <div className="bg-slate-900/90 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl text-center space-y-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 text-slate-800 font-black text-6xl pointer-events-none opacity-40">
-              #{currentIdx + 1}
+          <div className="bg-slate-900/90 border border-slate-800 p-5 sm:p-8 rounded-3xl shadow-2xl text-center space-y-4 relative overflow-hidden max-h-[42vh] overflow-y-auto">
+            <div className="absolute top-3 right-4 px-3 py-1 rounded-xl bg-slate-800/90 border border-slate-700/80 text-amber-400 font-extrabold text-xs sm:text-sm tracking-wider z-20 flex items-center gap-1.5 shadow-xs">
+              <i className="fa-solid fa-hashtag text-amber-400"></i> {currentIdx + 1}
             </div>
 
-            <h2 className="text-lg sm:text-2xl font-black text-slate-100 leading-relaxed tracking-tight relative z-10">
+            <h2 className="text-base sm:text-2xl font-black text-white leading-relaxed tracking-tight relative z-10 pt-4">
               {currentQ.question_text}
             </h2>
 
             {currentQ.image_url && (
-              <div className="relative w-full max-h-48 rounded-2xl overflow-hidden my-3 border border-slate-700 mx-auto max-w-md">
+              <div className="relative w-full max-h-44 rounded-2xl overflow-hidden my-2 border border-slate-700 mx-auto max-w-md">
                 <img src={currentQ.image_url} alt="Question Graphic" className="w-full h-full object-cover" />
               </div>
             )}
@@ -615,11 +633,10 @@ export default function QuizPlayerModal({
                   <h4 className="font-extrabold text-sm sm:text-base">
                     {isCorrect ? `Luar Biasa! Benar (+${lastEarnedPoints} Poin)` : 'Jawaban Kurang Tepat!'}
                   </h4>
-                  {currentQ.explanation && (
-                    <p className="text-xs opacity-90 leading-relaxed mt-0.5 max-w-xl">
-                      💡 {currentQ.explanation}
+                    <p className="text-xs opacity-90 leading-relaxed mt-0.5 max-w-xl flex items-start gap-1">
+                      <i className="fa-solid fa-lightbulb text-amber-400 text-sm shrink-0 mt-0.5"></i>
+                      <span>{currentQ.explanation}</span>
                     </p>
-                  )}
                 </div>
               </div>
 

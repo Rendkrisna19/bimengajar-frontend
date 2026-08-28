@@ -21,6 +21,7 @@ export default function ImageCropperModal({
   const [aspectLabel, setAspectLabel] = useState<string>('16:9 (Beranda)');
   const [zoom, setZoom] = useState<number>(1);
   const [rotation, setRotation] = useState<number>(0);
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
   
   // Pan offsets
   const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -33,23 +34,43 @@ export default function ImageCropperModal({
 
   // Load image when imageSrc changes
   useEffect(() => {
-    if (!imageSrc) return;
+    if (!imageSrc) {
+      setIsImageLoaded(false);
+      imgRef.current = null;
+      return;
+    }
+    setIsImageLoaded(false);
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (imageSrc.startsWith('http') || imageSrc.startsWith('https')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = imageSrc;
     img.onload = () => {
       imgRef.current = img;
       setZoom(1);
       setRotation(0);
       setOffset({ x: 0, y: 0 });
+      setIsImageLoaded(true);
+    };
+    img.onerror = () => {
+      // Fallback without crossOrigin
+      const fallbackImg = new Image();
+      fallbackImg.src = imageSrc;
+      fallbackImg.onload = () => {
+        imgRef.current = fallbackImg;
+        setZoom(1);
+        setRotation(0);
+        setOffset({ x: 0, y: 0 });
+        setIsImageLoaded(true);
+      };
     };
   }, [imageSrc]);
 
   // Redraw canvas whenever crop parameters change
   useEffect(() => {
-    if (!isOpen || !imgRef.current || !canvasRef.current) return;
+    if (!isOpen || !imgRef.current || !canvasRef.current || !isImageLoaded) return;
     drawCanvas();
-  }, [isOpen, imageSrc, aspectRatio, zoom, rotation, offset]);
+  }, [isOpen, imageSrc, aspectRatio, zoom, rotation, offset, isImageLoaded]);
 
   if (!isOpen || !imageSrc) return null;
 

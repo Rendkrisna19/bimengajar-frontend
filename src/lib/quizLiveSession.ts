@@ -280,6 +280,40 @@ export function startLiveSessionGame(): boolean {
 }
 
 /**
+ * Sync participant score to DB & local active session during live game
+ */
+export function updateParticipantScoreInSession(pinCode: string, nickname: string, score: number, streak = 0): void {
+  const current = getActiveLiveSession();
+  if (current && current.participants) {
+    const p = current.participants.find(part => part.nickname.toLowerCase().trim() === nickname.toLowerCase().trim());
+    if (p) {
+      p.score = score;
+      p.streak = streak;
+      setActiveLiveSession(current);
+    }
+  }
+
+  // Sync score update to Laravel API / DB asynchronously
+  fetch(`${API_URL}/quiz-sessions/score`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      pin_code: pinCode,
+      nickname: nickname,
+      score: score,
+      streak: streak,
+    }),
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      if (json.status === 'success' && json.data) {
+        setActiveLiveSession(json.data);
+      }
+    })
+    .catch((err) => console.warn('Could not sync participant score to DB server:', err));
+}
+
+/**
  * Host: Close live session (Instant Optimistic Local Purge + Async DB Sync)
  */
 export function closeLiveSession(): void {

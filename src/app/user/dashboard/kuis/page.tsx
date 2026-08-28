@@ -28,7 +28,12 @@ export default function UserDashboardKuis() {
       const apiQuizzes = await fetchQuizzesFromApi();
       if (apiQuizzes && apiQuizzes.length > 0) setQuizzes(apiQuizzes);
       const apiScores = await fetchScoresFromApi();
-      if (apiScores) setHistory(apiScores);
+      const localScores = getQuizScoresHistory();
+      if (apiScores && apiScores.length > 0) {
+        setHistory(apiScores);
+      } else {
+        setHistory(localScores);
+      }
     };
     loadData();
     window.addEventListener('quiz_scores_update', loadData);
