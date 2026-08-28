@@ -62,7 +62,7 @@ export default function AdminKuisPage() {
     window.addEventListener('quiz_session_update', handleUpdate);
     window.addEventListener('quiz_scores_update', loadData);
     window.addEventListener('storage', handleUpdate);
-    const interval = setInterval(handleUpdate, 1500);
+    const interval = setInterval(handleUpdate, 600);
 
     return () => {
       window.removeEventListener('quiz_session_update', handleUpdate);
@@ -262,29 +262,26 @@ export default function AdminKuisPage() {
       const updated = getActiveLiveSession();
       if (updated) setActiveSession(updated);
       Swal.fire({
+        toast: true,
+        position: 'top-end',
         icon: 'success',
         title: '🎮 Live Game Dimulai!',
-        text: 'Semua peserta di ruang tunggu akan otomatis masuk ke soal pertama secara serentak!',
-        timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
+        timer: 1500
       });
     }
   };
 
   const handleCloseLiveRoom = () => {
+    closeLiveSession();
+    setActiveSession(null);
     Swal.fire({
-      title: 'Tutup Live Room?',
-      text: 'Sesi kuis live akan dihentikan dan seluruh peserta akan keluar dari ruangan.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Tutup Room',
-      confirmButtonColor: '#ef4444'
-    }).then(res => {
-      if (res.isConfirmed) {
-        closeLiveSession();
-        setActiveSession(null);
-        Swal.fire('Tutup Live Room', 'Live Room berhasil ditutup.', 'info');
-      }
+      toast: true,
+      position: 'top-end',
+      icon: 'info',
+      title: 'Live Room Berhasil Ditutup!',
+      showConfirmButton: false,
+      timer: 1500
     });
   };
 

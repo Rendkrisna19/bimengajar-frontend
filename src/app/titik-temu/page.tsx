@@ -118,7 +118,7 @@ export default function TitikTemuPage() {
 
     setIsLocating(true);
 
-    const geoOptions: GeolocationPositionOptions = {
+    const geoOptions: PositionOptions = {
       enableHighAccuracy: false, // Low accuracy is faster and works reliably on PCs/laptops
       timeout: 8000,
       maximumAge: 60000,
@@ -189,7 +189,7 @@ export default function TitikTemuPage() {
       return;
     }
 
-    const geoOptions: GeolocationPositionOptions = {
+    const geoOptions: PositionOptions = {
       enableHighAccuracy: false,
       timeout: 8000,
       maximumAge: 60000,

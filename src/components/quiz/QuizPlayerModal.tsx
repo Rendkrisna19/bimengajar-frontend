@@ -162,8 +162,8 @@ export default function QuizPlayerModal({
     syncRoom();
     window.addEventListener('quiz_session_update', syncRoom);
     window.addEventListener('storage', syncRoom);
-    // Poll every 1000ms for cross-browser / cross-device DB sync
-    const interval = setInterval(syncRoom, 1000);
+    // Poll every 500ms for fast cross-browser / cross-device DB sync
+    const interval = setInterval(syncRoom, 500);
 
     return () => {
       window.removeEventListener('quiz_session_update', syncRoom);

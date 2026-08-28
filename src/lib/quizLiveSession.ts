@@ -88,6 +88,11 @@ export async function syncActiveSessionFromApi(): Promise<LiveRoomSession | null
         const serverSession = json.data as LiveRoomSession | null;
         const currentLocal = getActiveLiveSession();
         
+        // Prevent latency lag: do not overwrite local 'playing' state if server GET response is slightly behind
+        if (currentLocal && currentLocal.status === 'playing' && serverSession && serverSession.status === 'waiting') {
+          return currentLocal;
+        }
+
         // Prevent infinite event loop: only update local state if session data actually changed
         if (JSON.stringify(serverSession) !== JSON.stringify(currentLocal)) {
           setActiveLiveSession(serverSession);
@@ -164,9 +169,9 @@ export async function joinLiveSession(
     return { success: false, message: 'Nickname tidak boleh kosong!' };
   }
 
-  // Primary validation with 5s timeout: query Laravel API /quiz-sessions/join directly against database table
+  // Primary validation with 4s timeout: query Laravel API /quiz-sessions/join directly against database table
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 5000) : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), 4000) : null;
 
   try {
     const res = await fetch(`${API_URL}/quiz-sessions/join`, {
@@ -246,15 +251,18 @@ export async function joinLiveSession(
 }
 
 /**
- * Host: Mark session as 'playing' in DB table
+ * Host: Mark session as 'playing' (Instant Optimistic Local Update + Async DB Sync)
  */
 export function startLiveSessionGame(): boolean {
   const current = getActiveLiveSession();
   if (!current) return false;
 
   current.status = 'playing';
+  
+  // 1. INSTANT optimistic update (< 1ms) across all tabs/windows
   setActiveLiveSession(current);
 
+  // 2. Async background sync to Laravel DB
   fetch(`${API_URL}/quiz-sessions/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -272,35 +280,25 @@ export function startLiveSessionGame(): boolean {
 }
 
 /**
- * Host: Close live session in DB table
+ * Host: Close live session (Instant Optimistic Local Purge + Async DB Sync)
  */
 export function closeLiveSession(): void {
   const current = getActiveLiveSession();
   const pin = current ? current.pin_code : null;
 
-  if (current) {
-    const finished = { ...current, status: 'finished' as const };
-    try {
-      localStorage.setItem(LIVE_SESSION_KEY, JSON.stringify(finished));
-    } catch {}
-    const ch = getBroadcastChannel();
-    if (ch) {
-      ch.postMessage({ type: 'QUIZ_SESSION_SYNC', session: finished });
-    }
-    window.dispatchEvent(new CustomEvent('quiz_session_update', { detail: finished }));
-  }
-
+  // 1. INSTANT optimistic purge (< 1ms)
   try {
     localStorage.removeItem(LIVE_SESSION_KEY);
   } catch {}
 
+  const finished = current ? { ...current, status: 'finished' as const } : null;
+  window.dispatchEvent(new CustomEvent('quiz_session_update', { detail: finished }));
   const ch = getBroadcastChannel();
   if (ch) {
     ch.postMessage({ type: 'QUIZ_SESSION_SYNC', session: null });
   }
-  window.dispatchEvent(new CustomEvent('quiz_session_update', { detail: null }));
 
-  // Post close to Laravel API
+  // 2. Async background sync to Laravel DB
   fetch(`${API_URL}/quiz-sessions/close`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
