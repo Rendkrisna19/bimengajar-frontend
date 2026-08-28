@@ -48,7 +48,7 @@ export default function MapSection({ position, setPosition }: LocationPickerProp
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            url="/api/tiles/{s}/{z}/{x}/{y}.png"
           />
           <LocationPickerMap position={position} setPosition={setPosition} />
         </MapContainer>

@@ -9,6 +9,7 @@ import API_URL from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 import PageHeader from '@/components/ui/PageHeader';
 import FloatingAction from '@/components/ui/FloatingAction';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 const MapView = dynamic(() => import('@/components/PojokKoin/MapView'), {
   ssr: false,
@@ -42,7 +43,19 @@ const DENOMINATIONS = [
   { value: '1000', label: 'Rp1.000' },
 ];
 
-const RADIUS_OPTIONS = [1, 3, 5, 10, 20];
+const RADIUS_OPTIONS = [
+  { value: 1, label: '1 KM', icon: 'fa-solid fa-location-dot' },
+  { value: 3, label: '3 KM', icon: 'fa-solid fa-location-dot' },
+  { value: 5, label: '5 KM', icon: 'fa-solid fa-location-dot' },
+  { value: 10, label: '10 KM', icon: 'fa-solid fa-location-dot' },
+  { value: 20, label: '20 KM', icon: 'fa-solid fa-location-dot' },
+];
+
+const USER_TYPE_OPTIONS = [
+  { value: 'umkm', label: 'UMKM / Toko / Warung', icon: 'fa-solid fa-store' },
+  { value: 'perorangan', label: 'Perorangan / Pribadi', icon: 'fa-solid fa-user' },
+  { value: 'instansi', label: 'Instansi / Komunitas', icon: 'fa-solid fa-building' },
+];
 
 const USER_TYPE_LABELS: Record<string, Record<string, string>> = {
   perorangan: { ID: 'Perorangan', EN: 'Individual' },
@@ -58,14 +71,13 @@ export default function TitikTemuPage() {
   const [searchLat, setSearchLat] = useState('');
   const [searchLng, setSearchLng] = useState('');
   const [searchAddress, setSearchAddress] = useState('');
-  const [radius, setRadius] = useState(5);
+  const [radius, setRadius] = useState<number>(5);
   const [results, setResults] = useState<CoinProvider[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([2.9604, 99.0687]);
 
-  // STATE DAFTAR LOKASI / BUTUH KOIN
-  const [regType, setRegType] = useState<'punya' | 'butuh'>('punya');
+  // STATE DAFTAR LOKASI / MEMBUTUHKAN UANG LOGAM (Default: 'butuh')
   const [regName, setRegName] = useState('');
   const [regUserType, setRegUserType] = useState('umkm');
   const [regWhatsapp, setRegWhatsapp] = useState('');
@@ -170,7 +182,7 @@ export default function TitikTemuPage() {
     setIsSubmitting(true);
     try {
       const payload = {
-        name: regType === 'butuh' ? `[Butuh Koin] ${regName}` : regName,
+        name: `[Butuh Logam] ${regName}`,
         user_type: regUserType,
         whatsapp: regWhatsapp,
         address: regAddress,
@@ -179,7 +191,7 @@ export default function TitikTemuPage() {
         total_coins: parseInt(regTotalCoins, 10),
         denominations: regDenominations,
         operational_hours: regOpHours || null,
-        notes: regNotes ? `${regType === 'butuh' ? '(Membutuhkan Uang Logam) ' : ''}${regNotes}` : (regType === 'butuh' ? 'Membutuhkan Uang Logam' : null),
+        notes: regNotes ? `(Membutuhkan Uang Logam) ${regNotes}` : 'Membutuhkan Uang Logam',
       };
 
       const res = await fetch(`${API_URL}/coin-providers`, {
@@ -193,9 +205,7 @@ export default function TitikTemuPage() {
         Swal.fire({
           icon: 'success',
           title: 'Pendaftaran Berhasil!',
-          text: regType === 'butuh' 
-            ? 'Permohonan kebutuhan koin Anda berhasil didaftarkan di Titik Temu BI Siantar.'
-            : 'Lokasi penyedia uang koin Anda berhasil didaftarkan!',
+          text: 'Permohonan kebutuhan uang logam Anda berhasil didaftarkan di Titik Temu BI Siantar.',
           confirmButtonColor: '#003366',
         });
         // Reset form
@@ -248,7 +258,7 @@ export default function TitikTemuPage() {
 
       <div className="max-w-[1150px] mx-auto px-4 md:px-8 py-10">
 
-        {/* Navigation Tabs: Cari Koin VS Daftarkan Koin / Butuh Koin */}
+        {/* Navigation Tabs */}
         <div className="flex justify-center mb-8">
           <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-gray-200 flex gap-2 w-full max-w-lg">
             <button
@@ -269,7 +279,7 @@ export default function TitikTemuPage() {
                   : 'text-gray-600 hover:text-primary hover:bg-gray-50'
               }`}
             >
-              <i className="fa-solid fa-plus-circle"></i> Daftarkan Diri / Butuh Koin
+              <i className="fa-solid fa-hand-holding-dollar"></i> Membutuhkan Uang Logam
             </button>
           </div>
         </div>
@@ -283,7 +293,7 @@ export default function TitikTemuPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div className="md:col-span-2">
-                  <label className="text-xs font-bold text-gray-600 mb-1 block">Lokasi Pencarian</label>
+                  <label className="text-xs font-bold text-gray-600 mb-1.5 block">Lokasi Pencarian</label>
                   <div className="flex gap-2">
                     <input 
                       type="text" 
@@ -301,10 +311,14 @@ export default function TitikTemuPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-600 mb-1 block">Jangkauan Radius</label>
-                  <select value={radius} onChange={e => setRadius(Number(e.target.value))} className={inputCls}>
-                    {RADIUS_OPTIONS.map(r => <option key={r} value={r}>{r} KM</option>)}
-                  </select>
+                  {/* CustomSelect Component for Jangkauan Radius */}
+                  <CustomSelect
+                    label="Jangkauan Radius"
+                    icon="fa-solid fa-[#003366] fa-ruler-combined"
+                    options={RADIUS_OPTIONS}
+                    value={radius}
+                    onChange={(val) => setRadius(Number(val))}
+                  />
                 </div>
               </div>
               <button 
@@ -335,10 +349,10 @@ export default function TitikTemuPage() {
               <div className="flex flex-col gap-4 max-h-[520px] overflow-y-auto pr-1">
                 {!hasSearched && (
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center flex flex-col items-center justify-center h-full">
-                    <i className="fa-solid fa-coins text-5xl text-blue-200 mb-4 block"></i>
+                    <i className="fa-solid fa-[#003366] fa-coins text-5xl text-blue-200 mb-4 block"></i>
                     <h3 className="font-bold text-gray-700 text-lg mb-1">Cari Titik Temu Terdekat</h3>
                     <p className="text-gray-400 text-sm max-w-sm">
-                      Gunakan lokasi GPS Anda di atas untuk menemukan penyedia dan pemohon uang koin terdekat di sekitar Anda.
+                      Gunakan lokasi GPS Anda di atas untuk menemukan penyedia dan pemohon uang logam terdekat di sekitar Anda.
                     </p>
                   </div>
                 )}
@@ -393,7 +407,7 @@ export default function TitikTemuPage() {
                       </div>
                     </div>
                     <a
-                      href={`https://wa.me/${p.whatsapp.replace(/\D/g, '').replace(/^0/, '62')}?text=Halo%20${encodeURIComponent(p.name)}%2C%20saya%20tertarik%20untuk%20menukar%20uang%20koin%20melalui%20platform%20Titik%20Temu%20BI%20Siantar.`}
+                      href={`https://wa.me/${p.whatsapp.replace(/\D/g, '').replace(/^0/, '62')}?text=Halo%20${encodeURIComponent(p.name)}%2C%20saya%20tertarik%20untuk%20menukar%20uang%20logam%20melalui%20platform%20Titik%20Temu%20BI%20Siantar.`}
                       target="_blank" rel="noopener noreferrer"
                       className="mt-3 w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition-all text-sm shadow-sm"
                     >
@@ -406,53 +420,16 @@ export default function TitikTemuPage() {
           </div>
         )}
 
-        {/* TAB 2: DAFTARKAN DIRI / BUTUH KOIN */}
+        {/* TAB 2: MEMBUTUHKAN UANG LOGAM */}
         {activeTab === 'register' && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div className="border-b border-gray-100 pb-6 mb-6">
               <h2 className="text-xl font-extrabold text-[#003366] flex items-center gap-2">
-                <i className="fa-solid fa-store text-primary"></i> Form Pendaftaran Titik Temu Uang Logam
+                <i className="fa-solid fa-hand-holding-dollar text-primary"></i> Form Permohonan Membutuhkan Uang Logam
               </h2>
               <p className="text-sm text-gray-500 mt-1">
-                Daftarkan diri, usaha (UMKM), atau instansi Anda yang **memiliki stok uang koin** ATAU **membutuhkan koin** untuk kembalian toko/kegiatan agar mudah ditemukan masyarakat.
+                Daftarkan diri, usaha (UMKM), atau instansi Anda yang **membutuhkan pasokan uang logam** untuk uang kembalian toko/kegiatan agar mudah ditemukan oleh masyarakat atau penyedia uang logam.
               </p>
-
-              {/* Radio Pilihan: Punya Koin VS Butuh Koin */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                <label 
-                  onClick={() => setRegType('punya')}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-3.5 ${
-                    regType === 'punya'
-                      ? 'border-primary bg-blue-50/50 shadow-sm'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <input type="radio" name="regType" checked={regType === 'punya'} onChange={() => setRegType('punya')} className="accent-primary w-4 h-4" />
-                  <div>
-                    <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1.5">
-                      <i className="fa-solid fa-coins text-amber-500"></i> Punya Uang Logam
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5">Ingin menyediakan/menukarkan koin ke orang lain</p>
-                  </div>
-                </label>
-
-                <label 
-                  onClick={() => setRegType('butuh')}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-3.5 ${
-                    regType === 'butuh'
-                      ? 'border-amber-500 bg-amber-50/50 shadow-sm'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <input type="radio" name="regType" checked={regType === 'butuh'} onChange={() => setRegType('butuh')} className="accent-amber-500 w-4 h-4" />
-                  <div>
-                    <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1.5">
-                      <i className="fa-solid fa-hand-holding-dollar text-primary"></i> Membutuhkan Uang Logam
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5">Butuh pasokan koin untuk uang kembalian toko / usaha</p>
-                  </div>
-                </label>
-              </div>
             </div>
 
             <form onSubmit={handleRegisterSubmit} className="space-y-6">
@@ -472,14 +449,13 @@ export default function TitikTemuPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                    Kategori Pendaftar <span className="text-red-500">*</span>
-                  </label>
-                  <select value={regUserType} onChange={e => setRegUserType(e.target.value)} className={inputCls}>
-                    <option value="umkm">UMKM / Toko / Warung</option>
-                    <option value="perorangan">Perorangan / Pribadi</option>
-                    <option value="instansi">Instansi / Komunitas</option>
-                  </select>
+                  {/* CustomSelect Component for Kategori Pendaftar */}
+                  <CustomSelect
+                    label="Kategori Pendaftar *"
+                    options={USER_TYPE_OPTIONS}
+                    value={regUserType}
+                    onChange={(val) => setRegUserType(val)}
+                  />
                 </div>
 
                 <div>
@@ -498,7 +474,7 @@ export default function TitikTemuPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                    Total Estimasi Nominal Koin (Rp) <span className="text-red-500">*</span>
+                    Total Estimasi Nominal Uang Logam (Rp) <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -515,7 +491,7 @@ export default function TitikTemuPage() {
               {/* Pecahan */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-2">
-                  Pilihan Pecahan Uang Logam <span className="text-red-500">*</span>
+                  Pilihan Pecahan Uang Logam yang Dibutuhkan <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3 flex-wrap">
                   {DENOMINATIONS.map(d => {
@@ -525,7 +501,7 @@ export default function TitikTemuPage() {
                         key={d.value}
                         type="button"
                         onClick={() => toggleDenomination(d.value)}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all flex items-center gap-2 ${
+                        className={`px-4 py-2.5 rounded-xl text-sm font-bold border transition-all flex items-center gap-2 ${
                           isSelected
                             ? 'bg-primary text-white border-primary shadow-sm'
                             : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
@@ -561,7 +537,7 @@ export default function TitikTemuPage() {
                     type="text"
                     value={regNotes}
                     onChange={e => setRegNotes(e.target.value)}
-                    placeholder={regType === 'butuh' ? 'Contoh: Membutuhkan pecahan 500 & 1.000 setiap hari' : 'Contoh: Koin sudah dirapikan per 50 ribu'}
+                    placeholder="Contoh: Membutuhkan pecahan 500 & 1.000 setiap hari"
                     className={inputCls}
                   />
                 </div>
@@ -633,7 +609,7 @@ export default function TitikTemuPage() {
                 {isSubmitting ? (
                   <><i className="fa-solid fa-spinner fa-spin"></i> Menyimpan Pendaftaran...</>
                 ) : (
-                  <><i className="fa-solid fa-paper-plane"></i> Daftarkan Lokasi Sekarang</>
+                  <><i className="fa-solid fa-paper-plane"></i> Daftarkan Lokasi Permohonan Logam</>
                 )}
               </button>
             </form>
