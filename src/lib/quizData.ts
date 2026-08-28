@@ -47,6 +47,7 @@ export interface LiveRoomSession {
     streak: number;
     last_answer_correct?: boolean;
   }[];
+  quiz?: QuizItem;
 }
 
 // Preset Bank Indonesia Quizzes
