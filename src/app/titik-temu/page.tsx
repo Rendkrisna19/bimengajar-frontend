@@ -241,9 +241,16 @@ export default function TitikTemuPage() {
       {/* Header Section */}
       <PageHeader
         title={
-          <>
-            Titik <span className="text-yellow-300">Temu</span>
-          </>
+          <div className="flex justify-center items-center my-1">
+            <img 
+              src="/images/menu-cepat/5.png" 
+              alt="Titik Temu - Platform Sirkulasi Uang Logam" 
+              className="h-16 sm:h-20 md:h-24 lg:h-28 max-w-full w-auto object-contain mx-auto hover:scale-105 transition-all duration-300"
+              style={{
+                filter: 'drop-shadow(0 0 2px #ffffff) drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 12px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 22px rgba(255, 255, 255, 0.8))'
+              }}
+            />
+          </div>
         }
         description={
           lang === 'ID'
