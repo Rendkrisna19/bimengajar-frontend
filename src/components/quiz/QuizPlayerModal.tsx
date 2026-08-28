@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { QuizItem, QuizQuestion, calculateQuestionScore, PLAYER_AVATARS } from '@/lib/quizData';
+import { QuizItem, QuizQuestion, calculateQuestionScore, PLAYER_AVATARS, saveQuizScoreRecord } from '@/lib/quizData';
 import { quizAudio, BGM_TRACKS } from '@/lib/quizAudio';
 import { getActiveLiveSession } from '@/lib/quizLiveSession';
 
@@ -265,6 +265,19 @@ export default function QuizPlayerModal({
     // Trigger Custom Confetti
     triggerVictoryConfetti();
 
+    // Save score record to persistent score history
+    saveQuizScoreRecord({
+      id: `score-${Date.now()}`,
+      quiz_id: quiz.id,
+      quiz_title: quiz.title,
+      nickname: userNickname || 'Peserta BI',
+      score: totalScore,
+      total_questions: quiz.questions.length,
+      correct_answers: Object.values(userAnswers).filter(a => a.isCorrect).length,
+      mode: mode,
+      date: new Date().toISOString().split('T')[0]
+    });
+
     if (onFinish) {
       onFinish(totalScore, quiz.questions.length);
     }
@@ -289,7 +302,7 @@ export default function QuizPlayerModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between overflow-hidden animate-in fade-in duration-200 text-white font-sans">
+    <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col justify-between overflow-y-auto animate-in fade-in duration-200 text-white font-sans">
       
       {/* TOP STATUS BAR */}
       <div className="bg-slate-900/90 border-b border-slate-800 px-4 sm:px-8 py-3 flex items-center justify-between gap-4 shrink-0">
@@ -586,53 +599,53 @@ export default function QuizPlayerModal({
         </div>
       ) : (
         /* VICTORY & SUMMARY SCREEN */
-        <div className="flex-1 flex flex-col items-center justify-center max-w-2xl w-full mx-auto p-6 space-y-6 text-center overflow-y-auto my-auto">
+        <div className="flex-1 flex flex-col items-center justify-center max-w-xl w-full mx-auto p-4 sm:p-6 space-y-4 text-center overflow-y-auto my-auto py-6">
           
-          <div className="w-24 h-24 bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 rounded-3xl flex items-center justify-center text-5xl shadow-2xl mx-auto border-4 border-white/20 animate-bounce">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl shadow-xl mx-auto border-2 border-white/20 animate-bounce shrink-0">
             <i className="fa-solid fa-trophy"></i>
           </div>
 
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Kuis Selesai!</span>
-            <h2 className="text-3xl font-black text-white mt-1">Selamat, {userNickname}!</h2>
-            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-400">Kuis Selesai!</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mt-0.5">Selamat, {userNickname}!</h2>
+            <p className="text-[11px] sm:text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
               Kamu telah menyelesaikan {quiz.title}. Poinmu berhasil dicatat!
             </p>
           </div>
 
           {/* Score Display Card */}
-          <div className="w-full bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+          <div className="w-full bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-3xl shadow-xl space-y-3">
+            <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
                 <span className="text-[10px] text-slate-400 font-bold block uppercase">Total Poin</span>
-                <span className="text-3xl font-black text-amber-400">{totalScore.toLocaleString('id-ID')}</span>
+                <span className="text-2xl sm:text-3xl font-black text-amber-400">{totalScore.toLocaleString('id-ID')}</span>
               </div>
 
-              <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+              <div className="bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
                 <span className="text-[10px] text-slate-400 font-bold block uppercase">Jawaban Benar</span>
-                <span className="text-3xl font-black text-emerald-400">
-                  {Object.values(userAnswers).filter(a => a.isCorrect).length} <span className="text-sm font-normal text-slate-400">/ {quiz.questions.length}</span>
+                <span className="text-2xl sm:text-3xl font-black text-emerald-400">
+                  {Object.values(userAnswers).filter(a => a.isCorrect).length} <span className="text-xs font-normal text-slate-400">/ {quiz.questions.length}</span>
                 </span>
               </div>
             </div>
 
             {/* Answers Review List */}
-            <div className="space-y-2 text-left pt-2">
-              <span className="text-xs font-extrabold text-slate-400 block">Review Jawaban Soal:</span>
-              <div className="max-h-48 overflow-y-auto space-y-2 pr-1">
+            <div className="space-y-1.5 text-left pt-1">
+              <span className="text-[11px] font-extrabold text-slate-400 block">Review Jawaban Soal:</span>
+              <div className="max-h-32 sm:max-h-40 overflow-y-auto space-y-1.5 pr-1">
                 {quiz.questions.map((q, idx) => {
                   const ans = userAnswers[q.id];
                   return (
-                    <div key={q.id} className="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 text-xs flex justify-between items-center gap-3">
+                    <div key={q.id} className="p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/60 text-[11px] flex justify-between items-center gap-2">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                        <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 ${
                           ans?.isCorrect ? 'bg-emerald-500 text-slate-950' : 'bg-red-500 text-white'
                         }`}>
                           {idx + 1}
                         </span>
                         <span className="truncate text-slate-200 font-medium">{q.question_text}</span>
                       </div>
-                      <span className={`font-bold shrink-0 text-[11px] ${ans?.isCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
+                      <span className={`font-bold shrink-0 text-[10px] ${ans?.isCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
                         {ans?.isCorrect ? `+${ans.points}` : '0 Poin'}
                       </span>
                     </div>
@@ -644,7 +657,7 @@ export default function QuizPlayerModal({
 
           <button
             onClick={onClose}
-            className="w-full py-4 bg-primary hover:bg-sky-600 text-white font-black text-sm rounded-2xl transition-all shadow-xl cursor-pointer border-b-4 border-yellow-400 active:border-b-0 active:translate-y-0.5"
+            className="w-full py-3.5 bg-primary hover:bg-sky-600 text-white font-black text-xs sm:text-sm rounded-2xl transition-all shadow-xl cursor-pointer border-b-4 border-yellow-400 active:border-b-0 active:translate-y-0.5 shrink-0"
           >
             Selesai &amp; Kembali ke Dashboard
           </button>

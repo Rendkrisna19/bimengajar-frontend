@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { getQuizScoresHistory, QuizHistoryRecord } from '@/lib/quizData';
 
 export default function UserDashboardBeranda() {
   const [userName, setUserName] = useState('Pengguna');
   const [greeting, setGreeting] = useState('Selamat Pagi');
   const [currentDate, setCurrentDate] = useState('');
-  const [greetingIcon, setGreetingIcon] = useState('fa-sun');
+  const [leaderboard, setLeaderboard] = useState<QuizHistoryRecord[]>([]);
 
   useEffect(() => {
     // Get user from local storage
@@ -25,16 +26,12 @@ export default function UserDashboardBeranda() {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
       setGreeting('Selamat Pagi');
-      setGreetingIcon('fa-sun');
     } else if (hour >= 12 && hour < 15) {
       setGreeting('Selamat Siang');
-      setGreetingIcon('fa-sun');
     } else if (hour >= 15 && hour < 18) {
       setGreeting('Selamat Sore');
-      setGreetingIcon('fa-cloud-sun');
     } else {
       setGreeting('Selamat Malam');
-      setGreetingIcon('fa-moon');
     }
 
     // Format date in Indonesian
@@ -45,10 +42,23 @@ export default function UserDashboardBeranda() {
       year: 'numeric' 
     };
     setCurrentDate(new Date().toLocaleDateString('id-ID', options));
+
+    // Load leaderboard scores
+    const loadScores = () => {
+      const history = getQuizScoresHistory();
+      const sorted = [...history].sort((a, b) => b.score - a.score).slice(0, 5);
+      setLeaderboard(sorted);
+    };
+
+    loadScores();
+    window.addEventListener('quiz_scores_update', loadScores);
+    return () => {
+      window.removeEventListener('quiz_scores_update', loadScores);
+    };
   }, []);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full font-sans">
       {/* Date badge and welcome layout */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#003366] to-[#002244] p-6 md:p-8 text-white shadow-md border border-blue-900/10">
         {/* Motif background building */}
@@ -110,7 +120,7 @@ export default function UserDashboardBeranda() {
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-800">Laman Utama Platform</p>
-                <p className="text-[10px] text-slate-400">Cinta, Bangga, & Paham Rupiah</p>
+                <p className="text-[10px] text-slate-400">Cinta, Bangga, &amp; Paham Rupiah</p>
               </div>
             </div>
             <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-[9px] font-extrabold border border-green-200">
@@ -128,24 +138,107 @@ export default function UserDashboardBeranda() {
         </div>
       </div>
 
-      {/* Quiz Section */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <i className="fa-solid fa-gamepad text-primary"></i> Quiz Tersedia
-          </h3>
-          <Link href="/user/dashboard/kuis" className="text-xs font-bold text-primary hover:underline">
-            Lihat Semua
-          </Link>
+      {/* Quiz & Leaderboard Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Available Quizzes */}
+        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i className="fa-solid fa-gamepad text-primary"></i> Kuis Interaktif Tersedia
+              </h3>
+              <Link href="/user/dashboard/kuis" className="text-xs font-bold text-primary hover:underline">
+                Lihat Semua Kuis <i className="fa-solid fa-arrow-right ml-1"></i>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Card 1 */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50/80 to-slate-50 border border-blue-100 flex flex-col justify-between gap-3 group hover:shadow-md transition-all">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-primary rounded-md">Kebanksentralan</span>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug group-hover:text-primary transition-colors">
+                    Kuis Kebanksentralan &amp; Peran Bank Indonesia
+                  </h4>
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    Uji pengetahuanmu mengenai tugas pokok dan tujuan tunggal Bank Indonesia.
+                  </p>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-blue-100/60 text-xs">
+                  <span className="text-slate-400 font-medium"><i className="fa-regular fa-clock mr-1"></i>5 Menit</span>
+                  <Link href="/user/dashboard/kuis" className="px-3 py-1.5 bg-primary text-white font-bold text-xs rounded-xl shadow-xs hover:bg-sky-700 transition-colors">
+                    Mulai <i className="fa-solid fa-play text-[10px] ml-1"></i>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Card 2 */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50/80 to-slate-50 border border-amber-100 flex flex-col justify-between gap-3 group hover:shadow-md transition-all">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-900 rounded-md">CBP Rupiah</span>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug group-hover:text-amber-700 transition-colors">
+                    Kuis Cinta, Bangga, Paham Rupiah
+                  </h4>
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    Kenali ciri keaslian Uang Rupiah dan prinsip 5J dalam merawat uang Rupiah.
+                  </p>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-amber-100/60 text-xs">
+                  <span className="text-slate-400 font-medium"><i className="fa-regular fa-clock mr-1"></i>5 Menit</span>
+                  <Link href="/user/dashboard/kuis" className="px-3 py-1.5 bg-amber-500 text-white font-bold text-xs rounded-xl shadow-xs hover:bg-amber-600 transition-colors">
+                    Mulai <i className="fa-solid fa-play text-[10px] ml-1"></i>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Empty State matching design */}
-        <div className="bg-slate-50/50 border border-slate-100 rounded-2xl flex flex-col items-center justify-center py-10 px-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
-            <i className="fa-regular fa-circle-question text-xl text-slate-400"></i>
+        {/* Right: Leaderboard Skor Kuis Tertinggi */}
+        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <i className="fa-solid fa-trophy text-amber-500"></i> Leaderboard Top Skor
+            </h3>
+            <Link href="/user/dashboard/kuis" className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full hover:bg-amber-100 transition-colors">
+              Lihat Kuis
+            </Link>
           </div>
-          <p className="text-slate-700 font-bold text-sm">Belum ada quiz yang tersedia saat ini.</p>
-          <p className="text-slate-400 text-xs mt-0.5">Quiz baru akan segera hadir. Tetap semangat belajar!</p>
+
+          <div className="space-y-2.5">
+            {leaderboard.length === 0 ? (
+              <p className="text-xs text-slate-400 text-center py-6">Belum ada skor kuis tercatat.</p>
+            ) : (
+              leaderboard.map((item, index) => {
+                const rankIcons = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+                const rankBadges = [
+                  'bg-amber-400 text-slate-900 border-amber-300',
+                  'bg-slate-200 text-slate-800 border-slate-300',
+                  'bg-amber-700/20 text-amber-900 border-amber-400/40',
+                  'bg-slate-100 text-slate-600 border-slate-200',
+                  'bg-slate-100 text-slate-600 border-slate-200'
+                ];
+
+                return (
+                  <div key={item.id} className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between gap-3 hover:bg-slate-100/80 transition-colors">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <span className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs border shrink-0 ${rankBadges[index] || rankBadges[3]}`}>
+                        {rankIcons[index] || `#${index + 1}`}
+                      </span>
+                      <div className="overflow-hidden">
+                        <h4 className="font-bold text-slate-800 text-xs truncate">{item.nickname}</h4>
+                        <p className="text-[10px] text-slate-400 truncate">{item.quiz_title}</p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-xs font-black text-amber-600 block">{item.score.toLocaleString('id-ID')}</span>
+                      <span className="text-[9px] text-slate-400 font-semibold">Poin</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,20 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { INITIAL_QUIZZES, QuizItem } from '@/lib/quizData';
+import { INITIAL_QUIZZES, QuizItem, getQuizScoresHistory, QuizHistoryRecord, fetchQuizzesFromApi, fetchScoresFromApi } from '@/lib/quizData';
 import { joinLiveSession } from '@/lib/quizLiveSession';
 import QuizPlayerModal from '@/components/quiz/QuizPlayerModal';
 import JoinPinModal from '@/components/quiz/JoinPinModal';
 import CustomSelect from '@/components/ui/CustomSelect';
 import Swal from 'sweetalert2';
-
-interface HistoryItem {
-  id: string;
-  title: string;
-  score: number;
-  totalQuestions: number;
-  date: string;
-}
 
 export default function UserDashboardKuis() {
   const [quizzes, setQuizzes] = useState<QuizItem[]>(INITIAL_QUIZZES);
@@ -29,15 +21,21 @@ export default function UserDashboardKuis() {
   const [isPinModalOpen, setIsPinModalOpen] = useState<boolean>(false);
 
   // History State
-  const [history, setHistory] = useState<HistoryItem[]>([
-    {
-      id: 'h-1',
-      title: 'Kuis Cinta, Bangga, Paham (CBP) Rupiah',
-      score: 3850,
-      totalQuestions: 4,
-      date: '2026-08-27'
-    }
-  ]);
+  const [history, setHistory] = useState<QuizHistoryRecord[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const apiQuizzes = await fetchQuizzesFromApi();
+      if (apiQuizzes && apiQuizzes.length > 0) setQuizzes(apiQuizzes);
+      const apiScores = await fetchScoresFromApi();
+      if (apiScores) setHistory(apiScores);
+    };
+    loadData();
+    window.addEventListener('quiz_scores_update', loadData);
+    return () => {
+      window.removeEventListener('quiz_scores_update', loadData);
+    };
+  }, []);
 
   const CATEGORY_OPTIONS = [
     { value: 'Semua', label: 'Semua Kategori', icon: 'fa-solid fa-layer-group' },
@@ -235,7 +233,7 @@ export default function UserDashboardKuis() {
                   className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
                 >
                   <div className="space-y-1">
-                    <h4 className="font-bold text-slate-900 text-sm">{item.title}</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">{item.quiz_title}</h4>
                     <span className="text-xs text-slate-500">
                       Diselesaikan pada {new Date(item.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </span>

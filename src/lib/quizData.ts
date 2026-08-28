@@ -304,3 +304,207 @@ export const PLAYER_AVATARS = [
   { id: 'avatar-5', label: 'Coin Collector', icon: 'fa-solid fa-piggy-bank', color: 'bg-purple-500 text-white' },
   { id: 'avatar-6', label: 'Central Banker', icon: 'fa-solid fa-building-columns', color: 'bg-primary text-white' }
 ];
+
+export interface QuizHistoryRecord {
+  id: string;
+  quiz_id?: string;
+  quiz_title: string;
+  nickname: string;
+  avatar?: string;
+  score: number;
+  total_questions: number;
+  correct_answers?: number;
+  mode: 'solo' | 'multiplayer';
+  date: string;
+}
+
+export const INITIAL_SCORE_HISTORY: QuizHistoryRecord[] = [
+  {
+    id: 'score-1',
+    quiz_title: 'Kuis Kebanksentralan & Peran Bank Indonesia',
+    nickname: 'Budi Pratama',
+    avatar: 'fa-solid fa-graduation-cap',
+    score: 4850,
+    total_questions: 5,
+    correct_answers: 5,
+    mode: 'multiplayer',
+    date: '2026-08-28'
+  },
+  {
+    id: 'score-2',
+    quiz_title: 'Kuis Cinta, Bangga, Paham (CBP) Rupiah',
+    nickname: 'Siti Rahma',
+    avatar: 'fa-solid fa-coins',
+    score: 4300,
+    total_questions: 4,
+    correct_answers: 4,
+    mode: 'solo',
+    date: '2026-08-28'
+  },
+  {
+    id: 'score-3',
+    quiz_title: 'Kuis Edukasi QRIS & Sistem Pembayaran Digital',
+    nickname: 'Muhammad Rizky',
+    avatar: 'fa-solid fa-qrcode',
+    score: 3850,
+    total_questions: 4,
+    correct_answers: 3,
+    mode: 'multiplayer',
+    date: '2026-08-27'
+  },
+  {
+    id: 'score-4',
+    quiz_title: 'Kuis Kebanksentralan & Peran Bank Indonesia',
+    nickname: 'Andi Wijaya',
+    avatar: 'fa-solid fa-feather-pointed',
+    score: 3500,
+    total_questions: 5,
+    correct_answers: 4,
+    mode: 'solo',
+    date: '2026-08-27'
+  },
+  {
+    id: 'score-5',
+    quiz_title: 'Kuis Titik Temu Uang Logam & Kas Keliling',
+    nickname: 'Dewi Lestari',
+    avatar: 'fa-solid fa-piggy-bank',
+    score: 3100,
+    total_questions: 4,
+    correct_answers: 3,
+    mode: 'solo',
+    date: '2026-08-26'
+  }
+];
+
+export function getQuizScoresHistory(): QuizHistoryRecord[] {
+  if (typeof window === 'undefined') return INITIAL_SCORE_HISTORY;
+  try {
+    const saved = localStorage.getItem('bi_quiz_scores_history');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error('Gagal memuat history kuis:', e);
+  }
+  return INITIAL_SCORE_HISTORY;
+}
+
+export function saveQuizScoreRecord(record: QuizHistoryRecord): QuizHistoryRecord[] {
+  const current = getQuizScoresHistory();
+  const updated = [record, ...current];
+  try {
+    localStorage.setItem('bi_quiz_scores_history', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('quiz_scores_update'));
+
+      // Asynchronously send to Laravel Backend Database
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      fetch(`${apiUrl}/quiz-results`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          quiz_id: record.quiz_id,
+          quiz_title: record.quiz_title,
+          nickname: record.nickname,
+          avatar: record.avatar,
+          mode: record.mode,
+          score: record.score,
+          correct_answers: record.correct_answers || 0,
+          total_questions: record.total_questions,
+        })
+      }).catch(err => console.log('Backend sync notice:', err));
+    }
+  } catch (e) {
+    console.error('Gagal menyimpan record skor:', e);
+  }
+  return updated;
+}
+
+export function clearQuizScoresHistory(): void {
+  try {
+    localStorage.removeItem('bi_quiz_scores_history');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('quiz_scores_update'));
+
+      // Asynchronously clear from Backend DB
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      fetch(`${apiUrl}/quiz-results`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+        }
+      }).catch(err => console.log('Backend sync notice:', err));
+    }
+  } catch (e) {
+    console.error('Gagal menghapus history skor:', e);
+  }
+}
+
+export async function fetchQuizzesFromApi(): Promise<QuizItem[]> {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const res = await fetch(`${apiUrl}/quizzes`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((q: any) => ({
+          id: String(q.id),
+          title: q.title,
+          slug: q.title.toLowerCase().replace(/\s+/g, '-'),
+          category: q.category || 'Kebanksentralan',
+          description: q.description || '',
+          thumbnail: q.icon || '/images/menu-cepat/1.png',
+          mode: q.mode || 'both',
+          difficulty: q.difficulty || 'Sedang',
+          total_questions: q.questions ? q.questions.length : 4,
+          estimated_time_minutes: q.estimated_time_minutes || 5,
+          play_count: 100,
+          is_active: Boolean(q.is_active),
+          created_at: q.created_at || '2026-08-28',
+          questions: (q.questions || []).map((quest: any) => ({
+            id: String(quest.id),
+            question_text: quest.question_text,
+            time_limit_seconds: quest.time_limit_seconds || 15,
+            points: 1000,
+            explanation: quest.explanation || '',
+            options: quest.options || []
+          }))
+        }));
+      }
+    }
+  } catch (e) {
+    console.warn('Fallback to INITIAL_QUIZZES:', e);
+  }
+  return INITIAL_QUIZZES;
+}
+
+export async function fetchScoresFromApi(): Promise<QuizHistoryRecord[]> {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const res = await fetch(`${apiUrl}/quiz-results`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.status === 'success' && Array.isArray(json.data)) {
+        return json.data.map((item: any) => ({
+          id: String(item.id),
+          quiz_id: String(item.quiz_id || ''),
+          quiz_title: item.quiz_title,
+          nickname: item.nickname,
+          avatar: item.avatar || 'fa-solid fa-user-astronaut',
+          score: item.score,
+          total_questions: item.total_questions || 4,
+          correct_answers: item.correct_answers || 0,
+          mode: item.mode || 'solo',
+          date: item.created_at ? item.created_at.substring(0, 10) : '2026-08-28'
+        }));
+      }
+    }
+  } catch (e) {
+    console.warn('Fallback to local storage scores:', e);
+  }
+  return getQuizScoresHistory();
+}

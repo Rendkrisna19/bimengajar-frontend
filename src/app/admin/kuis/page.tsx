@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { INITIAL_QUIZZES, QuizItem, QuizQuestion, generateGamePin, LiveRoomSession } from '@/lib/quizData';
+import { INITIAL_QUIZZES, QuizItem, QuizQuestion, generateGamePin, LiveRoomSession, getQuizScoresHistory, clearQuizScoresHistory, QuizHistoryRecord, fetchQuizzesFromApi, fetchScoresFromApi } from '@/lib/quizData';
 import { getActiveLiveSession, createLiveSession, startLiveSessionGame, closeLiveSession } from '@/lib/quizLiveSession';
 import Swal from 'sweetalert2';
 import CustomSelect from '@/components/ui/CustomSelect';
 
 export default function AdminKuisPage() {
   const [quizzes, setQuizzes] = useState<QuizItem[]>(INITIAL_QUIZZES);
-  const [activeTab, setActiveTab] = useState<'quizzes' | 'live-rooms'>('quizzes');
+  const [activeTab, setActiveTab] = useState<'quizzes' | 'live-rooms' | 'leaderboard'>('quizzes');
+  const [scoresHistory, setScoresHistory] = useState<QuizHistoryRecord[]>([]);
+  const [searchHistoryQuery, setSearchHistoryQuery] = useState('');
   
   // Quiz Form Modal State (Create / Edit)
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,17 +42,28 @@ export default function AdminKuisPage() {
     const current = getActiveLiveSession();
     if (current) setActiveSession(current);
 
+    // Load quizzes & score history from API / local fallback
+    const loadData = async () => {
+      const apiQuizzes = await fetchQuizzesFromApi();
+      if (apiQuizzes && apiQuizzes.length > 0) setQuizzes(apiQuizzes);
+      const apiScores = await fetchScoresFromApi();
+      if (apiScores) setScoresHistory(apiScores);
+    };
+    loadData();
+
     const handleUpdate = () => {
       const updated = getActiveLiveSession();
       setActiveSession(updated);
     };
 
     window.addEventListener('quiz_session_update', handleUpdate);
+    window.addEventListener('quiz_scores_update', loadData);
     window.addEventListener('storage', handleUpdate);
     const interval = setInterval(handleUpdate, 1000);
 
     return () => {
       window.removeEventListener('quiz_session_update', handleUpdate);
+      window.removeEventListener('quiz_scores_update', loadData);
       window.removeEventListener('storage', handleUpdate);
       clearInterval(interval);
     };
@@ -137,7 +150,7 @@ export default function AdminKuisPage() {
     setQuestions(prev => prev.filter(q => q.id !== qId));
   };
 
-  const handleSaveQuiz = (e: React.FormEvent) => {
+  const handleSaveQuiz = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       Swal.fire('Error', 'Judul kuis tidak boleh kosong!', 'error');
@@ -148,38 +161,54 @@ export default function AdminKuisPage() {
       return;
     }
 
-    if (editingQuiz) {
-      setQuizzes(prev => prev.map(q => q.id === editingQuiz.id ? {
-        ...q,
-        title,
-        category,
-        description,
-        difficulty,
-        mode,
-        total_questions: questions.length,
-        estimated_time_minutes: Math.ceil(questions.reduce((acc, curr) => acc + curr.time_limit_seconds, 0) / 60),
-        questions
-      } : q));
-      Swal.fire('Berhasil!', 'Kuis berhasil diperbarui.', 'success');
-    } else {
-      const newQuiz: QuizItem = {
-        id: `quiz-bi-${Date.now()}`,
-        title,
-        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        category,
-        description,
-        thumbnail: '/images/menu-cepat/1.png',
-        mode,
-        difficulty,
-        total_questions: questions.length,
-        estimated_time_minutes: Math.ceil(questions.reduce((acc, curr) => acc + curr.time_limit_seconds, 0) / 60),
-        play_count: 0,
-        questions,
-        is_active: true,
-        created_at: new Date().toISOString().split('T')[0]
-      };
-      setQuizzes(prev => [newQuiz, ...prev]);
-      Swal.fire('Berhasil!', 'Kuis baru berhasil dibuat dan diterbitkan.', 'success');
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const payload = {
+      title,
+      category,
+      description,
+      difficulty,
+      mode,
+      estimated_time_minutes: Math.ceil(questions.reduce((acc, curr) => acc + curr.time_limit_seconds, 0) / 60),
+      questions
+    };
+
+    try {
+      if (editingQuiz) {
+        await fetch(`${apiUrl}/quizzes/${editingQuiz.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        Swal.fire('Berhasil!', 'Kuis berhasil diperbarui di database.', 'success');
+      } else {
+        await fetch(`${apiUrl}/quizzes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        Swal.fire('Berhasil!', 'Kuis baru berhasil dibuat dan disimpan ke database.', 'success');
+      }
+
+      const updatedList = await fetchQuizzesFromApi();
+      setQuizzes(updatedList);
+    } catch (err) {
+      console.error('Save quiz error:', err);
+      if (editingQuiz) {
+        setQuizzes(prev => prev.map(q => q.id === editingQuiz.id ? { ...q, ...payload, total_questions: questions.length, questions } : q));
+      } else {
+        const newQuiz: QuizItem = {
+          id: `quiz-bi-${Date.now()}`,
+          ...payload,
+          slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          thumbnail: '/images/menu-cepat/1.png',
+          total_questions: questions.length,
+          play_count: 0,
+          is_active: true,
+          created_at: new Date().toISOString().split('T')[0]
+        };
+        setQuizzes(prev => [newQuiz, ...prev]);
+      }
+      Swal.fire('Berhasil!', 'Kuis disimpan.', 'success');
     }
 
     setIsModalOpen(false);
@@ -188,15 +217,23 @@ export default function AdminKuisPage() {
   const handleDeleteQuiz = (id: string) => {
     Swal.fire({
       title: 'Hapus Kuis Ini?',
-      text: 'Kuis dan seluruh bank soal di dalamnya akan dihapus.',
+      text: 'Kuis dan seluruh bank soal di dalamnya akan dihapus secara permanen dari database.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
       confirmButtonText: 'Ya, Hapus!'
-    }).then(res => {
+    }).then(async res => {
       if (res.isConfirmed) {
-        setQuizzes(prev => prev.filter(q => q.id !== id));
-        Swal.fire('Dihapus!', 'Kuis telah dihapus.', 'success');
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+          await fetch(`${apiUrl}/quizzes/${id}`, { method: 'DELETE', headers: { 'Accept': 'application/json' } });
+          const updatedList = await fetchQuizzesFromApi();
+          setQuizzes(updatedList);
+          Swal.fire('Dihapus!', 'Kuis telah dihapus dari database.', 'success');
+        } catch (e) {
+          setQuizzes(prev => prev.filter(q => q.id !== id));
+          Swal.fire('Dihapus!', 'Kuis telah dihapus.', 'success');
+        }
       }
     });
   };
@@ -244,6 +281,32 @@ export default function AdminKuisPage() {
     });
   };
 
+  const handleClearHistory = () => {
+    Swal.fire({
+      title: 'Hapus Semua Riwayat Poin?',
+      text: 'Seluruh riwayat perolehan poin kuis peserta akan dibersihkan.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Ya, Hapus Semua',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        clearQuizScoresHistory();
+        setScoresHistory([]);
+        Swal.fire('Dihapus!', 'Riwayat poin kuis berhasil dibersihkan.', 'success');
+      }
+    });
+  };
+
+  const sortedHistory = [...scoresHistory].sort((a, b) => b.score - a.score);
+
+  const filteredHistory = sortedHistory.filter(item => {
+    const q = searchHistoryQuery.toLowerCase();
+    return item.nickname.toLowerCase().includes(q) || item.quiz_title.toLowerCase().includes(q);
+  });
+
   return (
     <div className="p-6 md:p-10 space-y-8 font-sans max-w-[1400px] mx-auto">
       
@@ -257,7 +320,7 @@ export default function AdminKuisPage() {
             Kelola Kuis Interaktif BI
           </h1>
           <p className="text-xs md:text-sm text-slate-500">
-            Buat, edit kuis kebanksentralan, serta luncurkan Live Room Multiplayer dengan 6-Digit Game PIN.
+            Buat, edit kuis kebanksentralan, luncurkan Live Room Multiplayer, dan pantau riwayat poin peserta.
           </p>
         </div>
 
@@ -273,10 +336,10 @@ export default function AdminKuisPage() {
       </div>
 
       {/* TABS */}
-      <div className="flex bg-slate-200/70 p-1.5 rounded-2xl w-full max-w-md border border-slate-300/60">
+      <div className="flex bg-slate-200/70 p-1.5 rounded-2xl w-full max-w-2xl border border-slate-300/60 overflow-x-auto">
         <button
           onClick={() => setActiveTab('quizzes')}
-          className={`flex-1 py-2.5 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+          className={`flex-1 py-2.5 px-4 text-xs font-extrabold rounded-xl transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'quizzes' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -284,11 +347,19 @@ export default function AdminKuisPage() {
         </button>
         <button
           onClick={() => setActiveTab('live-rooms')}
-          className={`flex-1 py-2.5 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+          className={`flex-1 py-2.5 px-4 text-xs font-extrabold rounded-xl transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'live-rooms' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <i className="fa-solid fa-tower-broadcast mr-2"></i> Live Room Host Panel
+        </button>
+        <button
+          onClick={() => setActiveTab('leaderboard')}
+          className={`flex-1 py-2.5 px-4 text-xs font-extrabold rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'leaderboard' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <i className="fa-solid fa-trophy mr-2"></i> Leaderboard &amp; Riwayat Poin ({scoresHistory.length})
         </button>
       </div>
 
@@ -426,6 +497,165 @@ export default function AdminKuisPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* TAB 3: LEADERBOARD & RIWAYAT POIN */}
+      {activeTab === 'leaderboard' && (
+        <div className="space-y-6">
+          {/* Top 3 Podium Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Top 1 Gold */}
+            {sortedHistory[0] ? (
+              <div className="bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute right-3 top-3 opacity-20 text-6xl font-black">🥇</div>
+                <div>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-extrabold tracking-wider uppercase">
+                    Peringkat #1 - Juara Emas
+                  </span>
+                  <h3 className="text-xl font-extrabold mt-3">{sortedHistory[0].nickname}</h3>
+                  <p className="text-xs text-amber-100 mt-1 line-clamp-1">{sortedHistory[0].quiz_title}</p>
+                </div>
+                <div className="mt-6 flex items-baseline justify-between border-t border-white/20 pt-3">
+                  <span className="text-xs opacity-90">Total Poin</span>
+                  <span className="text-2xl font-black">{sortedHistory[0].score.toLocaleString('id-ID')}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-slate-100 rounded-3xl p-6 text-slate-400 text-center flex items-center justify-center text-xs font-bold">Belum Ada Data #1</div>
+            )}
+
+            {/* Top 2 Silver */}
+            {sortedHistory[1] ? (
+              <div className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute right-3 top-3 opacity-20 text-6xl font-black">🥈</div>
+                <div>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-extrabold tracking-wider uppercase">
+                    Peringkat #2 - Juara Perak
+                  </span>
+                  <h3 className="text-xl font-extrabold mt-3">{sortedHistory[1].nickname}</h3>
+                  <p className="text-xs text-slate-300 mt-1 line-clamp-1">{sortedHistory[1].quiz_title}</p>
+                </div>
+                <div className="mt-6 flex items-baseline justify-between border-t border-white/20 pt-3">
+                  <span className="text-xs opacity-90">Total Poin</span>
+                  <span className="text-2xl font-black">{sortedHistory[1].score.toLocaleString('id-ID')}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-slate-100 rounded-3xl p-6 text-slate-400 text-center flex items-center justify-center text-xs font-bold">Belum Ada Data #2</div>
+            )}
+
+            {/* Top 3 Bronze */}
+            {sortedHistory[2] ? (
+              <div className="bg-gradient-to-br from-amber-700 via-amber-800 to-yellow-900 rounded-3xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute right-3 top-3 opacity-20 text-6xl font-black">🥉</div>
+                <div>
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-extrabold tracking-wider uppercase">
+                    Peringkat #3 - Juara Perunggu
+                  </span>
+                  <h3 className="text-xl font-extrabold mt-3">{sortedHistory[2].nickname}</h3>
+                  <p className="text-xs text-amber-200 mt-1 line-clamp-1">{sortedHistory[2].quiz_title}</p>
+                </div>
+                <div className="mt-6 flex items-baseline justify-between border-t border-white/20 pt-3">
+                  <span className="text-xs opacity-90">Total Poin</span>
+                  <span className="text-2xl font-black">{sortedHistory[2].score.toLocaleString('id-ID')}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-slate-100 rounded-3xl p-6 text-slate-400 text-center flex items-center justify-center text-xs font-bold">Belum Ada Data #3</div>
+            )}
+          </div>
+
+          {/* Table Controls */}
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                  <i className="fa-solid fa-list-check text-primary"></i> Tabel Riwayat Poin Perolehan Peserta
+                </h3>
+                <p className="text-xs text-slate-500">Daftar akumulasi poin hasil pengerjaan kuis peserta (Solo &amp; Live Room Multiplayer).</p>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="relative flex-1 sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Cari peserta / kuis..."
+                    value={searchHistoryQuery}
+                    onChange={(e) => setSearchHistoryQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary transition-colors"
+                  />
+                  <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                </div>
+
+                <button
+                  onClick={handleClearHistory}
+                  className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-colors border border-red-200 shrink-0 cursor-pointer"
+                >
+                  <i className="fa-solid fa-trash-can mr-1.5"></i> Hapus Riwayat
+                </button>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+              <table className="w-full text-left text-xs text-slate-700">
+                <thead className="bg-slate-100/80 text-slate-800 font-extrabold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                  <tr>
+                    <th className="py-3.5 px-4">#</th>
+                    <th className="py-3.5 px-4">Nama / Nickname</th>
+                    <th className="py-3.5 px-4">Judul Kuis</th>
+                    <th className="py-3.5 px-4">Mode</th>
+                    <th className="py-3.5 px-4 text-center">Jawaban Benar</th>
+                    <th className="py-3.5 px-4 text-right">Poin Perolehan</th>
+                    <th className="py-3.5 px-4 text-center">Tanggal</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredHistory.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-8 text-center text-slate-400">
+                        Tidak ada data riwayat poin yang ditemukan.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredHistory.map((item, idx) => (
+                      <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3.5 px-4 font-bold text-slate-400">{idx + 1}</td>
+                        <td className="py-3.5 px-4 font-bold text-slate-900 flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs shadow-xs">
+                            <i className={item.avatar || 'fa-solid fa-user'}></i>
+                          </div>
+                          <span>{item.nickname}</span>
+                        </td>
+                        <td className="py-3.5 px-4 font-medium text-slate-700">{item.quiz_title}</td>
+                        <td className="py-3.5 px-4">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            item.mode === 'multiplayer' 
+                              ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                              : 'bg-blue-100 text-blue-700 border border-blue-200'
+                          }`}>
+                            {item.mode === 'multiplayer' ? 'Live Room' : 'Solo'}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-center font-bold text-slate-700">
+                          {item.correct_answers !== undefined ? `${item.correct_answers} / ${item.total_questions}` : `${item.total_questions} Soal`}
+                        </td>
+                        <td className="py-3.5 px-4 text-right">
+                          <span className="font-extrabold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/80">
+                            ⚡ {item.score.toLocaleString('id-ID')} Poin
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-center text-slate-400 font-medium">
+                          {item.date}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
