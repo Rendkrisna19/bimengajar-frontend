@@ -52,7 +52,7 @@ export default function FloatingAction() {
                   setIsOpen(false);
                 }}
                 aria-label="Kalender Kegiatan"
-                className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 bg-white text-accent-red hover:bg-accent-red hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-regular fa-calendar-days text-lg"></i>
               </button>
@@ -68,7 +68,7 @@ export default function FloatingAction() {
               <button
                 onClick={handleCollabClick}
                 aria-label="Ajukan Kegiatan Edukasi"
-                className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 bg-white text-accent-red hover:bg-accent-red hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-file-invoice text-lg"></i>
               </button>
@@ -87,7 +87,7 @@ export default function FloatingAction() {
                   setIsOpen(false);
                 }}
                 aria-label="Materi Edukasi"
-                className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 bg-white text-accent-red hover:bg-accent-red hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-book-open text-lg"></i>
               </button>
@@ -105,7 +105,7 @@ export default function FloatingAction() {
                   setIsOpen(false);
                 }}
                 aria-label="AI Assistant"
-                className="flex items-center justify-center w-12 h-12 bg-white text-primary hover:bg-primary hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 bg-white text-accent-red hover:bg-accent-red hover:text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 border border-gray-100"
               >
                 <i className="fa-solid fa-robot text-lg"></i>
               </button>
@@ -116,11 +116,17 @@ export default function FloatingAction() {
         {/* Master Floating Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_10px_25px_rgba(0,51,102,0.3)] transition-all duration-300 hover:scale-105 text-white ${isOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-primary hover:bg-blue-900'}`}
+          className={`flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-[0_10px_25px_rgba(167,0,56,0.4)] border-b-4 border-red-900 transition-all duration-300 hover:scale-105 text-white ${
+            isOpen ? 'bg-slate-800 hover:bg-slate-900 border-slate-950' : 'bg-accent-red hover:bg-accent-red-dark'
+          }`}
           aria-label="Menu Layanan Cepat"
         >
-          <div className={`transition-transform duration-300 ${isOpen ? 'rotate-45' : 'rotate-0'}`}>
-            <i className="fa-solid fa-plus text-xl md:text-2xl"></i>
+          <div className="transition-transform duration-300">
+            {isOpen ? (
+              <i className="fa-solid fa-xmark text-xl md:text-2xl"></i>
+            ) : (
+              <i className="fa-solid fa-layer-group text-lg md:text-xl"></i>
+            )}
           </div>
         </button>
       </div>

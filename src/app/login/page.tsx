@@ -62,15 +62,23 @@ export default function LoginPage() {
         if (errors.password) {
           newErrors.password = errors.password[0];
         }
-        if (!errors.email && !errors.password) {
-          newErrors.password = 'Password yang Anda masukkan salah.';
-        }
 
         setFieldErrors(newErrors);
 
-        const alertText = newErrors.email || newErrors.password || 'Gagal masuk. Silakan periksa kredensial Anda.';
+        const alertTitle = newErrors.email 
+          ? 'Email Tidak Terdaftar' 
+          : newErrors.password 
+          ? 'Password Salah' 
+          : 'Kredensial Tidak Sesuai';
+
+        const alertText = newErrors.email 
+          ? newErrors.email 
+          : newErrors.password 
+          ? newErrors.password 
+          : 'Gagal masuk. Silakan periksa kredensial Anda.';
+
         Swal.fire({
-          title: 'Kredensial Tidak Sesuai',
+          title: alertTitle,
           text: alertText,
           icon: 'error',
           confirmButtonColor: '#0054a7',

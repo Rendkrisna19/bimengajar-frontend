@@ -8,6 +8,7 @@ import { submitPengajuanEdukasi } from "./api";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CustomSelect from "./CustomSelect";
 
 const WILAYAH_KERJA = [
   'Pematangsiantar',
@@ -241,19 +242,16 @@ export default function PengajuanEdukasiPage() {
 
               <div className="flex items-center gap-2">
                 <label className="text-xs font-bold text-gray-500 hidden sm:inline-block">Tipe Pengajuan:</label>
-                <div className="relative">
-                  <select
-                    name="jenis_pengajuan"
-                    value={formData.jenis_pengajuan}
-                    onChange={(e) => setFormData(prev => ({ ...prev, jenis_pengajuan: e.target.value as 'mengunjungi' | 'dikunjungi' }))}
-                    disabled={step > 1}
-                    className="bg-accent-red text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl border-none outline-none shadow-md cursor-pointer appearance-none pr-8 hover:brightness-110 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
-                  >
-                    <option value="mengunjungi" className="bg-white text-gray-800 font-medium">Ingin Mengunjungi BI</option>
-                    <option value="dikunjungi" className="bg-white text-gray-800 font-medium">BI Mengunjungi Instansi Anda</option>
-                  </select>
-                  <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white text-xs pointer-events-none"></i>
-                </div>
+                <CustomSelect
+                  variant="pill"
+                  options={[
+                    { value: 'mengunjungi', label: 'Ingin Mengunjungi BI', icon: 'fa-building-columns' },
+                    { value: 'dikunjungi', label: 'BI Mengunjungi Instansi Anda', icon: 'fa-user-tie' }
+                  ]}
+                  value={formData.jenis_pengajuan}
+                  onChange={(val) => setFormData(prev => ({ ...prev, jenis_pengajuan: val as 'mengunjungi' | 'dikunjungi' }))}
+                  disabled={step > 1}
+                />
               </div>
             </div>
 
@@ -348,42 +346,31 @@ export default function PengajuanEdukasiPage() {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-gray-700">Durasi <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <select 
-                        name="durasi" 
-                        value={formData.durasi} 
-                        onChange={handleInputChange} 
-                        className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer"
-                      >
-                        <option value="">Pilih durasi kegiatan</option>
-                        <option value="1 Jam">1 Jam</option>
-                        <option value="2 Jam">2 Jam</option>
-                        <option value="3 Jam">3 Jam</option>
-                        <option value="Setengah Hari (4 Jam)">Setengah Hari (4 Jam)</option>
-                        <option value="Satu Hari Penuh (8 Jam)">Satu Hari Penuh (8 Jam)</option>
-                      </select>
-                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
-                    </div>
+                    <CustomSelect
+                      options={[
+                        '1 Jam',
+                        '2 Jam',
+                        '3 Jam',
+                        'Setengah Hari (4 Jam)',
+                        'Satu Hari Penuh (8 Jam)'
+                      ]}
+                      value={formData.durasi}
+                      onChange={(val) => setFormData(prev => ({ ...prev, durasi: val }))}
+                      placeholder="Pilih durasi kegiatan"
+                      icon="fa-clock"
+                    />
                   </div>
 
                   {/* Kota / Kabupaten Field - REQUIRED Dropdown */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-gray-700">Kota / Kabupaten <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <select 
-                        name="kota_kabupaten" 
-                        value={formData.kota_kabupaten} 
-                        onChange={handleInputChange} 
-                        required
-                        className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer"
-                      >
-                        <option value="">Pilih Kota / Kabupaten</option>
-                        {WILAYAH_KERJA.map((wil, idx) => (
-                          <option key={idx} value={wil}>{wil}</option>
-                        ))}
-                      </select>
-                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
-                    </div>
+                    <CustomSelect
+                      options={WILAYAH_KERJA}
+                      value={formData.kota_kabupaten}
+                      onChange={(val) => setFormData(prev => ({ ...prev, kota_kabupaten: val }))}
+                      placeholder="Pilih Kota / Kabupaten"
+                      icon="fa-location-dot"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
@@ -439,16 +426,18 @@ export default function PengajuanEdukasiPage() {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-gray-700">Jenis Instansi <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <select name="jenis_instansi" value={formData.jenis_instansi} onChange={handleInputChange} className="w-full bg-gray-50/50 text-gray-800 text-xs sm:text-sm rounded-xl px-4 py-3 outline-none transition-all border border-gray-200 focus:border-[#004f9e] focus:bg-white focus:ring-4 focus:ring-blue-50 appearance-none shadow-sm cursor-pointer">
-                        <option value="">Pilih jenis instansi</option>
-                        <option value="Sekolah / Universitas">Sekolah / Universitas</option>
-                        <option value="Instansi Pemerintah">Instansi Pemerintah</option>
-                        <option value="Perusahaan Swasta">Perusahaan Swasta</option>
-                        <option value="Komunitas / Organisasi">Komunitas / Organisasi</option>
-                      </select>
-                      <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
-                    </div>
+                    <CustomSelect
+                      options={[
+                        'Sekolah / Universitas',
+                        'Instansi Pemerintah',
+                        'Perusahaan Swasta',
+                        'Komunitas / Organisasi'
+                      ]}
+                      value={formData.jenis_instansi}
+                      onChange={(val) => setFormData(prev => ({ ...prev, jenis_instansi: val }))}
+                      placeholder="Pilih jenis instansi"
+                      icon="fa-building"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
